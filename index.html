@@ -16,11 +16,11 @@
         }
 
         body {
-            background-color: #f8fafc; /* Fundo bem clean e claro */
+            background-color: #f8fafc;
             color: #333;
         }
 
-        /* CABEÇALHO CLEAN (Ajustado) */
+        /* CABEÇALHO CLEAN */
         header {
             background-color: #ffffff;
             color: #0f172a;
@@ -32,30 +32,11 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
+        /* Cor do Preserve Leads alterada para escuro clean */
         header h1 {
             font-size: 22px;
             font-weight: 700;
-            color: #2563eb; /* Azul da Preserve Leads */
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .user-avatar {
-            width: 35px;
-            height: 35px;
-            background-color: #e2e8f0;
-            color: #475569;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+            color: #1e293b; 
         }
 
         /* CONTAINER PRINCIPAL */
@@ -200,7 +181,6 @@
             font-size: 14px;
         }
 
-        /* Botão de abrir no Google */
         .btn-acao {
             display: inline-block;
             background-color: #eff6ff;
@@ -218,7 +198,6 @@
             background-color: #dbeafe;
             color: #1d4ed8;
         }
-
     </style>
 </head>
 <body>
@@ -226,10 +205,6 @@
     <!-- CABEÇALHO -->
     <header>
         <h1>Preserve Leads</h1>
-        <div class="user-profile">
-            <span>Comercial</span>
-            <div class="user-avatar">C</div>
-        </div>
     </header>
 
     <!-- CONTEÚDO PRINCIPAL -->
@@ -242,13 +217,13 @@
                 <label for="filtro-nicho">1. Segmento (Nicho)*</label>
                 <select id="filtro-nicho">
                     <option value="">Selecione o nicho...</option>
-                    <option value="Restaurante">Restaurantes</option>
-                    <option value="Lanchonete">Fast Food / Lanchonete</option>
-                    <option value="Bar">Bar / Pub</option>
-                    <option value="Hotel">Hotel / Pousada</option>
-                    <option value="Padaria">Padaria / Confeitaria</option>
-                    <option value="Hospital">Hospital / Clínica</option>
-                    <option value="Supermercado">Supermercado</option>
+                    <option value="Restaurantes">Restaurantes</option>
+                    <option value="Fast Food e Lanchonetes">Fast Food / Lanchonete</option>
+                    <option value="Bares e Pubs">Bar / Pub</option>
+                    <option value="Hotéis e Pousadas">Hotel / Pousada</option>
+                    <option value="Padarias">Padaria / Confeitaria</option>
+                    <option value="Hospitais e Clínicas">Hospital / Clínica</option>
+                    <option value="Supermercados">Supermercado</option>
                 </select>
             </div>
 
@@ -259,7 +234,7 @@
 
             <div class="filter-group">
                 <label for="filtro-bairro">3. Bairro (Opcional)</label>
-                <input type="text" id="filtro-bairro" placeholder="Ex: Batel">
+                <input type="text" id="filtro-bairro" placeholder="Ex: Bacacheri">
             </div>
 
             <div class="filter-group">
@@ -268,7 +243,7 @@
             </div>
 
             <div class="filter-group">
-                <button class="btn-buscar-avancado" onclick="executarBuscaReais()">
+                <button class="btn-buscar-avancado" onclick="executarBuscaGoogle()">
                     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     Buscar Leads
                 </button>
@@ -294,7 +269,7 @@
                 <tbody id="tabela-resultados">
                     <tr>
                         <td colspan="4" class="vazio">
-                            Preencha os filtros acima e clique em "Buscar Leads" para carregar empresas reais.
+                            Preencha os filtros acima e clique em "Buscar Leads".
                         </td>
                     </tr>
                 </tbody>
@@ -302,64 +277,67 @@
         </div>
     </div>
 
-    <!-- SCRIPT COM BUSCA DE DADOS REAIS NA API PÚBLICA -->
+    <!-- Div invisível obrigatória para a API do Google Places funcionar -->
+    <div id="map" style="display: none;"></div>
+
+    <!-- SCRIPT DA API DO GOOGLE PLACES COM A SUA CHAVE -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRd4KUJR3Rk4k98OOJVDtSfExn4ENVq0U&libraries=places"></script>
+
     <script>
-        async function executarBuscaReais() {
+        function executarBuscaGoogle() {
+            if (typeof google === 'undefined') {
+                alert("⚠️ Erro de API: O Google Maps não carregou. Verifique se a sua chave de API está ativa no painel do Google Cloud.");
+                return;
+            }
+
             const nicho = document.getElementById('filtro-nicho').value;
             const cidade = document.getElementById('filtro-cidade').value;
             const bairro = document.getElementById('filtro-bairro').value;
-            const cep = document.getElementById('filtro-cep').value;
-
+            
             if (!nicho || !cidade) {
                 alert("⚠️ Atenção: Por favor, preencha pelo menos o 'Segmento' e a 'Cidade'.");
                 return;
             }
 
             // Interface de Carregamento
-            document.getElementById('status-busca').innerText = "Buscando dados reais na internet...";
+            document.getElementById('status-busca').innerText = "Buscando no Google...";
             document.getElementById('status-busca').style.backgroundColor = "#fef08a";
             document.getElementById('status-busca').style.color = "#854d0e";
             
             const tabela = document.getElementById('tabela-resultados');
-            tabela.innerHTML = `<tr><td colspan="4" class="vazio" style="color: #2563eb;">⏳ Varrendo o mapa de ${cidade}... Aguarde...</td></tr>`;
+            tabela.innerHTML = `<tr><td colspan="4" class="vazio" style="color: #2563eb;">⏳ Consultando base do Google para ${cidade}... Aguarde...</td></tr>`;
 
-            // Montando a busca
-            let query = `${nicho} ${cidade}`;
-            if (bairro) query += ` ${bairro}`;
+            // Montando a frase inteligente que o Google vai ler
+            let queryPesquisa = `${nicho} em ${bairro ? bairro + ', ' : ''}${cidade}`;
 
-            try {
-                // Requisição a uma API real e gratuita de mapas (Nominatim/OpenStreetMap)
-                const urlDaApi = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=15`;
-                const resposta = await fetch(urlDaApi);
-                const dados = await resposta.json();
+            // Instancia o serviço de Places do Google
+            const mapDiv = document.getElementById('map');
+            const map = new google.maps.Map(mapDiv, { center: {lat: -23.5505, lng: -46.6333}, zoom: 15 });
+            const service = new google.maps.places.PlacesService(map);
 
-                // Limpa a tabela
-                tabela.innerHTML = "";
+            const request = {
+                query: queryPesquisa
+            };
 
-                if (dados.length === 0) {
-                    tabela.innerHTML = `<tr><td colspan="4" class="vazio">Nenhum estabelecimento encontrado com esses termos. Tente mudar o bairro ou o nicho.</td></tr>`;
-                    document.getElementById('status-busca').innerText = "Busca Concluída";
-                } else {
-                    document.getElementById('status-busca').innerText = `${dados.length} Leads Encontrados`;
+            // Fazendo a busca de fato
+            service.textSearch(request, function(results, status) {
+                tabela.innerHTML = ""; // Limpa a tabela
+
+                if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
+                    
+                    document.getElementById('status-busca').innerText = `${results.length} Leads Encontrados`;
                     document.getElementById('status-busca').style.backgroundColor = "#dcfce3";
                     document.getElementById('status-busca').style.color = "#166534";
 
-                    // Preenchendo a tabela com os dados REAIS da internet
-                    dados.forEach(local => {
-                        // Pegando o nome do local (se não tiver nome específico, usa o endereço)
-                        let nomeLocal = local.name ? local.name : "Estabelecimento não nomeado";
-                        
-                        // Ignora se for muito genérico
-                        if (nomeLocal === cidade || nomeLocal === bairro) return;
-
-                        // Cria o link inteligente do Google para o vendedor
-                        let linkGoogle = `https://www.google.com/search?q=${encodeURIComponent(nomeLocal + ' ' + cidade)}`;
+                    // Renderiza os resultados do Google na tabela
+                    results.forEach(place => {
+                        let linkGoogle = `https://www.google.com/search?q=${encodeURIComponent(place.name + ' ' + place.formatted_address)}`;
 
                         tabela.innerHTML += `
                             <tr>
-                                <td style="font-weight: 600; color: #0f172a;">${nomeLocal}</td>
+                                <td style="font-weight: 600; color: #0f172a;">${place.name}</td>
                                 <td>${document.getElementById('filtro-nicho').options[document.getElementById('filtro-nicho').selectedIndex].text}</td>
-                                <td style="font-size: 13px;">${local.display_name}</td>
+                                <td style="font-size: 13px;">${place.formatted_address}</td>
                                 <td>
                                     <a href="${linkGoogle}" target="_blank" class="btn-acao">
                                         🔍 Buscar no Google
@@ -368,13 +346,16 @@
                             </tr>
                         `;
                     });
+
+                } else {
+                    // Caso o Google não encontre nada ou dê erro
+                    tabela.innerHTML = `<tr><td colspan="4" class="vazio" style="color: #ef4444;">Nenhum estabelecimento encontrado ou a API Places não está habilitada na sua chave do Google Cloud.</td></tr>`;
+                    document.getElementById('status-busca').innerText = "Busca Falhou";
+                    document.getElementById('status-busca').style.backgroundColor = "#fee2e2";
+                    document.getElementById('status-busca').style.color = "#b91c1c";
                 }
-            } catch (erro) {
-                console.error(erro);
-                tabela.innerHTML = `<tr><td colspan="4" class="vazio" style="color: red;">Erro ao buscar dados. Tente novamente.</td></tr>`;
-            }
+            });
         }
     </script>
-
 </body>
 </html>
