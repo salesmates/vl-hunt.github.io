@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Prospecção | Hub de Leads</title>
     <!-- Tailwind CSS para deixar o visual moderno e profissional -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Ícones -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body class="bg-gray-100 font-sans">
 
@@ -24,19 +24,18 @@
 
     <!-- Área Principal -->
     <main class="container mx-auto mt-8 p-4">
-        
+
         <!-- Painel de Busca -->
         <div class="bg-white p-6 rounded-lg shadow-md mb-8">
             <h2 class="text-lg font-semibold text-gray-700 mb-4">Nova Prospecção</h2>
-            
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="flex-1">
                     <label class="block text-sm font-medium text-gray-600 mb-1">O que você procura?</label>
-                    <input type="text" id="nicho" placeholder="Ex: Buffet livre, Gerador de óleo..." class="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                    <input type="text" id="nicho" placeholder="Ex: Buffet livre, Gerador de óleo..." class="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 outline-none" />
                 </div>
                 <div class="flex-1">
                     <label class="block text-sm font-medium text-gray-600 mb-1">Onde?</label>
-                    <input type="text" id="local" placeholder="Ex: Coqueiros, Florianópolis" class="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                    <input type="text" id="local" placeholder="Ex: Coqueiros, Florianópolis" class="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 outline-none" />
                 </div>
                 <div class="flex items-end">
                     <button onclick="buscarLeads()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-md transition duration-300 w-full md:w-auto">
@@ -52,7 +51,6 @@
                 <h2 class="text-xl font-bold text-gray-800">Resultados Encontrados</h2>
                 <span id="contador-resultados" class="text-sm text-gray-500">0 leads</span>
             </div>
-            
             <!-- Grid onde os cards vão aparecer -->
             <div id="grid-resultados" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Estado vazio inicial -->
@@ -65,14 +63,13 @@
 
     </main>
 
-    <!-- Lógica do Sistema (JavaScript) -->
+    <!-- Lógica do sistema (JavaScript) -->
     <script>
-        // Simulando dados que virão da API do Google Maps no futuro
+        // Dados simulados
         const dadosSimulados = [
             { id: 1, nome: "Restaurante Sabor de Coqueiros", endereco: "Av. Engenheiro Max de Souza, 1200", avaliacao: "4.8", telefone: "(48) 3333-1111", status: "disponivel" },
             { id: 2, nome: "Buffet Livre Floripa Grill", endereco: "Rua Desembargador Pedro Silva, 500", avaliacao: "4.5", telefone: "(48) 3333-2222", status: "disponivel" },
             { id: 3, nome: "Cantina da Nona (Buffet)", endereco: "Rua Paschoal Apóstolo Pítsica, 30", avaliacao: "4.9", telefone: "(48) 3333-3333", status: "disponivel" },
-            // Simulando um lead que outro vendedor já puxou
             { id: 4, nome: "Recanto do Paladar", endereco: "Rua João Meirelles, 900", avaliacao: "4.2", telefone: "(48) 3333-4444", status: "bloqueado" }
         ];
 
@@ -80,52 +77,34 @@
             const nicho = document.getElementById('nicho').value;
             const local = document.getElementById('local').value;
             const grid = document.getElementById('grid-resultados');
-            
-            if(!nicho || !local) {
+
+            if (!nicho || !local) {
                 alert("Por favor, preencha o que procurar e onde procurar!");
                 return;
             }
 
-            // Limpa o grid e mostra carregando
+            // mostra loading
             grid.innerHTML = '<div class="col-span-full text-center py-8"><i class="fa-solid fa-spinner fa-spin text-3xl text-blue-500"></i><p class="mt-2 text-gray-600">Buscando empresas no Google...</p></div>';
 
-            // Simula um tempo de carregamento da internet (1.5 segundos)
             setTimeout(() => {
-                grid.innerHTML = ''; // Limpa o carregamento
+                grid.innerHTML = "";
                 document.getElementById('contador-resultados').innerText = `${dadosSimulados.length} leads encontrados`;
-
-                // Cria os cards na tela
+                // cria os cards
                 dadosSimulados.forEach(lead => {
-                    
-                    // Verifica se o lead já foi pego por alguém
                     const isBloqueado = lead.status === 'bloqueado';
-                    const botaoClasse = isBloqueado 
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                        : 'bg-green-600 hover:bg-green-700 text-white shadow-md';
-                    
-                    const botaoTexto = isBloqueado 
-                        ? '<i class="fa-solid fa-lock mr-2"></i>Já no Pipedrive' 
-                        : '<i class="fa-solid fa-cloud-arrow-up mr-2"></i>Puxar para Pipedrive';
+                    const botaoClasse = isBloqueado ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 text-white shadow-md';
+                    const botaoTexto = isBloqueado ? '<i class="fa-solid fa-lock mr-2"></i>Já no Pipedrive' : '<i class="fa-solid fa-cloud-arrow-up mr-2"></i>Puxar para Pipedrive';
 
                     const card = `
                         <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition">
                             <div class="p-5">
                                 <div class="flex justify-between items-start mb-2">
                                     <h3 class="text-lg font-bold text-gray-800 line-clamp-1" title="${lead.nome}">${lead.nome}</h3>
-                                    <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-1 rounded flex items-center">
-                                        <i class="fa-solid fa-star mr-1 text-yellow-500"></i> ${lead.avaliacao}
-                                    </span>
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-1 rounded flex items-center"><i class="fa-solid fa-star mr-1 text-yellow-500"></i> ${lead.avaliacao}</span>
                                 </div>
-                                <p class="text-sm text-gray-600 mb-2"><i class="fa-solid fa-location-dot mr-2 w-4"></i>${lead.endereco}</p>
-                                <p class="text-sm text-gray-600 mb-4"><i class="fa-solid fa-phone mr-2 w-4"></i>${lead.telefone}</p>
-                                
-                                <button 
-                                    id="btn-lead-${lead.id}"
-                                    onclick="enviarParaPipedrive(${lead.id})" 
-                                    class="w-full py-2 px-4 rounded font-medium transition duration-300 flex justify-center items-center ${botaoClasse}"
-                                    ${isBloqueado ? 'disabled' : ''}>
-                                    ${botaoTexto}
-                                </button>
+                                <p class="text-sm text-gray-600 mb-2"><i class="fa-solid fa-location-dot mr-2 w-4"></i> ${lead.endereco}</p>
+                                <p class="text-sm text-gray-600 mb-4"><i class="fa-solid fa-phone mr-2 w-4"></i> ${lead.telefone}</p>
+                                <button id="btn-lead-${lead.id}" onclick="enviarParaPipedrive(${lead.id})" class="w-full py-2 px-4 rounded font-medium transition duration-300 flex justify-center items-center ${botaoClasse}" ${isBloqueado ? 'disabled' : ''}>${botaoTexto}</button>
                             </div>
                         </div>
                     `;
@@ -135,36 +114,24 @@
         }
 
         function enviarParaPipedrive(id) {
-            // No futuro, aqui vai o código que manda para o Pipedrive e para o nosso Banco de Dados
             const botao = document.getElementById(`btn-lead-${id}`);
-            
-            // Muda o visual do botão instantaneamente para mostrar que deu certo
             botao.innerHTML = '<i class="fa-solid fa-check mr-2"></i>Enviado com Sucesso!';
             botao.className = 'w-full py-2 px-4 rounded font-medium transition duration-300 flex justify-center items-center bg-gray-300 text-gray-600 cursor-not-allowed';
             botao.disabled = true;
-
-            // Alerta simulando o aviso do sistema
             alert("Sucesso! O lead foi criado no Pipedrive e bloqueado para os outros vendedores.");
         }
 
-        // --- FUNÇÃO DO GOOGLE PLACES ADICIONADA AQUI ---
+        // Função de Autocomplete do Google Places
         function iniciarGooglePlaces() {
-            // Pega o campo "Onde?" pelo ID
             var input = document.getElementById('local');
-
-            // Inicia a função de Autocomplete do Google Places
             var autocomplete = new google.maps.places.Autocomplete(input);
-
-            // Restringir a busca apenas para o Brasil (opcional, mas recomendado)
-            autocomplete.setComponentRestrictions({
-                country: ["br"]
-            });
+            autocomplete.setComponentRestrictions({ country: ["br"] });
         }
     </script>
 
-    <!-- SCRIPT DA API DO GOOGLE ADICIONADO AQUI -->
-    <!-- IMPORTANTE: Troque SUA_CHAVE_AQUI pela sua chave gerada no Google Cloud -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=SUA_CHAVE_AQUI&libraries=places&callback=iniciarGooglePlaces"></script>
+    <!-- Script da API do Google Places (troque SUA_CHAVE_AQUI pela sua chave real) -->
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRd4KUJR3Rk4k98OOJVDtSfExn4ENVq0U&libraries=places&language=pt-BR"></script>
 
 </body>
 </html>
+
