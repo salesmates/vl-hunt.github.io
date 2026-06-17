@@ -43,7 +43,6 @@
     overflow: hidden;
   }
 
-  /* ─── SIDEBAR ─── */
   .sidebar {
     width: 240px;
     min-width: 240px;
@@ -51,7 +50,6 @@
     border-right: 1px solid var(--gray-200);
     display: flex;
     flex-direction: column;
-    padding: 0;
     box-shadow: var(--shadow);
     z-index: 10;
   }
@@ -61,766 +59,328 @@
     border-bottom: 1px solid var(--gray-100);
   }
 
-  .logo-wrap {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .logo-wrap { display: flex; align-items: center; gap: 10px; }
 
   .logo-icon {
-    width: 36px;
-    height: 36px;
+    width: 36px; height: 36px;
     background: linear-gradient(135deg, var(--green), var(--green-dark));
     border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     font-size: 18px;
     box-shadow: 0 4px 12px rgba(16,185,129,0.3);
   }
 
-  .logo-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.2;
-  }
+  .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+  .logo-text span:first-child { font-size: 13px; font-weight: 700; color: var(--gray-900); }
+  .logo-text span:last-child { font-size: 11px; font-weight: 500; color: var(--green); letter-spacing: 0.5px; text-transform: uppercase; }
 
-  .logo-text span:first-child {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--gray-900);
-    letter-spacing: 0.3px;
-  }
-
-  .logo-text span:last-child {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--green);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-
-  .sidebar-nav {
-    padding: 16px 12px;
-    flex: 1;
-    overflow-y: auto;
-  }
+  .sidebar-nav { padding: 16px 12px; flex: 1; overflow-y: auto; }
 
   .nav-section-title {
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--gray-400);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    padding: 0 8px;
-    margin-bottom: 8px;
-    margin-top: 16px;
+    font-size: 10px; font-weight: 600; color: var(--gray-400);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    padding: 0 8px; margin-bottom: 8px; margin-top: 16px;
   }
-
   .nav-section-title:first-child { margin-top: 0; }
 
   .nav-btn {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    border: none;
-    border-radius: var(--radius-sm);
-    background: transparent;
-    color: var(--gray-600);
-    font-size: 13.5px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    text-align: left;
-    font-family: 'Inter', sans-serif;
+    width: 100%; display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border: none; border-radius: var(--radius-sm);
+    background: transparent; color: var(--gray-600);
+    font-size: 13.5px; font-weight: 500; cursor: pointer;
+    transition: all 0.15s; text-align: left; font-family: 'Inter', sans-serif;
   }
+  .nav-btn:hover { background: var(--gray-100); color: var(--gray-800); }
+  .nav-btn.active { background: var(--green-xlight); color: var(--green-dark); font-weight: 600; }
 
-  .nav-btn:hover {
-    background: var(--gray-100);
-    color: var(--gray-800);
-  }
-
-  .nav-btn.active {
-    background: var(--green-xlight);
-    color: var(--green-dark);
-    font-weight: 600;
-  }
-
-  .nav-btn .nav-icon { font-size: 15px; }
-
-  /* Pastas de comerciais */
   .folder-list { padding: 0 4px; }
 
   .folder-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    font-size: 13px;
-    color: var(--gray-600);
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-radius: var(--radius-sm);
+    cursor: pointer; font-size: 13px; color: var(--gray-600);
     transition: all 0.15s;
-    font-weight: 400;
   }
-
   .folder-item:hover { background: var(--gray-100); color: var(--gray-800); }
   .folder-item.active { background: var(--green-xlight); color: var(--green-dark); font-weight: 500; }
-  .folder-item .folder-icon { font-size: 14px; }
 
   .folder-count {
-    margin-left: auto;
-    background: var(--gray-200);
-    color: var(--gray-500);
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 20px;
-    min-width: 20px;
-    text-align: center;
+    margin-left: auto; background: var(--gray-200); color: var(--gray-500);
+    font-size: 10px; font-weight: 600; padding: 2px 6px;
+    border-radius: 20px; min-width: 20px; text-align: center;
   }
-
-  .folder-item.active .folder-count {
-    background: var(--green-light);
-    color: var(--green-dark);
-  }
+  .folder-item.active .folder-count { background: var(--green-light); color: var(--green-dark); }
 
   .add-folder-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 12px;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    font-size: 12.5px;
-    color: var(--gray-400);
-    transition: all 0.15s;
-    border: 1.5px dashed var(--gray-300);
-    margin: 6px 4px 0;
-    background: transparent;
-    width: calc(100% - 8px);
-    font-family: 'Inter', sans-serif;
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 12px; border-radius: var(--radius-sm);
+    cursor: pointer; font-size: 12.5px; color: var(--gray-400);
+    transition: all 0.15s; border: 1.5px dashed var(--gray-300);
+    margin: 6px 4px 0; background: transparent;
+    width: calc(100% - 8px); font-family: 'Inter', sans-serif;
   }
-
   .add-folder-btn:hover { border-color: var(--green); color: var(--green); }
 
-  .sidebar-footer {
-    padding: 16px 20px;
-    border-top: 1px solid var(--gray-100);
-  }
+  .sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--gray-100); }
 
-  .user-badge {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .user-badge { display: flex; align-items: center; gap: 10px; }
 
   .user-avatar {
-    width: 32px;
-    height: 32px;
+    width: 32px; height: 32px;
     background: linear-gradient(135deg, var(--green), var(--green-dark));
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 700;
-    color: white;
+    border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 13px; font-weight: 700; color: white;
   }
 
-  .user-info span:first-child {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--gray-800);
-  }
+  .user-info span:first-child { display: block; font-size: 13px; font-weight: 600; color: var(--gray-800); }
+  .user-info span:last-child { font-size: 11px; color: var(--gray-400); }
 
-  .user-info span:last-child {
-    font-size: 11px;
-    color: var(--gray-400);
-  }
-
-  /* ─── MAIN ─── */
-  .main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
   .topbar {
-    background: var(--white);
-    border-bottom: 1px solid var(--gray-200);
-    padding: 20px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    background: var(--white); border-bottom: 1px solid var(--gray-200);
+    padding: 20px 32px; display: flex; align-items: center; justify-content: space-between;
   }
-
-  .topbar-left h1 {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--gray-900);
-    letter-spacing: -0.3px;
-  }
-
-  .topbar-left p {
-    font-size: 13px;
-    color: var(--gray-400);
-    margin-top: 2px;
-  }
-
-  .topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .topbar-left h1 { font-size: 20px; font-weight: 700; color: var(--gray-900); letter-spacing: -0.3px; }
+  .topbar-left p { font-size: 13px; color: var(--gray-400); margin-top: 2px; }
 
   .badge-results {
-    background: var(--green-xlight);
-    color: var(--green-dark);
-    font-size: 12px;
-    font-weight: 600;
-    padding: 4px 12px;
-    border-radius: 20px;
-    display: none;
+    background: var(--green-xlight); color: var(--green-dark);
+    font-size: 12px; font-weight: 600; padding: 4px 12px;
+    border-radius: 20px; display: none;
   }
 
-  /* ─── SEARCH AREA ─── */
-  .content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 28px 32px;
-  }
+  .content { flex: 1; overflow-y: auto; padding: 28px 32px; }
 
   .search-card {
-    background: var(--white);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    box-shadow: var(--shadow);
-    margin-bottom: 24px;
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg); padding: 24px;
+    box-shadow: var(--shadow); margin-bottom: 24px;
   }
 
   .search-card-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--gray-500);
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    margin-bottom: 16px;
+    font-size: 13px; font-weight: 600; color: var(--gray-500);
+    text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 16px;
   }
 
   .search-fields {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr auto;
-    gap: 12px;
-    align-items: end;
+    display: grid; grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 12px; align-items: end;
   }
 
-  .field-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .field-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--gray-600);
-    letter-spacing: 0.2px;
-  }
+  .field-group { display: flex; flex-direction: column; gap: 6px; }
+  .field-label { font-size: 12px; font-weight: 600; color: var(--gray-600); }
 
   .field-input {
-    height: 44px;
-    border: 1.5px solid var(--gray-200);
-    border-radius: var(--radius-sm);
-    padding: 0 14px;
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    color: var(--gray-800);
-    background: var(--white);
-    transition: all 0.15s;
-    outline: none;
+    height: 44px; border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-sm); padding: 0 14px;
+    font-size: 14px; font-family: 'Inter', sans-serif;
+    color: var(--gray-800); background: var(--white);
+    transition: all 0.15s; outline: none;
   }
-
   .field-input::placeholder { color: var(--gray-400); font-size: 13px; }
-
-  .field-input:focus {
-    border-color: var(--green);
-    box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
-  }
+  .field-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
 
   .btn-search {
-    height: 44px;
-    padding: 0 24px;
+    height: 44px; padding: 0 24px;
     background: linear-gradient(135deg, var(--green), var(--green-dark));
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-weight: 600;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.2s;
-    box-shadow: 0 4px 12px rgba(16,185,129,0.25);
+    color: white; border: none; border-radius: var(--radius-sm);
+    font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif;
+    cursor: pointer; display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s; box-shadow: 0 4px 12px rgba(16,185,129,0.25);
     white-space: nowrap;
   }
-
-  .btn-search:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(16,185,129,0.35);
-  }
-
+  .btn-search:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(16,185,129,0.35); }
   .btn-search:active { transform: translateY(0); }
   .btn-search:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-  /* ─── RESULTS ─── */
-  .results-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-
-  .results-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--gray-800);
-  }
-
+  .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .results-title { font-size: 15px; font-weight: 700; color: var(--gray-800); }
   .results-actions { display: flex; gap: 8px; }
 
   .btn-outline {
-    height: 36px;
-    padding: 0 16px;
-    background: var(--white);
-    color: var(--gray-600);
-    border: 1.5px solid var(--gray-200);
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    font-weight: 500;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.15s;
+    height: 36px; padding: 0 16px; background: var(--white);
+    color: var(--gray-600); border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-sm); font-size: 13px; font-weight: 500;
+    font-family: 'Inter', sans-serif; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; transition: all 0.15s;
   }
-
   .btn-outline:hover { border-color: var(--green); color: var(--green); }
 
-  /* ─── EMPTY STATE ─── */
   .empty-state {
-    background: var(--white);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-lg);
-    padding: 64px 32px;
-    text-align: center;
-    box-shadow: var(--shadow);
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg); padding: 64px 32px;
+    text-align: center; box-shadow: var(--shadow);
   }
-
   .empty-icon {
-    width: 64px;
-    height: 64px;
-    background: var(--gray-100);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    margin: 0 auto 16px;
+    width: 64px; height: 64px; background: var(--gray-100);
+    border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 28px; margin: 0 auto 16px;
   }
+  .empty-state h3 { font-size: 16px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; }
+  .empty-state p { font-size: 13.5px; color: var(--gray-400); max-width: 300px; margin: 0 auto; }
 
-  .empty-state h3 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--gray-700);
-    margin-bottom: 6px;
-  }
-
-  .empty-state p {
-    font-size: 13.5px;
-    color: var(--gray-400);
-    max-width: 300px;
-    margin: 0 auto;
-  }
-
-  /* ─── LOADING ─── */
   .loading-state {
-    background: var(--white);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-lg);
-    padding: 64px 32px;
-    text-align: center;
-    box-shadow: var(--shadow);
-    display: none;
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg); padding: 64px 32px;
+    text-align: center; box-shadow: var(--shadow); display: none;
   }
-
   .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid var(--gray-200);
-    border-top-color: var(--green);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 16px;
+    width: 40px; height: 40px; border: 3px solid var(--gray-200);
+    border-top-color: var(--green); border-radius: 50%;
+    animation: spin 0.8s linear infinite; margin: 0 auto 16px;
   }
-
   @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-state p { font-size: 14px; color: var(--gray-500); font-weight: 500; }
+  .loading-state small { font-size: 12px; color: var(--gray-400); display: block; margin-top: 4px; }
 
-  .loading-state p {
-    font-size: 14px;
-    color: var(--gray-500);
-    font-weight: 500;
+  /* ─── PROGRESS BAR ─── */
+  .progress-wrap {
+    width: 260px; height: 6px; background: var(--gray-200);
+    border-radius: 99px; margin: 16px auto 0; overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%; background: linear-gradient(90deg, var(--green), var(--green-dark));
+    border-radius: 99px; transition: width 0.4s ease;
+    width: 0%;
   }
 
-  .loading-state small {
-    font-size: 12px;
-    color: var(--gray-400);
-    display: block;
-    margin-top: 4px;
-  }
-
-  /* ─── LEADS GRID ─── */
   .leads-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 16px;
-    display: none;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px; display: none;
   }
 
   .lead-card {
-    background: var(--white);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    transition: all 0.2s ease;
-    cursor: pointer;
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg); overflow: hidden;
+    box-shadow: var(--shadow); transition: all 0.2s; cursor: pointer;
   }
+  .lead-card:hover { border-color: var(--green); box-shadow: var(--shadow-lg); transform: translateY(-2px); }
 
-  .lead-card:hover {
-    border-color: var(--green);
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
-  }
-
-  .lead-photo {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    background: var(--gray-100);
-    display: block;
-  }
-
+  .lead-photo { width: 100%; height: 150px; object-fit: cover; display: block; background: var(--gray-100); }
   .lead-photo-placeholder {
-    width: 100%;
-    height: 160px;
+    width: 100%; height: 150px;
     background: linear-gradient(135deg, var(--gray-100), var(--gray-200));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 36px;
-    color: var(--gray-300);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; color: var(--gray-300);
   }
 
-  .lead-body { padding: 16px; }
-
-  .lead-name {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--gray-900);
-    margin-bottom: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .lead-address {
-    font-size: 12.5px;
-    color: var(--gray-500);
-    margin-bottom: 10px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .lead-meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
-  }
-
-  .lead-rating {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    background: #FEF3C7;
-    color: #92400E;
-    font-size: 12px;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 20px;
-  }
-
-  .lead-phone {
-    font-size: 12px;
-    color: var(--gray-500);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .lead-site {
-    font-size: 12px;
-    color: var(--green-dark);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-weight: 500;
-  }
-
+  .lead-body { padding: 14px 16px; }
+  .lead-name { font-size: 14.5px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lead-address { font-size: 12px; color: var(--gray-500); margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .lead-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .lead-rating { display: flex; align-items: center; gap: 4px; background: #FEF3C7; color: #92400E; font-size: 11.5px; font-weight: 600; padding: 3px 8px; border-radius: 20px; }
+  .lead-phone { font-size: 12px; color: var(--gray-500); display: flex; align-items: center; gap: 4px; }
+  .lead-site { font-size: 12px; color: var(--green-dark); text-decoration: none; display: flex; align-items: center; gap: 4px; font-weight: 500; }
   .lead-site:hover { text-decoration: underline; }
 
   .lead-actions {
-    display: flex;
-    gap: 6px;
-    padding: 12px 16px;
-    border-top: 1px solid var(--gray-100);
-    background: var(--gray-50);
+    display: flex; gap: 6px; padding: 10px 14px;
+    border-top: 1px solid var(--gray-100); background: var(--gray-50);
   }
 
   .btn-save {
-    flex: 1;
-    height: 34px;
-    background: var(--green-xlight);
-    color: var(--green-dark);
-    border: 1.5px solid var(--green-light);
-    border-radius: var(--radius-sm);
-    font-size: 12.5px;
-    font-weight: 600;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    transition: all 0.15s;
+    flex: 1; height: 34px;
+    background: var(--green-xlight); color: var(--green-dark);
+    border: 1.5px solid var(--green-light); border-radius: var(--radius-sm);
+    font-size: 12.5px; font-weight: 600; font-family: 'Inter', sans-serif;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 5px; transition: all 0.15s;
   }
-
   .btn-save:hover { background: var(--green-light); }
-
-  .btn-save.saved {
-    background: var(--green);
-    color: white;
-    border-color: var(--green);
-  }
+  .btn-save.saved { background: var(--green); color: white; border-color: var(--green); }
 
   .btn-maps {
-    height: 34px;
-    padding: 0 12px;
-    background: var(--white);
-    color: var(--gray-500);
-    border: 1.5px solid var(--gray-200);
-    border-radius: var(--radius-sm);
-    font-size: 12.5px;
-    font-weight: 500;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    transition: all 0.15s;
+    height: 34px; padding: 0 12px; background: var(--white); color: var(--gray-500);
+    border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
+    font-size: 12.5px; font-weight: 500; font-family: 'Inter', sans-serif;
+    cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s;
   }
-
   .btn-maps:hover { border-color: var(--gray-300); color: var(--gray-700); }
 
-  /* ─── MODAL SAVE ─── */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(4px);
-    z-index: 100;
-    display: none;
-    align-items: center;
-    justify-content: center;
+  /* ─── ERRO CARD ─── */
+  .error-card {
+    background: #FEF2F2; border: 1px solid #FECACA;
+    border-radius: var(--radius-lg); padding: 28px 32px;
+    display: flex; align-items: flex-start; gap: 16px;
   }
+  .error-icon { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+  .error-card h3 { font-size: 15px; font-weight: 700; color: #991B1B; margin-bottom: 6px; }
+  .error-card p { font-size: 13px; color: #B91C1C; line-height: 1.5; }
+  .error-card code { background: #FEE2E2; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
 
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px); z-index: 100;
+    display: none; align-items: center; justify-content: center;
+  }
   .modal-overlay.open { display: flex; }
 
   .modal {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    padding: 28px;
-    width: 380px;
-    box-shadow: var(--shadow-lg);
+    background: var(--white); border-radius: var(--radius-lg);
+    padding: 28px; width: 380px; box-shadow: var(--shadow-lg);
   }
-
-  .modal h3 {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--gray-900);
-    margin-bottom: 6px;
-  }
-
-  .modal p {
-    font-size: 13px;
-    color: var(--gray-500);
-    margin-bottom: 20px;
-  }
-
-  .modal-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--gray-600);
-    margin-bottom: 6px;
-    display: block;
-  }
+  .modal h3 { font-size: 17px; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+  .modal p { font-size: 13px; color: var(--gray-500); margin-bottom: 20px; }
+  .modal-label { font-size: 12px; font-weight: 600; color: var(--gray-600); margin-bottom: 6px; display: block; }
 
   .modal-select {
-    width: 100%;
-    height: 44px;
-    border: 1.5px solid var(--gray-200);
-    border-radius: var(--radius-sm);
-    padding: 0 14px;
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    color: var(--gray-800);
-    background: var(--white);
-    outline: none;
-    margin-bottom: 16px;
-    cursor: pointer;
+    width: 100%; height: 44px; border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-sm); padding: 0 14px;
+    font-size: 14px; font-family: 'Inter', sans-serif;
+    color: var(--gray-800); background: var(--white);
+    outline: none; margin-bottom: 16px; cursor: pointer;
   }
-
   .modal-select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
 
   .modal-actions { display: flex; gap: 8px; }
 
   .btn-modal-cancel {
-    flex: 1;
-    height: 42px;
-    background: var(--white);
-    color: var(--gray-600);
-    border: 1.5px solid var(--gray-200);
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-weight: 500;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    transition: all 0.15s;
+    flex: 1; height: 42px; background: var(--white); color: var(--gray-600);
+    border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
+    font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif; cursor: pointer;
   }
-
   .btn-modal-cancel:hover { border-color: var(--gray-300); }
 
   .btn-modal-save {
-    flex: 1;
-    height: 42px;
+    flex: 1; height: 42px;
     background: linear-gradient(135deg, var(--green), var(--green-dark));
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-weight: 600;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(16,185,129,0.25);
-    transition: all 0.15s;
+    color: white; border: none; border-radius: var(--radius-sm);
+    font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif;
+    cursor: pointer; box-shadow: 0 4px 12px rgba(16,185,129,0.25);
   }
-
   .btn-modal-save:hover { box-shadow: 0 6px 16px rgba(16,185,129,0.35); }
 
-  /* ─── TOAST ─── */
   .toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: var(--gray-900);
-    color: white;
-    padding: 12px 20px;
-    border-radius: var(--radius-sm);
-    font-size: 13.5px;
-    font-weight: 500;
-    box-shadow: var(--shadow-lg);
-    z-index: 200;
-    transform: translateY(80px);
-    opacity: 0;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--gray-900); color: white;
+    padding: 12px 20px; border-radius: var(--radius-sm);
+    font-size: 13.5px; font-weight: 500; box-shadow: var(--shadow-lg);
+    z-index: 200; transform: translateY(80px); opacity: 0;
+    transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;
   }
-
   .toast.show { transform: translateY(0); opacity: 1; }
   .toast.success { background: var(--green-dark); }
   .toast.error { background: #EF4444; }
 
-  /* ─── SAVED LEADS VIEW ─── */
   .saved-view { display: none; }
   .search-view { display: block; }
 
-  .page-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-  }
-
-  .page-title-row h2 {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--gray-900);
-  }
+  .page-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .page-title-row h2 { font-size: 18px; font-weight: 700; color: var(--gray-900); }
 
   .saved-empty {
-    background: var(--white);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-lg);
-    padding: 64px 32px;
-    text-align: center;
-    box-shadow: var(--shadow);
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg); padding: 64px 32px;
+    text-align: center; box-shadow: var(--shadow);
   }
-
-  .saved-empty .empty-icon { margin: 0 auto 16px; }
   .saved-empty h3 { font-size: 16px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; }
   .saved-empty p { font-size: 13.5px; color: var(--gray-400); }
-
-  /* Pagination info */
-  .pagination-info {
-    display: none;
-    align-items: center;
-    gap: 8px;
-    font-size: 12.5px;
-    color: var(--gray-400);
-    margin-top: 16px;
-    justify-content: center;
-  }
-
-  .pagination-info.show { display: flex; }
-
-  .page-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--gray-200);
-  }
-
-  .page-dot.active { background: var(--green); }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="logo-wrap">
@@ -835,17 +395,15 @@
   <nav class="sidebar-nav">
     <div class="nav-section-title">Menu</div>
     <button class="nav-btn active" onclick="showView('search')" id="btn-nav-search">
-      <span class="nav-icon">🔍</span> Buscar Leads
+      <span>🔍</span> Buscar Leads
     </button>
     <button class="nav-btn" onclick="showView('saved')" id="btn-nav-saved">
-      <span class="nav-icon">📁</span> Leads Salvos
+      <span>📁</span> Leads Salvos
     </button>
 
     <div class="nav-section-title">Comerciais</div>
     <div class="folder-list" id="folder-list"></div>
-    <button class="add-folder-btn" onclick="addFolder()">
-      ＋ Novo Comercial
-    </button>
+    <button class="add-folder-btn" onclick="addFolder()">＋ Novo Comercial</button>
   </nav>
 
   <div class="sidebar-footer">
@@ -859,7 +417,6 @@
   </div>
 </aside>
 
-<!-- MAIN -->
 <main class="main">
   <div class="topbar">
     <div class="topbar-left">
@@ -872,8 +429,6 @@
   </div>
 
   <div class="content">
-
-    <!-- SEARCH VIEW -->
     <div class="search-view" id="search-view">
       <div class="search-card">
         <div class="search-card-title">🎯 Parâmetros de Busca</div>
@@ -896,40 +451,33 @@
         </div>
       </div>
 
-      <!-- EMPTY -->
       <div class="empty-state" id="empty-state">
         <div class="empty-icon">🎯</div>
         <h3>Pronto para caçar leads?</h3>
         <p>Preencha o nicho e a localização acima e clique em Extrair Leads</p>
       </div>
 
-      <!-- LOADING -->
       <div class="loading-state" id="loading-state">
         <div class="spinner"></div>
-        <p id="loading-text">Buscando leads...</p>
-        <small id="loading-sub">Página 1 de 3 — aguarde</small>
+        <p id="loading-text">Conectando à API...</p>
+        <small id="loading-sub">Buscando resultados</small>
+        <div class="progress-wrap">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
       </div>
 
-      <!-- RESULTS -->
       <div id="results-section" style="display:none">
         <div class="results-header">
           <div class="results-title" id="results-title"></div>
           <div class="results-actions">
             <button class="btn-outline" onclick="exportCSV()">📥 Exportar CSV</button>
-            <button class="btn-outline" onclick="startSearch()">🔄 Nova Busca</button>
+            <button class="btn-outline" onclick="resetSearch()">🔄 Nova Busca</button>
           </div>
         </div>
         <div class="leads-grid" id="leads-grid"></div>
-        <div class="pagination-info" id="pagination-info">
-          <div class="page-dot active" id="dot1"></div>
-          <div class="page-dot" id="dot2"></div>
-          <div class="page-dot" id="dot3"></div>
-          <span id="pagination-text"></span>
-        </div>
       </div>
     </div>
 
-    <!-- SAVED VIEW -->
     <div class="saved-view" id="saved-view">
       <div class="page-title-row">
         <h2 id="saved-view-title">📁 Leads Salvos</h2>
@@ -937,11 +485,9 @@
       </div>
       <div id="saved-content"></div>
     </div>
-
   </div>
 </main>
 
-<!-- MODAL SALVAR -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
     <h3>💾 Salvar Lead</h3>
@@ -955,301 +501,343 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-  const API_KEY = 'AIzaSyBs7DSVzNKSxlpKFvYJFi6Vca5NbO3EGAI';
-  const PHOTO_BASE = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&key=${API_KEY}`;
+const API_KEY = 'AIzaSyBs7DSVzNKSxlpKFvYJFi6Vca5NbO3EGAI';
 
-  let allLeads = [];
-  let currentLeadToSave = null;
-  let currentFolder = null;
-  let savedLeads = JSON.parse(localStorage.getItem('vl_leads') || '{}');
-  let folders = JSON.parse(localStorage.getItem('vl_folders') || '["Geral"]');
+// ── PROXIES com fallback automático ──
+const PROXIES = [
+  url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://thingproxy.freeboard.io/fetch/${url}`,
+];
 
-  // ── FOLDERS ──
-  function renderFolders() {
-    const list = document.getElementById('folder-list');
-    list.innerHTML = '';
-    folders.forEach(f => {
-      const count = (savedLeads[f] || []).length;
-      const active = currentFolder === f ? 'active' : '';
-      list.innerHTML += `
-        <div class="folder-item ${active}" onclick="selectFolder('${f}')">
-          <span class="folder-icon">📂</span>
-          <span>${f}</span>
-          <span class="folder-count">${count}</span>
-        </div>`;
-    });
-  }
+async function fetchWithProxy(url) {
+  for (let i = 0; i < PROXIES.length; i++) {
+    try {
+      const proxyUrl = PROXIES[i](url);
+      const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
+      if (!res.ok) continue;
 
-  function selectFolder(name) {
-    currentFolder = name;
-    renderFolders();
-    showView('saved');
-  }
-
-  function addFolder() {
-    const name = prompt('Nome do comercial:');
-    if (!name || !name.trim()) return;
-    const n = name.trim();
-    if (folders.includes(n)) return showToast('Pasta já existe', 'error');
-    folders.push(n);
-    localStorage.setItem('vl_folders', JSON.stringify(folders));
-    renderFolders();
-    showToast(`Pasta "${n}" criada!`, 'success');
-  }
-
-  // ── VIEWS ──
-  function showView(v) {
-    document.getElementById('search-view').style.display = v === 'search' ? 'block' : 'none';
-    document.getElementById('saved-view').style.display = v === 'saved' ? 'block' : 'none';
-    document.getElementById('btn-nav-search').classList.toggle('active', v === 'search');
-    document.getElementById('btn-nav-saved').classList.toggle('active', v === 'saved');
-    if (v === 'saved') {
-      document.getElementById('topbar-title').textContent = 'Leads Salvos';
-      document.getElementById('topbar-sub').textContent = 'Gerencie os leads por comercial';
-      renderSaved();
-    } else {
-      document.getElementById('topbar-title').textContent = 'Nova Busca de Leads';
-      document.getElementById('topbar-sub').textContent = 'Encontre empresas em qualquer cidade ou bairro';
+      // allorigins retorna { contents: "..." }
+      if (i === 0) {
+        const wrapper = await res.json();
+        return JSON.parse(wrapper.contents);
+      }
+      return await res.json();
+    } catch (e) {
+      console.warn(`Proxy ${i} falhou:`, e.message);
+      continue;
     }
   }
+  throw new Error('Todos os proxies falharam. Verifique sua API key ou conexão.');
+}
 
-  function renderSaved() {
-    const folder = currentFolder || folders[0];
-    const leads = savedLeads[folder] || [];
-    document.getElementById('saved-view-title').textContent = `📂 ${folder}`;
+let allLeads = [];
+let currentLeadToSave = null;
+let currentFolder = null;
+let savedLeads = JSON.parse(localStorage.getItem('vl_leads') || '{}');
+let folders = JSON.parse(localStorage.getItem('vl_folders') || '["Geral"]');
 
-    if (!leads.length) {
-      document.getElementById('saved-content').innerHTML = `
-        <div class="saved-empty">
-          <div class="empty-icon">📭</div>
-          <h3>Pasta vazia</h3>
-          <p>Nenhum lead salvo em "${folder}" ainda.</p>
-        </div>`;
-      return;
-    }
+// ── FOLDERS ──
+function renderFolders() {
+  const list = document.getElementById('folder-list');
+  list.innerHTML = '';
+  folders.forEach(f => {
+    const count = (savedLeads[f] || []).length;
+    const active = currentFolder === f ? 'active' : '';
+    list.innerHTML += `
+      <div class="folder-item ${active}" onclick="selectFolder('${f}')">
+        <span>📂</span>
+        <span>${f}</span>
+        <span class="folder-count">${count}</span>
+      </div>`;
+  });
+}
 
-    let html = `<div class="leads-grid" style="display:grid">`;
-    leads.forEach((l, i) => {
-      html += renderLeadCard(l, i, true);
-    });
-    html += `</div>`;
-    document.getElementById('saved-content').innerHTML = html;
+function selectFolder(name) {
+  currentFolder = name;
+  renderFolders();
+  showView('saved');
+}
+
+function addFolder() {
+  const name = prompt('Nome do comercial:');
+  if (!name || !name.trim()) return;
+  const n = name.trim();
+  if (folders.includes(n)) return showToast('Pasta já existe', 'error');
+  folders.push(n);
+  localStorage.setItem('vl_folders', JSON.stringify(folders));
+  renderFolders();
+  showToast(`Pasta "${n}" criada! ✅`, 'success');
+}
+
+// ── VIEWS ──
+function showView(v) {
+  document.getElementById('search-view').style.display = v === 'search' ? 'block' : 'none';
+  document.getElementById('saved-view').style.display  = v === 'saved'  ? 'block' : 'none';
+  document.getElementById('btn-nav-search').classList.toggle('active', v === 'search');
+  document.getElementById('btn-nav-saved').classList.toggle('active',  v === 'saved');
+  if (v === 'saved') {
+    document.getElementById('topbar-title').textContent = 'Leads Salvos';
+    document.getElementById('topbar-sub').textContent = 'Gerencie os leads por comercial';
+    renderSaved();
+  } else {
+    document.getElementById('topbar-title').textContent = 'Nova Busca de Leads';
+    document.getElementById('topbar-sub').textContent = 'Encontre empresas em qualquer cidade ou bairro';
   }
+}
 
-  // ── SEARCH ──
-  async function startSearch() {
-    const nicho = document.getElementById('input-nicho').value.trim();
-    const cidade = document.getElementById('input-cidade').value.trim();
-    const bairro = document.getElementById('input-bairro').value.trim();
+function renderSaved() {
+  const folder = currentFolder || folders[0];
+  const leads = savedLeads[folder] || [];
+  document.getElementById('saved-view-title').textContent = `📂 ${folder}`;
+  if (!leads.length) {
+    document.getElementById('saved-content').innerHTML = `
+      <div class="saved-empty">
+        <div class="empty-icon" style="width:64px;height:64px;background:var(--gray-100);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px">📭</div>
+        <h3>Pasta vazia</h3>
+        <p>Nenhum lead salvo em "${folder}" ainda.</p>
+      </div>`;
+    return;
+  }
+  let html = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">`;
+  leads.forEach((l, i) => { html += buildCard(l, i, true); });
+  html += `</div>`;
+  document.getElementById('saved-content').innerHTML = html;
+}
 
-    if (!nicho) return showToast('Informe o nicho/tipo de empresa', 'error');
-    if (!cidade) return showToast('Informe a cidade', 'error');
+// ── SEARCH ──
+function resetSearch() {
+  allLeads = [];
+  document.getElementById('results-section').style.display = 'none';
+  document.getElementById('leads-grid').style.display = 'none';
+  document.getElementById('empty-state').style.display = 'block';
+  document.getElementById('badge-results').style.display = 'none';
+  document.getElementById('empty-state').querySelector('h3').textContent = 'Pronto para caçar leads?';
+  document.getElementById('empty-state').querySelector('p').textContent = 'Preencha o nicho e a localização acima e clique em Extrair Leads';
+}
 
-    allLeads = [];
-    document.getElementById('empty-state').style.display = 'none';
-    document.getElementById('results-section').style.display = 'none';
-    document.getElementById('leads-grid').style.display = 'none';
-    document.getElementById('loading-state').style.display = 'block';
-    document.getElementById('btn-search').disabled = true;
-    document.getElementById('badge-results').style.display = 'none';
+async function startSearch() {
+  const nicho  = document.getElementById('input-nicho').value.trim();
+  const cidade = document.getElementById('input-cidade').value.trim();
+  const bairro = document.getElementById('input-bairro').value.trim();
+  if (!nicho)  return showToast('Informe o nicho/tipo de empresa', 'error');
+  if (!cidade) return showToast('Informe a cidade', 'error');
 
-    const query = bairro ? `${nicho} ${bairro} ${cidade}` : `${nicho} ${cidade}`;
+  allLeads = [];
+  document.getElementById('empty-state').style.display    = 'none';
+  document.getElementById('results-section').style.display = 'none';
+  document.getElementById('leads-grid').style.display     = 'none';
+  document.getElementById('loading-state').style.display  = 'block';
+  document.getElementById('btn-search').disabled = true;
+  document.getElementById('badge-results').style.display  = 'none';
+  setProgress(5);
+
+  const query = bairro ? `${nicho} ${bairro} ${cidade}` : `${nicho} ${cidade}`;
+  try {
     await fetchAllPages(query);
+  } catch(e) {
+    showError(e.message);
   }
+}
 
-  async function fetchAllPages(query) {
-    let pageToken = null;
-    let page = 1;
-    const maxPages = 3;
+function setProgress(pct) {
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
 
-    for (let p = 0; p < maxPages; p++) {
-      document.getElementById('loading-text').textContent = `Buscando leads... (${allLeads.length} encontrados)`;
-      document.getElementById('loading-sub').textContent = `Página ${p+1} de ${maxPages}`;
-      updateDots(p+1);
+async function fetchAllPages(query) {
+  let pageToken = null;
+  const maxPages = 3;
 
-      let url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&language=pt-BR&key=${API_KEY}`;
-      if (pageToken) url += `&pagetoken=${pageToken}`;
+  for (let p = 0; p < maxPages; p++) {
+    const pct = ((p+1)/maxPages)*90;
+    setProgress(pct);
+    document.getElementById('loading-text').textContent = `Buscando... ${allLeads.length} leads encontrados`;
+    document.getElementById('loading-sub').textContent  = `Página ${p+1} de ${maxPages}`;
 
-      try {
-        const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
-        const data = await res.json();
-        if (data.results) {
-          const detailed = await Promise.all(data.results.map(r => fetchDetails(r.place_id)));
-          allLeads.push(...detailed.filter(Boolean));
-        }
-        pageToken = data.next_page_token || null;
-        if (!pageToken) break;
-        await new Promise(r => setTimeout(r, 2000));
-      } catch (e) {
-        console.error(e);
-        break;
+    let url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&language=pt-BR&key=${API_KEY}`;
+    if (pageToken) url += `&pagetoken=${pageToken}`;
+
+    const data = await fetchWithProxy(url);
+
+    if (data.status === 'REQUEST_DENIED') {
+      throw new Error(`API Key inválida ou sem permissão. Status: ${data.status}. Verifique se a Places API está ativa no Google Cloud Console.`);
+    }
+    if (data.status === 'OVER_QUERY_LIMIT') {
+      throw new Error('Limite de requisições atingido. Aguarde alguns minutos.');
+    }
+
+    if (data.results && data.results.length > 0) {
+      setProgress(pct + 5);
+      document.getElementById('loading-sub').textContent = `Carregando detalhes da página ${p+1}...`;
+
+      // busca detalhes em paralelo (lotes de 5)
+      const chunks = chunkArray(data.results, 5);
+      for (const chunk of chunks) {
+        const details = await Promise.all(chunk.map(r => fetchDetails(r.place_id)));
+        allLeads.push(...details.filter(Boolean));
+        document.getElementById('loading-text').textContent = `Buscando... ${allLeads.length} leads encontrados`;
       }
     }
 
-    showResults();
+    pageToken = data.next_page_token || null;
+    if (!pageToken) break;
+    await sleep(2200); // Google exige delay entre páginas
   }
 
-  async function fetchDetails(placeId) {
-    const fields = 'name,formatted_address,formatted_phone_number,rating,user_ratings_total,website,photos,place_id,opening_hours';
-    const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=${fields}&language=pt-BR&key=${API_KEY}`;
-    try {
-      const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
-      const data = await res.json();
-      return data.result || null;
-    } catch { return null; }
+  setProgress(100);
+  showResults();
+}
+
+async function fetchDetails(placeId) {
+  const fields = 'name,formatted_address,formatted_phone_number,rating,user_ratings_total,website,photos,place_id';
+  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=${fields}&language=pt-BR&key=${API_KEY}`;
+  try {
+    const data = await fetchWithProxy(url);
+    return data.result || null;
+  } catch { return null; }
+}
+
+function chunkArray(arr, size) {
+  const out = [];
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i+size));
+  return out;
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function showError(msg) {
+  document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('btn-search').disabled = false;
+  document.getElementById('empty-state').style.display = 'block';
+  document.getElementById('empty-state').innerHTML = `
+    <div class="error-card">
+      <div class="error-icon">⚠️</div>
+      <div>
+        <h3>Erro ao buscar leads</h3>
+        <p>${msg}</p>
+        <p style="margin-top:10px;font-size:12px;color:#6B7280">
+          Verifique: <code>Places API</code> ativada · chave sem restrições de domínio · cotas disponíveis
+        </p>
+      </div>
+    </div>`;
+}
+
+function showResults() {
+  document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('btn-search').disabled = false;
+
+  if (!allLeads.length) {
+    document.getElementById('empty-state').style.display = 'block';
+    document.getElementById('empty-state').querySelector('h3').textContent = 'Nenhum resultado encontrado';
+    document.getElementById('empty-state').querySelector('p').textContent  = 'Tente outro nicho ou localização';
+    return;
   }
 
-  function updateDots(page) {
-    ['dot1','dot2','dot3'].forEach((id, i) => {
-      document.getElementById(id).classList.toggle('active', i < page);
-    });
+  const badge = document.getElementById('badge-results');
+  badge.textContent = `${allLeads.length} leads`;
+  badge.style.display = 'block';
+
+  document.getElementById('results-title').textContent = `${allLeads.length} leads encontrados`;
+  document.getElementById('results-section').style.display = 'block';
+
+  const grid = document.getElementById('leads-grid');
+  grid.style.display = 'grid';
+  grid.innerHTML = allLeads.map((l,i) => buildCard(l,i,false)).join('');
+}
+
+// ── CARD ──
+function buildCard(lead, i, saved) {
+  const photoRef = lead.photos && lead.photos[0] ? lead.photos[0].photo_reference : null;
+  const photoHtml = photoRef
+    ? `<img class="lead-photo" src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photoreference=${photoRef}&key=${API_KEY}" alt="${lead.name}" onerror="this.outerHTML='<div class=lead-photo-placeholder>🏢</div>'">`
+    : `<div class="lead-photo-placeholder">🏢</div>`;
+
+  const rating = lead.rating
+    ? `<span class="lead-rating">⭐ ${lead.rating} <span style="opacity:.7">(${lead.user_ratings_total||0})</span></span>` : '';
+  const phone = lead.formatted_phone_number
+    ? `<span class="lead-phone">📞 ${lead.formatted_phone_number}</span>` : '';
+  const site = lead.website
+    ? `<a class="lead-site" href="${lead.website}" target="_blank" onclick="event.stopPropagation()">🌐 Site</a>` : '';
+  const mapsUrl = `https://www.google.com/maps/place/?q=place_id:${lead.place_id}`;
+
+  const saveBtn = saved
+    ? `<button class="btn-save saved">✅ Salvo</button>`
+    : `<button class="btn-save" onclick="openModal(${i})">💾 Salvar Lead</button>`;
+
+  return `
+    <div class="lead-card">
+      ${photoHtml}
+      <div class="lead-body">
+        <div class="lead-name">${lead.name}</div>
+        <div class="lead-address">📍 ${lead.formatted_address || 'Endereço não disponível'}</div>
+        <div class="lead-meta">${rating}${phone}${site}</div>
+      </div>
+      <div class="lead-actions">
+        ${saveBtn}
+        <button class="btn-maps" onclick="window.open('${mapsUrl}','_blank')">🗺️ Maps</button>
+      </div>
+    </div>`;
+}
+
+// ── MODAL ──
+function openModal(idx) {
+  currentLeadToSave = allLeads[idx];
+  const sel = document.getElementById('modal-folder-select');
+  sel.innerHTML = folders.map(f => `<option value="${f}">${f}</option>`).join('');
+  document.getElementById('modal-lead-name').textContent = `Salvando: ${currentLeadToSave.name}`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  currentLeadToSave = null;
+}
+
+function confirmSave() {
+  if (!currentLeadToSave) return;
+  const folder = document.getElementById('modal-folder-select').value;
+  if (!savedLeads[folder]) savedLeads[folder] = [];
+  if (savedLeads[folder].find(l => l.place_id === currentLeadToSave.place_id)) {
+    return showToast('Lead já salvo nessa pasta', 'error');
   }
-
-  function showResults() {
-    document.getElementById('loading-state').style.display = 'none';
-    document.getElementById('btn-search').disabled = false;
-
-    if (!allLeads.length) {
-      document.getElementById('empty-state').style.display = 'block';
-      document.getElementById('empty-state').querySelector('h3').textContent = 'Nenhum resultado encontrado';
-      document.getElementById('empty-state').querySelector('p').textContent = 'Tente outro nicho ou localização';
-      return;
-    }
-
-    document.getElementById('results-section').style.display = 'block';
-    document.getElementById('leads-grid').style.display = 'grid';
-    document.getElementById('results-title').textContent = `${allLeads.length} leads encontrados`;
-
-    const badge = document.getElementById('badge-results');
-    badge.textContent = `${allLeads.length} leads`;
-    badge.style.display = 'block';
-
-    const grid = document.getElementById('leads-grid');
-    grid.innerHTML = '';
-    allLeads.forEach((lead, i) => {
-      grid.innerHTML += renderLeadCard(lead, i, false);
-    });
-
-    document.getElementById('pagination-info').classList.add('show');
-    document.getElementById('pagination-text').textContent = `${allLeads.length} leads · 3 páginas extraídas`;
-  }
-
-  function renderLeadCard(lead, i, saved) {
-    const photo = lead.photos && lead.photos[0]
-      ? `<img class="lead-photo" src="${PHOTO_BASE}&photoreference=${lead.photos[0].photo_reference}" alt="${lead.name}" onerror="this.parentElement.innerHTML='<div class=lead-photo-placeholder>🏢</div>'" />`
-      : `<div class="lead-photo-placeholder">🏢</div>`;
-
-    const rating = lead.rating
-      ? `<span class="lead-rating">⭐ ${lead.rating} <span style="opacity:.7">(${lead.user_ratings_total||0})</span></span>`
-      : '';
-
-    const phone = lead.formatted_phone_number
-      ? `<span class="lead-phone">📞 ${lead.formatted_phone_number}</span>`
-      : '';
-
-    const site = lead.website
-      ? `<a class="lead-site" href="${lead.website}" target="_blank">🌐 Site</a>`
-      : '';
-
-    const mapsUrl = `https://www.google.com/maps/place/?q=place_id:${lead.place_id}`;
-
-    const saveBtn = saved
-      ? `<button class="btn-save saved">✅ Salvo</button>`
-      : `<button class="btn-save" onclick="openModal(${i})">💾 Salvar Lead</button>`;
-
-    return `
-      <div class="lead-card">
-        ${photo}
-        <div class="lead-body">
-          <div class="lead-name">${lead.name}</div>
-          <div class="lead-address">📍 ${lead.formatted_address || 'Endereço não disponível'}</div>
-          <div class="lead-meta">
-            ${rating}${phone}${site}
-          </div>
-        </div>
-        <div class="lead-actions">
-          ${saveBtn}
-          <button class="btn-maps" onclick="window.open('${mapsUrl}','_blank')">🗺️ Maps</button>
-        </div>
-      </div>`;
-  }
-
-  // ── MODAL ──
-  function openModal(idx) {
-    currentLeadToSave = allLeads[idx];
-    const sel = document.getElementById('modal-folder-select');
-    sel.innerHTML = folders.map(f => `<option value="${f}">${f}</option>`).join('');
-    document.getElementById('modal-lead-name').textContent = `Salvando: ${currentLeadToSave.name}`;
-    document.getElementById('modal-overlay').classList.add('open');
-  }
-
-  function closeModal() {
-    document.getElementById('modal-overlay').classList.remove('open');
-    currentLeadToSave = null;
-  }
-
-  function confirmSave() {
-    if (!currentLeadToSave) return;
-    const folder = document.getElementById('modal-folder-select').value;
-    if (!savedLeads[folder]) savedLeads[folder] = [];
-    const exists = savedLeads[folder].find(l => l.place_id === currentLeadToSave.place_id);
-    if (exists) {
-      showToast('Lead já salvo nesta pasta', 'error');
-    } else {
-      savedLeads[folder].push(currentLeadToSave);
-      localStorage.setItem('vl_leads', JSON.stringify(savedLeads));
-      showToast(`✅ Lead salvo em "${folder}"!`, 'success');
-      renderFolders();
-    }
-    closeModal();
-  }
-
-  // ── EXPORT ──
-  function exportCSV() {
-    if (!allLeads.length) return;
-    downloadCSV(allLeads, 'vl_leads_busca');
-  }
-
-  function exportSavedCSV() {
-    const folder = currentFolder || folders[0];
-    const leads = savedLeads[folder] || [];
-    if (!leads.length) return showToast('Nenhum lead para exportar', 'error');
-    downloadCSV(leads, `vl_leads_${folder}`);
-  }
-
-  function downloadCSV(leads, filename) {
-    const rows = [['Nome','Endereço','Telefone','Avaliação','Total Avaliações','Site']];
-    leads.forEach(l => rows.push([
-      l.name || '',
-      l.formatted_address || '',
-      l.formatted_phone_number || '',
-      l.rating || '',
-      l.user_ratings_total || '',
-      l.website || ''
-    ]));
-    const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
-    const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `${filename}_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.csv`;
-    a.click();
-    showToast('📥 CSV exportado com sucesso!', 'success');
-  }
-
-  // ── TOAST ──
-  function showToast(msg, type='success') {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = `toast ${type} show`;
-    setTimeout(() => t.classList.remove('show'), 3000);
-  }
-
-  // ── INIT ──
+  savedLeads[folder].push(currentLeadToSave);
+  localStorage.setItem('vl_leads', JSON.stringify(savedLeads));
   renderFolders();
+  showToast(`✅ Lead salvo em "${folder}"!`, 'success');
+  closeModal();
+}
+
+// ── EXPORT ──
+function exportCSV()      { if (!allLeads.length) return; downloadCSV(allLeads, 'vl_busca'); }
+function exportSavedCSV() {
+  const folder = currentFolder || folders[0];
+  const leads  = savedLeads[folder] || [];
+  if (!leads.length) return showToast('Pasta vazia', 'error');
+  downloadCSV(leads, `vl_${folder}`);
+}
+
+function downloadCSV(leads, name) {
+  const rows = [['Nome','Endereço','Telefone','Avaliação','Nº Avaliações','Site']];
+  leads.forEach(l => rows.push([l.name||'', l.formatted_address||'', l.formatted_phone_number||'', l.rating||'', l.user_ratings_total||'', l.website||'']));
+  const csv  = rows.map(r => r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = `${name}_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.csv`; a.click();
+  showToast('📥 CSV exportado!', 'success');
+}
+
+// ── TOAST ──
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── INIT ──
+renderFolders();
 </script>
 </body>
 </html>
