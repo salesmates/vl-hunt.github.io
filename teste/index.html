@@ -275,6 +275,14 @@
       gap: 16px;
     }
 
+    /* Classe auxiliar adicionada para colocar o botão ao lado dos 3 inputs */
+    .grid-search {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 16px;
+      align-items: end;
+    }
+
     .field label {
       display: block;
       font-size: 13px;
@@ -658,6 +666,7 @@
       .stats,
       .grid-3,
       .grid-2,
+      .grid-search,
       .leads-grid {
         grid-template-columns: 1fr;
       }
@@ -732,7 +741,7 @@
         </div>
       </div>
 
-      <!-- ABA EXTRair -->
+      <!-- ABA EXTRAIR -->
       <section id="extractSection">
         <div class="section">
           <div class="section-title" style="margin-bottom: 22px;">
@@ -743,7 +752,8 @@
             </div>
           </div>
 
-          <div class="grid-3">
+          <!-- Modificação 1: Usando grid-search para o botão ficar ao lado -->
+          <div class="grid-search">
             <div class="field">
               <label for="nicheInput">Nicho</label>
               <input id="nicheInput" type="text" placeholder="Ex: restaurantes" />
@@ -758,13 +768,16 @@
               <label for="districtInput">Bairro</label>
               <input id="districtInput" type="text" placeholder="Ex: Zona 7" />
             </div>
+
+            <div class="field">
+              <button class="btn btn-green" onclick="searchLeads()" id="searchBtn" style="height: 48px; width: 100%;">
+                Extrair Leads
+              </button>
+            </div>
           </div>
 
+          <!-- Os outros botões continuam na mesma área, logo abaixo -->
           <div class="actions">
-            <button class="btn btn-green" onclick="searchLeads()" id="searchBtn">
-              Extrair Leads
-            </button>
-
             <button class="btn btn-dark" onclick="showSection('saved')">
               Ver Leads Salvos
             </button>
@@ -788,10 +801,7 @@
                 <p>Leads encontrados com foto, contato, endereço, site e ações.</p>
               </div>
             </div>
-
-            <button id="loadMoreBtn" class="btn btn-soft-green hidden" onclick="loadMoreLeads()">
-              Carregar mais
-            </button>
+            <!-- Removido o botão de carregar mais daqui. A paginação ficará embaixo -->
           </div>
 
           <div class="results-toolbar">
@@ -820,6 +830,10 @@
           </div>
 
           <div id="leadsGrid" class="leads-grid"></div>
+          
+          <!-- Controles de Paginação -->
+          <div id="paginationControls" class="actions" style="justify-content: center; margin-top: 24px;"></div>
+
         </div>
       </section>
 
@@ -941,6 +955,10 @@
     let placesPagination = null;
     let isLoadingMore = false;
 
+    // Variáveis da Paginação
+    let currentPage = 1;
+    const leadsPerPage = 20;
+
     let leads = [];
     let savedLeads = [];
     let exportedLeads = [];
@@ -972,6 +990,17 @@
       if (settings.googleApiKey) {
         loadGoogleMapsScript(settings.googleApiKey);
       }
+
+      // Modificação 2: Ativar pesquisa ao apertar Enter
+      const searchFields = document.querySelectorAll('#nicheInput, #cityInput, #districtInput');
+      searchFields.forEach(field => {
+        field.addEventListener('keypress', (event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            document.getElementById('searchBtn').click();
+          }
+        });
+      });
     });
 
     function showSection(section) {
@@ -1129,14 +1158,19 @@
       toast('Google Maps carregado.');
     }
 
+    // Modificação 3: Correção do cálculo de pendentes
     function updateCounters() {
-      document.getElementById('foundCount').textContent = leads.length;
-      document.getElementById('savedCount').textContent = savedLeads.length;
-      document.getElementById('exportedCount').textContent = exportedLeads.length;
+      const encontrados = leads.length;
+      const salvos = savedLeads.length;
+      const exportados = exportedLeads.length;
+      const pendentes = encontrados - salvos;
+      
+      const pendentesFinal = pendentes >= 0 ? pendentes : 0;
 
-      const pending = leads.filter(lead => !exportedLeads.some(exp => exp.place_id === lead.place_id)).length;
-
-      document.getElementById('pendingCount').textContent = pending;
+      document.getElementById('foundCount').textContent = encontrados;
+      document.getElementById('savedCount').textContent = salvos;
+      document.getElementById('exportedCount').textContent = exportados;
+      document.getElementById('pendingCount').textContent = pendentesFinal;
     }
 
     function searchLeads() {
@@ -1175,11 +1209,11 @@
       selectedLeadIds.clear();
       placesPagination = null;
       isLoadingMore = false;
+      currentPage = 1; // Reseta a paginação ao fazer nova busca
 
       document.getElementById('selectAllCheckbox').checked = false;
       document.getElementById('searchBtn').disabled = true;
       document.getElementById('searchBtn').textContent = 'Buscando...';
-      document.getElementById('loadMoreBtn').classList.add('hidden');
 
       renderLeads();
 
@@ -1198,13 +1232,14 @@
 
     function handlePlacesResults(results, status, pagination, append) {
       if (status !== google.maps.places.PlacesServiceStatus.OK || !results || !results.length) {
-        if (!append) {
+        if (!append && !isLoadingMore) {
           leads = [];
           renderLeads();
         }
 
-        toast('Nenhum lead encontrado nessa busca.');
-        updateLoadMoreButton();
+        toast('Nenhum novo lead encontrado nessa busca.');
+        isLoadingMore = false;
+        renderPaginationControls(leads.length);
         updateCounters();
         return;
       }
@@ -1220,28 +1255,51 @@
 
       placesPagination = pagination && pagination.hasNextPage ? pagination : null;
 
+      // Se estávamos carregando mais pela paginação, avança a página agora
+      if (isLoadingMore) {
+        currentPage++;
+        isLoadingMore = false;
+      }
+
       renderLeads();
-      updateLoadMoreButton();
       updateCounters();
 
       toast(`${results.length} leads carregados.`);
     }
 
-    function loadMoreLeads() {
-      if (!placesPagination || !placesPagination.hasNextPage) {
-        toast('Não há mais resultados disponíveis para esta busca.');
-        updateLoadMoreButton();
-        return;
-      }
+    // Modificação 4: Paginação (Substitui o carregar mais simples)
+    function changePage(direction) {
+      const totalPages = Math.ceil(leads.length / leadsPerPage);
 
+      if (direction === 1) {
+        // Indo para a próxima página
+        if (currentPage >= totalPages && placesPagination && placesPagination.hasNextPage) {
+          // Precisamos puxar mais da API do Google
+          loadMoreLeadsForPagination();
+        } else if (currentPage < totalPages) {
+          // Já temos em memória, só avançar
+          currentPage++;
+          renderLeads();
+        }
+      } else if (direction === -1) {
+        // Voltando a página
+        if (currentPage > 1) {
+          currentPage--;
+          renderLeads();
+        }
+      }
+    }
+
+    function loadMoreLeadsForPagination() {
+      if (!placesPagination || !placesPagination.hasNextPage) return;
       if (isLoadingMore) return;
 
       isLoadingMore = true;
 
-      const btn = document.getElementById('loadMoreBtn');
-      btn.disabled = true;
-      btn.textContent = 'Carregando...';
+      const container = document.getElementById('paginationControls');
+      container.innerHTML = `<span style="display: flex; align-items: center; font-weight: 800; font-size: 14px; color: var(--muted);">Buscando mais resultados no Google...</span>`;
 
+      // Timeout necessário pela API do Google Places (Rate Limit para nextPage)
       setTimeout(() => {
         try {
           placesPagination.nextPage();
@@ -1249,28 +1307,30 @@
           console.error(error);
           toast('Erro ao carregar mais leads.');
           isLoadingMore = false;
-          updateLoadMoreButton();
+          renderPaginationControls(leads.length);
         }
       }, 2200);
-
-      const oldCallback = placesService.textSearch;
-
-      setTimeout(() => {
-        isLoadingMore = false;
-        updateLoadMoreButton();
-      }, 3200);
     }
 
-    function updateLoadMoreButton() {
-      const btn = document.getElementById('loadMoreBtn');
+    function renderPaginationControls(totalLeads) {
+      const container = document.getElementById('paginationControls');
+      if (!container) return;
 
-      if (placesPagination && placesPagination.hasNextPage) {
-        btn.classList.remove('hidden');
-        btn.disabled = false;
-        btn.textContent = 'Carregar mais';
-      } else {
-        btn.classList.add('hidden');
+      if (totalLeads === 0 && (!placesPagination || !placesPagination.hasNextPage)) {
+        container.innerHTML = '';
+        return;
       }
+
+      const totalPages = Math.ceil(totalLeads / leadsPerPage);
+      const hasMoreFromApi = placesPagination && placesPagination.hasNextPage;
+
+      container.innerHTML = `
+        <button class="btn btn-soft-gray" onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>Anterior</button>
+        <span style="display: flex; align-items: center; font-weight: 800; font-size: 14px; padding: 0 15px; color: var(--muted);">
+          Página ${currentPage}
+        </span>
+        <button class="btn btn-soft-gray" onclick="changePage(1)" ${(!hasMoreFromApi && currentPage >= totalPages) ? 'disabled' : ''}>Próxima</button>
+      `;
     }
 
     function normalizePlace(place) {
@@ -1347,16 +1407,23 @@
 
       if (!leads.length) {
         empty.classList.remove('hidden');
+        renderPaginationControls(0);
         updateCounters();
         return;
       }
 
       empty.classList.add('hidden');
 
-      leads.forEach(lead => {
+      // Aplica o slice no array para renderizar só os da página atual
+      const startIndex = (currentPage - 1) * leadsPerPage;
+      const endIndex = startIndex + leadsPerPage;
+      const leadsToDisplay = leads.slice(startIndex, endIndex);
+
+      leadsToDisplay.forEach(lead => {
         grid.appendChild(createLeadCard(lead, 'current'));
       });
 
+      renderPaginationControls(leads.length);
       updateCounters();
     }
 
@@ -1459,7 +1526,12 @@
 
     function toggleSelectAll(checked) {
       if (checked) {
-        leads.forEach(lead => selectedLeadIds.add(lead.place_id));
+        // Seleciona todos da view atual (não de todas as páginas) para evitar bugs de navegação
+        const startIndex = (currentPage - 1) * leadsPerPage;
+        const endIndex = startIndex + leadsPerPage;
+        const leadsToDisplay = leads.slice(startIndex, endIndex);
+
+        leadsToDisplay.forEach(lead => selectedLeadIds.add(lead.place_id));
       } else {
         selectedLeadIds.clear();
       }
@@ -1610,6 +1682,7 @@
         return;
       }
 
+      // Exporta todos da array de pesquisa principal
       await sendLeadsToPipedrive(leads);
     }
 
@@ -1802,9 +1875,10 @@ Comercial: ${settings.commercial || ''}
       selectedLeadIds.clear();
       placesPagination = null;
       isLoadingMore = false;
+      currentPage = 1;
 
       document.getElementById('selectAllCheckbox').checked = false;
-      document.getElementById('loadMoreBtn').classList.add('hidden');
+      document.getElementById('paginationControls').innerHTML = '';
 
       renderLeads();
       updateCounters();
