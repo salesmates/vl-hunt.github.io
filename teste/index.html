@@ -3,23 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>Extrator de Leads Google Places</title>
+  <title>VL Hunt Leads</title>
 
   <style>
-    :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --success: #16a34a;
-      --danger: #dc2626;
-      --warning: #f59e0b;
-      --bg: #f3f4f6;
-      --card: #ffffff;
-      --text: #111827;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
@@ -27,1046 +13,773 @@
     }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: Inter, Arial, sans-serif;
+      background: #f3f6f9;
+      color: #111827;
       min-height: 100vh;
     }
 
-    header {
-      background: linear-gradient(135deg, #2563eb, #1e40af);
-      color: white;
-      padding: 28px 18px;
-      text-align: center;
+    .app {
+      display: flex;
+      min-height: 100vh;
     }
 
-    header h1 {
-      font-size: 28px;
-      margin-bottom: 8px;
+    .sidebar {
+      width: 259px;
+      background: #ffffff;
+      border-right: 1px solid #dfe5eb;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 26px 17px;
     }
 
-    header p {
-      opacity: 0.9;
-      font-size: 15px;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 24px auto;
-      padding: 0 16px;
-    }
-
-    .panel {
-      background: var(--card);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-      margin-bottom: 20px;
-    }
-
-    .api-box {
-      border: 1px dashed var(--primary);
-      background: #eff6ff;
-    }
-
-    .api-box h2 {
-      font-size: 18px;
-      margin-bottom: 10px;
-      color: #1e3a8a;
-    }
-
-    .api-status {
-      margin-top: 10px;
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr auto;
+    .brand {
+      display: flex;
+      align-items: center;
       gap: 12px;
-      align-items: end;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #e5e7eb;
     }
 
-    label {
-      display: block;
-      font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 12px 13px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      font-size: 15px;
-      outline: none;
-      background: white;
-    }
-
-    input:focus, select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
-    }
-
-    button {
-      border: none;
-      border-radius: 10px;
-      padding: 12px 16px;
-      cursor: pointer;
-      font-size: 15px;
-      font-weight: 700;
-      transition: 0.2s;
-      white-space: nowrap;
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-dark);
-    }
-
-    .btn-success {
-      background: var(--success);
-      color: white;
-    }
-
-    .btn-danger {
-      background: var(--danger);
-      color: white;
-    }
-
-    .btn-light {
-      background: #e5e7eb;
-      color: #111827;
-    }
-
-    .btn-warning {
-      background: var(--warning);
-      color: white;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-
-    .tab {
-      background: #e5e7eb;
-      color: #111827;
-    }
-
-    .tab.active {
-      background: var(--primary);
-      color: white;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-
-    .stat {
-      background: white;
+    .logo {
+      width: 42px;
+      height: 42px;
       border-radius: 14px;
-      padding: 16px;
-      border: 1px solid var(--border);
-      text-align: center;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 26px;
-      margin-bottom: 4px;
-      color: var(--primary);
-    }
-
-    .stat span {
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .lead-card {
-      background: white;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-      border: 1px solid var(--border);
+      background: #10b981;
+      color: #ffffff;
       display: flex;
-      flex-direction: column;
-    }
-
-    .lead-photo {
-      width: 100%;
-      height: 150px;
-      background: #dbeafe;
-      object-fit: cover;
-    }
-
-    .lead-body {
-      padding: 16px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .lead-name {
-      font-size: 18px;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
       font-weight: 800;
-      margin-bottom: 8px;
-      line-height: 1.25;
     }
 
-    .lead-info {
+    .brand-title {
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 16px;
+      color: #111827;
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      font-weight: 800;
+      color: #059669;
+      line-height: 14px;
+    }
+
+    .menu-block {
+      margin-top: 24px;
+    }
+
+    .menu-label {
+      color: #9ca3af;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .menu-item {
+      height: 43px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 15px;
+      border-radius: 10px;
+      color: #4b5563;
       font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 7px;
-      line-height: 1.35;
+      font-weight: 700;
+      margin-bottom: 5px;
+      cursor: pointer;
+      user-select: none;
     }
 
-    .lead-info strong {
-      color: #374151;
+    .menu-item.active {
+      background: #e9fbf3;
+      color: #047857;
     }
 
-    .lead-actions {
-      margin-top: auto;
-      display: grid;
-      gap: 8px;
-      padding-top: 12px;
+    .menu-item:hover {
+      background: #f3f4f6;
+    }
+
+    .menu-item.active:hover {
+      background: #e9fbf3;
+    }
+
+    .comercial-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 34px;
+      padding: 0 12px;
+      color: #4b5563;
+      font-size: 13px;
+      font-weight: 700;
     }
 
     .badge {
-      display: inline-block;
-      padding: 5px 9px;
+      min-width: 20px;
+      height: 18px;
+      background: #eef2f7;
       border-radius: 999px;
-      background: #dbeafe;
-      color: #1d4ed8;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      width: fit-content;
-    }
-
-    .badge-saved {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .empty {
-      background: white;
-      padding: 32px;
-      border-radius: 16px;
-      text-align: center;
-      color: var(--muted);
-      border: 1px dashed var(--border);
-    }
-
-    .actions-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 800;
     }
 
-    .filter-row {
+    .new-comercial {
+      height: 39px;
+      border: 1px dashed #cbd5e1;
+      color: #4b5563;
+      font-weight: 800;
+      font-size: 13px;
+      border-radius: 10px;
       display: flex;
+      align-items: center;
+      padding: 0 15px;
+      margin-top: 12px;
+    }
+
+    .user-box {
+      border-top: 1px solid #e5e7eb;
+      padding-top: 18px;
+      display: flex;
+      align-items: center;
       gap: 10px;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: #10b981;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #111827;
+    }
+
+    .user-role {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 3px;
+    }
+
+    .main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .topbar {
+      height: 102px;
+      background: #ffffff;
+      border-bottom: 1px solid #dfe5eb;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 33px;
+    }
+
+    .topbar h1 {
+      font-size: 24px;
+      font-weight: 850;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+
+    .topbar p {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .content {
+      padding: 30px 34px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #dfe5eb;
+      border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(15, 23, 42, 0.06);
+    }
+
+    .search-card {
+      padding: 26px 24px 24px;
+      max-width: 1332px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #5b6473;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr auto;
+      gap: 14px;
+      align-items: end;
+    }
+
+    .field label {
+      display: block;
+      color: #111827;
+      font-size: 13px;
+      font-weight: 850;
+      margin-bottom: 7px;
+    }
+
+    .field input {
+      width: 100%;
+      height: 47px;
+      border: 1px solid #dfe5eb;
+      border-radius: 12px;
+      outline: none;
+      padding: 0 14px;
+      font-size: 14px;
+      color: #111827;
+      background: #ffffff;
+    }
+
+    .field input:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+    }
+
+    .btn {
+      height: 46px;
+      border: none;
+      border-radius: 11px;
+      background: #10b981;
+      color: white;
+      font-weight: 900;
+      padding: 0 24px;
+      cursor: pointer;
+      font-size: 14px;
+      white-space: nowrap;
+      box-shadow: 0 10px 22px rgba(16, 185, 129, 0.2);
+    }
+
+    .btn:hover {
+      background: #059669;
+    }
+
+    .btn.secondary {
+      background: #ffffff;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+      box-shadow: none;
+    }
+
+    .api-card {
+      margin-top: 16px;
+      padding: 20px 24px;
+      max-width: 1332px;
+    }
+
+    .api-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: end;
+    }
+
+    .results-card {
+      margin-top: 25px;
+      min-height: 237px;
+      max-width: 1332px;
+      padding: 28px 24px;
+    }
+
+    .empty-state {
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      flex-direction: column;
+      color: #6b7280;
+    }
+
+    .empty-icon {
+      width: 67px;
+      height: 67px;
+      border-radius: 999px;
+      background: #f0f2f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+
+    .empty-state h2 {
+      font-size: 18px;
+      color: #000000;
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .status {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .leads-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .lead-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 16px;
+      background: #ffffff;
+    }
+
+    .lead-name {
+      font-size: 15px;
+      font-weight: 900;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+
+    .lead-info {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 6px;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .lead-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
       flex-wrap: wrap;
     }
 
-    .hidden {
-      display: none !important;
+    .small-btn {
+      border: none;
+      background: #ecfdf5;
+      color: #047857;
+      border-radius: 9px;
+      height: 34px;
+      padding: 0 11px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
     }
 
-    .loading {
-      text-align: center;
-      padding: 20px;
-      color: var(--muted);
+    .small-btn:hover {
+      background: #d1fae5;
+    }
+
+    .toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      background: #111827;
+      color: #ffffff;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 14px;
       font-weight: 700;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.22);
+      display: none;
+      z-index: 50;
     }
 
-    footer {
-      text-align: center;
-      padding: 28px 16px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    @media (max-width: 900px) {
-      .grid {
+    @media (max-width: 1100px) {
+      .form-grid {
         grid-template-columns: 1fr;
       }
 
-      .cards {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .stats {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 22px;
-      }
-
-      .cards {
+      .api-grid {
         grid-template-columns: 1fr;
       }
 
-      .panel {
-        padding: 16px;
+      .leads-list {
+        grid-template-columns: 1fr;
       }
 
-      button {
-        width: 100%;
-      }
-
-      .tabs button {
-        width: auto;
-      }
-
-      .actions-row {
-        display: block;
-      }
-
-      .filter-row {
-        margin-top: 10px;
+      .sidebar {
+        width: 235px;
       }
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <h1>Extrator de Leads Google Places</h1>
-    <p>Pesquise empresas, salve leads e exporte em CSV</p>
-  </header>
+  <div class="app">
+    <aside class="sidebar">
+      <div>
+        <div class="brand">
+          <div class="logo">⚡</div>
+          <div>
+            <div class="brand-title">VL Hunt</div>
+            <div class="brand-sub">LEADS</div>
+          </div>
+        </div>
 
-  <main class="container">
+        <div class="menu-block">
+          <div class="menu-label">MENU</div>
 
-    <section id="apiBox" class="panel api-box">
-      <h2>Configurar API do Google</h2>
-      <p style="font-size:14px;color:#374151;margin-bottom:12px;">
-        Cole sua chave de API do Google abaixo. Ela ficará salva apenas neste navegador.
-      </p>
+          <div class="menu-item active">
+            🔍 <span>Buscar Leads</span>
+          </div>
 
-      <div class="grid" style="grid-template-columns: 1fr auto auto;">
+          <div class="menu-item">
+            📁 <span>Leads Salvos</span>
+          </div>
+        </div>
+
+        <div class="menu-block">
+          <div class="menu-label">COMERCIAIS</div>
+
+          <div class="comercial-row">
+            <span>📂 Geral</span>
+            <span class="badge" id="contadorLeads">0</span>
+          </div>
+
+          <div class="new-comercial">
+            + Novo Comercial
+          </div>
+        </div>
+      </div>
+
+      <div class="user-box">
+        <div class="avatar">V</div>
         <div>
-          <label for="apiKeyInput">Chave da API Google</label>
-          <input id="apiKeyInput" type="password" placeholder="Cole aqui sua API Key do Google" />
-        </div>
-
-        <button class="btn-primary" onclick="salvarApiKey()">Salvar API</button>
-        <button class="btn-light" onclick="limparApiKey()">Limpar</button>
-      </div>
-
-      <div id="apiStatus" class="api-status"></div>
-    </section>
-
-    <section class="panel">
-      <div class="grid">
-        <div>
-          <label for="searchTerm">O que buscar?</label>
-          <input id="searchTerm" type="text" placeholder="Ex: clínicas odontológicas, restaurantes, imobiliárias" />
-        </div>
-
-        <div>
-          <label for="city">Cidade / região</label>
-          <input id="city" type="text" placeholder="Ex: Maringá PR" value="Maringá PR" />
-        </div>
-
-        <button id="extractBtn" class="btn-primary" onclick="extrairLeads()">
-          Extrair Leads
-        </button>
-      </div>
-    </section>
-
-    <section class="stats">
-      <div class="stat">
-        <strong id="totalEncontrados">0</strong>
-        <span>Leads encontrados</span>
-      </div>
-
-      <div class="stat">
-        <strong id="totalSalvos">0</strong>
-        <span>Leads salvos</span>
-      </div>
-
-      <div class="stat">
-        <strong id="totalComTelefone">0</strong>
-        <span>Com telefone</span>
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="tabs">
-        <button id="tabEncontrados" class="tab active" onclick="mudarAba('encontrados')">
-          Encontrados
-        </button>
-
-        <button id="tabSalvos" class="tab" onclick="mudarAba('salvos')">
-          Salvos
-        </button>
-      </div>
-
-      <div class="actions-row">
-        <div>
-          <button class="btn-success" onclick="exportarCSV()">
-            Exportar CSV
-          </button>
-
-          <button class="btn-danger" onclick="limparSalvos()">
-            Limpar Salvos
-          </button>
-        </div>
-
-        <div id="filtrosSalvos" class="filter-row hidden">
-          <input id="filtroTexto" type="text" placeholder="Filtrar salvos..." oninput="renderizar()" />
+          <div class="user-name">Victor</div>
+          <div class="user-role">Administrador</div>
         </div>
       </div>
+    </aside>
 
-      <div id="loading" class="loading hidden">
-        Buscando leads no Google Places...
-      </div>
+    <main class="main">
+      <header class="topbar">
+        <h1>Nova Busca de Leads</h1>
+        <p>Encontre empresas pelo Google Maps em segundos</p>
+      </header>
 
-      <div id="cards" class="cards"></div>
+      <section class="content">
+        <div class="card search-card">
+          <div class="section-title">🎯 PARÂMETROS DA BUSCA</div>
 
-      <div id="empty" class="empty hidden">
-        Nenhum lead para mostrar.
-      </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="nicho">Nicho / Tipo de empresa</label>
+              <input id="nicho" type="text" value="restaurante" placeholder="Ex: restaurante, clínica, academia" />
+            </div>
 
-      <div style="text-align:center;margin-top:20px;">
-        <button id="loadMoreBtn" class="btn-warning hidden" onclick="carregarMais()">
-          Carregar mais
-        </button>
-      </div>
-    </section>
+            <div class="field">
+              <label for="cidade">Cidade</label>
+              <input id="cidade" type="text" value="Maringá" placeholder="Ex: Maringá" />
+            </div>
 
-  </main>
+            <div class="field">
+              <label for="bairro">Bairro opcional</label>
+              <input id="bairro" type="text" placeholder="Ex: Centro, Zona 7" />
+            </div>
 
-  <footer>
-    Sistema local de extração de leads usando Google Places API.
-  </footer>
+            <button class="btn" onclick="extrairLeads()">⚡ Extrair Leads</button>
+          </div>
+        </div>
+
+        <div class="card api-card">
+          <div class="section-title">🔑 API GOOGLE MAPS</div>
+
+          <div class="api-grid">
+            <div class="field">
+              <label for="apiKey">Chave da API</label>
+              <input id="apiKey" type="password" placeholder="Cole aqui sua API Key do Google Maps" />
+            </div>
+
+            <button class="btn secondary" onclick="salvarApi()">Salvar API</button>
+          </div>
+        </div>
+
+        <div class="card results-card">
+          <div class="status" id="statusBusca"></div>
+
+          <div class="empty-state" id="emptyState">
+            <div class="empty-icon">🎯</div>
+            <h2>Pronto para caçar leads?</h2>
+            <p>Digite o nicho, cidade e clique em “Extrair Leads”.</p>
+          </div>
+
+          <div class="leads-list" id="leadsList"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
 
   <script>
-    let apiKey = localStorage.getItem("google_places_api_key") || "";
-    let googleCarregado = false;
-    let abaAtual = "encontrados";
-
+    let googleMapsCarregado = false;
     let leadsEncontrados = [];
-    let leadsSalvos = JSON.parse(localStorage.getItem("leads_salvos_google_places") || "[]");
 
-    let placesService = null;
-    let geocoder = null;
-    let paginationAtual = null;
-    let mapFake = null;
+    const apiSalva = localStorage.getItem("vlhunt_google_api_key");
 
-    const usuarioAtual = "Victor";
-
-    document.addEventListener("DOMContentLoaded", function () {
-      document.getElementById("apiKeyInput").value = apiKey ? "********" : "";
-      atualizarStatusApi();
-      atualizarContadores();
-      renderizar();
-
-      if (apiKey) {
-        carregarGoogleMaps();
-      }
-    });
-
-    function salvarApiKey() {
-      const valor = document.getElementById("apiKeyInput").value.trim();
-
-      if (!valor || valor === "********") {
-        alert("Cole sua chave da API Google antes de salvar.");
-        return;
-      }
-
-      apiKey = valor;
-      localStorage.setItem("google_places_api_key", apiKey);
-
-      alert("API salva com sucesso neste navegador.");
-
-      atualizarStatusApi();
-      carregarGoogleMaps();
-    }
-
-    function limparApiKey() {
-      if (!confirm("Deseja remover a API salva deste navegador?")) {
-        return;
-      }
-
-      apiKey = "";
-      googleCarregado = false;
-      placesService = null;
-      geocoder = null;
-
-      localStorage.removeItem("google_places_api_key");
-      document.getElementById("apiKeyInput").value = "";
-
-      atualizarStatusApi();
-      alert("API removida.");
-    }
-
-    function atualizarStatusApi() {
-      const status = document.getElementById("apiStatus");
-
-      if (apiKey) {
-        status.innerHTML = "Status: API salva neste navegador.";
-      } else {
-        status.innerHTML = "Status: nenhuma API salva ainda.";
-      }
-    }
-
-    function carregarGoogleMaps() {
-      if (!apiKey) {
-        alert("Primeiro salve sua API do Google.");
-        return;
-      }
-
-      if (window.google && window.google.maps && window.google.maps.places) {
-        inicializarGoogleServices();
-        return;
-      }
-
-      const scriptExistente = document.getElementById("googleMapsScript");
-
-      if (scriptExistente) {
-        return;
-      }
-
-      const script = document.createElement("script");
-      script.id = "googleMapsScript";
-      script.src = "https://maps.googleapis.com/maps/api/js?key=" + encodeURIComponent(apiKey) + "&libraries=places&callback=googleMapsCallback";
-      script.async = true;
-      script.defer = true;
-
-      script.onerror = function () {
-        alert("Erro ao carregar Google Maps. Confira se a API Key está correta e se Places API está ativada.");
-      };
-
-      document.head.appendChild(script);
-    }
-
-    window.googleMapsCallback = function () {
-      inicializarGoogleServices();
-    };
-
-    function inicializarGoogleServices() {
-      if (!window.google || !window.google.maps) {
-        alert("Google Maps não carregou corretamente.");
-        return;
-      }
-
-      googleCarregado = true;
-
-      mapFake = document.createElement("div");
-
-      const mapa = new google.maps.Map(mapFake, {
-        center: { lat: -23.4205, lng: -51.9331 },
-        zoom: 13
+    if (apiSalva) {
+      document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("apiKey").value = apiSalva;
       });
-
-      placesService = new google.maps.places.PlacesService(mapa);
-      geocoder = new google.maps.Geocoder();
-
-      atualizarStatusApi();
     }
 
-    function extrairLeads() {
-      const termo = document.getElementById("searchTerm").value.trim();
-      const cidade = document.getElementById("city").value.trim();
+    function mostrarMensagem(texto) {
+      const toast = document.getElementById("toast");
+      toast.textContent = texto;
+      toast.style.display = "block";
+
+      setTimeout(function () {
+        toast.style.display = "none";
+      }, 3000);
+    }
+
+    function salvarApi() {
+      const apiKey = document.getElementById("apiKey").value.trim();
 
       if (!apiKey) {
-        alert("Primeiro cole e salve sua API Google.");
+        mostrarMensagem("Cole sua API do Google antes de salvar.");
         return;
       }
 
-      if (!googleCarregado || !placesService || !geocoder) {
-        carregarGoogleMaps();
-        setTimeout(extrairLeads, 1500);
-        return;
-      }
+      localStorage.setItem("vlhunt_google_api_key", apiKey);
+      mostrarMensagem("API salva com sucesso.");
+    }
 
-      if (!termo) {
-        alert("Digite o que você quer buscar. Ex: clínicas odontológicas");
-        return;
-      }
-
-      if (!cidade) {
-        alert("Digite a cidade ou região.");
-        return;
-      }
-
-      setLoading(true);
-      leadsEncontrados = [];
-      paginationAtual = null;
-      renderizar();
-
-      geocoder.geocode({ address: cidade }, function (results, status) {
-        if (status !== "OK" || !results || !results.length) {
-          setLoading(false);
-          alert("Não consegui localizar essa cidade/região.");
+    function carregarGoogleMaps(apiKey) {
+      return new Promise(function (resolve, reject) {
+        if (googleMapsCarregado && window.google && window.google.maps) {
+          resolve();
           return;
         }
 
-        const location = results[0].geometry.location;
+        const scriptAntigo = document.getElementById("googleMapsScript");
 
-        const request = {
-          query: termo + " em " + cidade,
-          location: location,
-          radius: 15000
+        if (scriptAntigo) {
+          scriptAntigo.remove();
+        }
+
+        window.iniciarGoogleMaps = function () {
+          googleMapsCarregado = true;
+          resolve();
         };
 
-        placesService.textSearch(request, function (results, status, pagination) {
-          setLoading(false);
+        const script = document.createElement("script");
+        script.id = "googleMapsScript";
+        script.src =
+          "https://maps.googleapis.com/maps/api/js?key=" +
+          encodeURIComponent(apiKey) +
+          "&libraries=places&callback=iniciarGoogleMaps";
+        script.async = true;
+        script.defer = true;
 
-          if (status !== google.maps.places.PlacesServiceStatus.OK || !results) {
-            alert("Nenhum resultado encontrado ou erro na busca.");
+        script.onerror = function () {
+          reject(new Error("Erro ao carregar Google Maps."));
+        };
+
+        document.head.appendChild(script);
+      });
+    }
+
+    async function extrairLeads() {
+      const nicho = document.getElementById("nicho").value.trim();
+      const cidade = document.getElementById("cidade").value.trim();
+      const bairro = document.getElementById("bairro").value.trim();
+      const apiKey = localStorage.getItem("vlhunt_google_api_key") || document.getElementById("apiKey").value.trim();
+
+      if (!apiKey) {
+        mostrarMensagem("Primeiro cole e salve sua API do Google.");
+        return;
+      }
+
+      if (!nicho || !cidade) {
+        mostrarMensagem("Preencha o nicho e a cidade.");
+        return;
+      }
+
+      localStorage.setItem("vlhunt_google_api_key", apiKey);
+
+      const statusBusca = document.getElementById("statusBusca");
+      const emptyState = document.getElementById("emptyState");
+      const leadsList = document.getElementById("leadsList");
+
+      leadsList.innerHTML = "";
+      emptyState.style.display = "none";
+      statusBusca.style.display = "block";
+      statusBusca.textContent = "Buscando leads no Google Maps...";
+
+      try {
+        await carregarGoogleMaps(apiKey);
+
+        const mapaFake = document.createElement("div");
+        const service = new google.maps.places.PlacesService(mapaFake);
+
+        const termoBusca = bairro
+          ? nicho + " em " + bairro + ", " + cidade
+          : nicho + " em " + cidade;
+
+        const request = {
+          query: termoBusca,
+          fields: ["place_id", "name", "formatted_address", "rating", "user_ratings_total"]
+        };
+
+        service.textSearch(request, function (results, status) {
+          if (status !== google.maps.places.PlacesServiceStatus.OK || !results || results.length === 0) {
+            statusBusca.textContent = "";
+            statusBusca.style.display = "none";
+            emptyState.style.display = "flex";
+            emptyState.querySelector("h2").textContent = "Nenhum lead encontrado";
+            emptyState.querySelector("p").textContent = "Tente outro nicho, cidade ou bairro.";
             return;
           }
 
-          paginationAtual = pagination && pagination.hasNextPage ? pagination : null;
+          statusBusca.textContent = "Encontrados " + results.length + " leads. Buscando telefones e sites...";
 
-          processarResultados(results);
+          buscarDetalhesDosLeads(service, results.slice(0, 20));
+        });
+      } catch (erro) {
+        statusBusca.style.display = "none";
+        emptyState.style.display = "flex";
+        mostrarMensagem("Erro na API. Confira sua chave do Google.");
+      }
+    }
 
-          abaAtual = "encontrados";
-          atualizarTabs();
-          renderizar();
+    function buscarDetalhesDosLeads(service, lugares) {
+      leadsEncontrados = [];
+      let finalizados = 0;
 
-          if (paginationAtual) {
-            document.getElementById("loadMoreBtn").classList.remove("hidden");
-          } else {
-            document.getElementById("loadMoreBtn").classList.add("hidden");
+      lugares.forEach(function (lugar) {
+        service.getDetails(
+          {
+            placeId: lugar.place_id,
+            fields: [
+              "name",
+              "formatted_address",
+              "formatted_phone_number",
+              "international_phone_number",
+              "website",
+              "rating",
+              "user_ratings_total",
+              "url"
+            ]
+          },
+          function (detalhes, status) {
+            finalizados++;
+
+            if (status === google.maps.places.PlacesServiceStatus.OK && detalhes) {
+              leadsEncontrados.push({
+                nome: detalhes.name || lugar.name || "",
+                endereco: detalhes.formatted_address || lugar.formatted_address || "",
+                telefone: detalhes.formatted_phone_number || detalhes.international_phone_number || "",
+                site: detalhes.website || "",
+                avaliacao: detalhes.rating || "",
+                totalAvaliacoes: detalhes.user_ratings_total || "",
+                maps: detalhes.url || ""
+              });
+            }
+
+            if (finalizados === lugares.length) {
+              renderizarLeads();
+            }
           }
-        });
+        );
       });
     }
 
-    function carregarMais() {
-      if (!paginationAtual || !paginationAtual.hasNextPage) {
-        document.getElementById("loadMoreBtn").classList.add("hidden");
+    function renderizarLeads() {
+      const statusBusca = document.getElementById("statusBusca");
+      const leadsList = document.getElementById("leadsList");
+      const contadorLeads = document.getElementById("contadorLeads");
+
+      statusBusca.style.display = "none";
+      leadsList.innerHTML = "";
+      contadorLeads.textContent = leadsEncontrados.length;
+
+      if (leadsEncontrados.length === 0) {
+        document.getElementById("emptyState").style.display = "flex";
         return;
       }
 
-      setLoading(true);
-
-      setTimeout(function () {
-        paginationAtual.nextPage();
-      }, 1200);
-
-      const originalCallback = placesService.textSearch;
-    }
-
-    function processarResultados(results) {
-      const detalhesPendentes = results.length;
-
-      results.forEach(function (place) {
-        if (leadJaExiste(place.place_id)) {
-          return;
-        }
-
-        const leadBasico = {
-          id: place.place_id,
-          nome: place.name || "",
-          endereco: place.formatted_address || "",
-          telefone: "",
-          site: "",
-          avaliacao: place.rating || "",
-          totalAvaliacoes: place.user_ratings_total || "",
-          foto: obterFoto(place),
-          categoria: place.types ? place.types.join(", ") : "",
-          googleUrl: "",
-          salvoPor: "",
-          criadoEm: new Date().toISOString()
-        };
-
-        leadsEncontrados.push(leadBasico);
-
-        buscarDetalhesPlace(place.place_id);
-      });
-
-      atualizarContadores();
-    }
-
-    function buscarDetalhesPlace(placeId) {
-      const request = {
-        placeId: placeId,
-        fields: [
-          "name",
-          "formatted_phone_number",
-          "international_phone_number",
-          "website",
-          "url",
-          "formatted_address",
-          "rating",
-          "user_ratings_total",
-          "photos",
-          "types"
-        ]
-      };
-
-      placesService.getDetails(request, function (place, status) {
-        if (status !== google.maps.places.PlacesServiceStatus.OK || !place) {
-          return;
-        }
-
-        const index = leadsEncontrados.findIndex(function (lead) {
-          return lead.id === placeId;
-        });
-
-        if (index === -1) {
-          return;
-        }
-
-        leadsEncontrados[index] = {
-          ...leadsEncontrados[index],
-          nome: place.name || leadsEncontrados[index].nome,
-          endereco: place.formatted_address || leadsEncontrados[index].endereco,
-          telefone: place.formatted_phone_number || place.international_phone_number || "",
-          site: place.website || "",
-          avaliacao: place.rating || leadsEncontrados[index].avaliacao,
-          totalAvaliacoes: place.user_ratings_total || leadsEncontrados[index].totalAvaliacoes,
-          foto: obterFoto(place) || leadsEncontrados[index].foto,
-          categoria: place.types ? place.types.join(", ") : leadsEncontrados[index].categoria,
-          googleUrl: place.url || ""
-        };
-
-        atualizarContadores();
-        renderizar();
-      });
-    }
-
-    function obterFoto(place) {
-      if (place.photos && place.photos.length > 0) {
-        try {
-          return place.photos[0].getUrl({
-            maxWidth: 600,
-            maxHeight: 400
-          });
-        } catch (e) {
-          return "";
-        }
-      }
-
-      return "";
-    }
-
-    function leadJaExiste(id) {
-      const existeEncontrado = leadsEncontrados.some(function (lead) {
-        return lead.id === id;
-      });
-
-      const existeSalvo = leadsSalvos.some(function (lead) {
-        return lead.id === id;
-      });
-
-      return existeEncontrado || existeSalvo;
-    }
-
-    function salvarLead(id) {
-      const lead = leadsEncontrados.find(function (item) {
-        return item.id === id;
-      });
-
-      if (!lead) {
-        alert("Lead não encontrado.");
-        return;
-      }
-
-      const jaSalvo = leadsSalvos.some(function (item) {
-        return item.id === id;
-      });
-
-      if (jaSalvo) {
-        alert("Esse lead já está salvo.");
-        return;
-      }
-
-      const leadSalvo = {
-        ...lead,
-        salvoPor: usuarioAtual,
-        salvoEm: new Date().toISOString()
-      };
-
-      leadsSalvos.push(leadSalvo);
-      localStorage.setItem("leads_salvos_google_places", JSON.stringify(leadsSalvos));
-
-      atualizarContadores();
-      renderizar();
-
-      alert("Lead salvo com sucesso.");
-    }
-
-    function removerLeadSalvo(id) {
-      if (!confirm("Deseja remover este lead salvo?")) {
-        return;
-      }
-
-      leadsSalvos = leadsSalvos.filter(function (lead) {
-        return lead.id !== id;
-      });
-
-      localStorage.setItem("leads_salvos_google_places", JSON.stringify(leadsSalvos));
-
-      atualizarContadores();
-      renderizar();
-    }
-
-    function mudarAba(aba) {
-      abaAtual = aba;
-      atualizarTabs();
-      renderizar();
-    }
-
-    function atualizarTabs() {
-      document.getElementById("tabEncontrados").classList.toggle("active", abaAtual === "encontrados");
-      document.getElementById("tabSalvos").classList.toggle("active", abaAtual === "salvos");
-      document.getElementById("filtrosSalvos").classList.toggle("hidden", abaAtual !== "salvos");
-
-      if (abaAtual === "salvos") {
-        document.getElementById("loadMoreBtn").classList.add("hidden");
-      } else if (paginationAtual && paginationAtual.hasNextPage) {
-        document.getElementById("loadMoreBtn").classList.remove("hidden");
-      }
-    }
-
-    function renderizar() {
-      const cards = document.getElementById("cards");
-      const empty = document.getElementById("empty");
-
-      cards.innerHTML = "";
-
-      let lista = abaAtual === "encontrados" ? leadsEncontrados : leadsSalvos;
-
-      if (abaAtual === "salvos") {
-        const filtro = document.getElementById("filtroTexto").value.toLowerCase().trim();
-
-        if (filtro) {
-          lista = lista.filter(function (lead) {
-            return (
-              lead.nome.toLowerCase().includes(filtro) ||
-              lead.endereco.toLowerCase().includes(filtro) ||
-              lead.telefone.toLowerCase().includes(filtro)
-            );
-          });
-        }
-      }
-
-      if (!lista.length) {
-        empty.classList.remove("hidden");
-        return;
-      }
-
-      empty.classList.add("hidden");
-
-      lista.forEach(function (lead) {
+      leadsEncontrados.forEach(function (lead) {
         const card = document.createElement("div");
         card.className = "lead-card";
 
-        const foto = lead.foto || "https://placehold.co/600x400/dbeafe/1d4ed8?text=Sem+Foto";
+        const telefoneHtml = lead.telefone
+          ? '<div class="lead-info">📞 ' + escaparHtml(lead.telefone) + '</div>'
+          : '<div class="lead-info">📞 Telefone não encontrado</div>';
 
-        const avaliacaoTexto = lead.avaliacao
-          ? lead.avaliacao + " estrelas (" + (lead.totalAvaliacoes || 0) + " avaliações)"
-          : "Sem avaliação";
-
-        const telefoneTexto = lead.telefone || "Telefone não disponível";
         const siteHtml = lead.site
-          ? '<a href="' + escaparHtml(lead.site) + '" target="_blank">Abrir site</a>'
-          : "Site não disponível";
+          ? '<div class="lead-info">🌐 ' + escaparHtml(lead.site) + '</div>'
+          : '<div class="lead-info">🌐 Site não encontrado</div>';
 
-        const googleHtml = lead.googleUrl
-          ? '<a href="' + escaparHtml(lead.googleUrl) + '" target="_blank">Ver no Google</a>'
-          : "Link Google não disponível";
+        const ratingHtml = lead.avaliacao
+          ? '<div class="lead-info">⭐ ' + escaparHtml(String(lead.avaliacao)) + ' (' + escaparHtml(String(lead.totalAvaliacoes || 0)) + ' avaliações)</div>'
+          : "";
 
-        const salvo = leadsSalvos.some(function (item) {
-          return item.id === lead.id;
-        });
+        const whatsappLink = lead.telefone
+          ? "https://wa.me/55" + lead.telefone.replace(/\D/g, "")
+          : "";
 
-        card.innerHTML = `
-          <img class="lead-photo" src="${foto}" alt="Foto do lead" />
+        card.innerHTML =
+          '<div class="lead-name">' + escaparHtml(lead.nome) + '</div>' +
+          '<div class="lead-info">📍 ' + escaparHtml(lead.endereco) + '</div>' +
+          telefoneHtml +
+          siteHtml +
+          ratingHtml +
+          '<div class="lead-actions">' +
+            (lead.telefone ? '<a class="small-btn" target="_blank" href="' + whatsappLink + '">WhatsApp</a>' : "") +
+            (lead.site ? '<a class="small-btn" target="_blank" href="' + escaparHtml(lead.site) + '">Site</a>' : "") +
+            (lead.maps ? '<a class="small-btn" target="_blank" href="' + escaparHtml(lead.maps) + '">Maps</a>' : "") +
+          '</div>';
 
-          <div class="lead-body">
-            <span class="badge ${abaAtual === "salvos" ? "badge-saved" : ""}">
-              ${abaAtual === "salvos" ? "Salvo" : "Encontrado"}
-            </span>
-
-            <div class="lead-name">${escaparHtml(lead.nome)}</div>
-
-            <div class="lead-info">
-              <strong>Telefone:</strong> ${escaparHtml(telefoneTexto)}
-            </div>
-
-            <div class="lead-info">
-              <strong>Endereço:</strong> ${escaparHtml(lead.endereco || "Não disponível")}
-            </div>
-
-            <div class="lead-info">
-              <strong>Avaliação:</strong> ${escaparHtml(avaliacaoTexto)}
-            </div>
-
-            <div class="lead-info">
-              <strong>Site:</strong> ${siteHtml}
-            </div>
-
-            <div class="lead-info">
-              <strong>Google:</strong> ${googleHtml}
-            </div>
-
-            ${abaAtual === "salvos" ? `
-              <div class="lead-info">
-                <strong>Salvo por:</strong> ${escaparHtml(lead.salvoPor || "Usuário")}
-              </div>
-            ` : ""}
-
-            <div class="lead-actions">
-              ${
-                abaAtual === "encontrados"
-                  ? `<button class="btn-success" ${salvo ? "disabled" : ""} onclick="salvarLead('${lead.id}')">
-                      ${salvo ? "Já salvo" : "Salvar lead"}
-                    </button>`
-                  : `<button class="btn-danger" onclick="removerLeadSalvo('${lead.id}')">
-                      Remover
-                    </button>`
-              }
-            </div>
-          </div>
-        `;
-
-        cards.appendChild(card);
-      });
-    }
-
-    function atualizarContadores() {
-      document.getElementById("totalEncontrados").innerText = leadsEncontrados.length;
-      document.getElementById("totalSalvos").innerText = leadsSalvos.length;
-
-      const comTelefone = leadsSalvos.filter(function (lead) {
-        return lead.telefone && lead.telefone.trim();
-      }).length;
-
-      document.getElementById("totalComTelefone").innerText = comTelefone;
-    }
-
-    function exportarCSV() {
-      if (!leadsSalvos.length) {
-        alert("Nenhum lead salvo para exportar.");
-        return;
-      }
-
-      const cabecalho = [
-        "Nome",
-        "Telefone",
-        "Endereco",
-        "Site",
-        "Avaliacao",
-        "Total Avaliacoes",
-        "Google URL",
-        "Categoria",
-        "Salvo Por",
-        "Salvo Em"
-      ];
-
-      const linhas = leadsSalvos.map(function (lead) {
-        return [
-          lead.nome,
-          lead.telefone,
-          lead.endereco,
-          lead.site,
-          lead.avaliacao,
-          lead.totalAvaliacoes,
-          lead.googleUrl,
-          lead.categoria,
-          lead.salvoPor,
-          lead.salvoEm
-        ].map(formatarCSV).join(",");
+        leadsList.appendChild(card);
       });
 
-      const csv = [cabecalho.join(","), ...linhas].join("\n");
-
-      const blob = new Blob(["\ufeff" + csv], {
-        type: "text/csv;charset=utf-8;"
-      });
-
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-
-      link.href = url;
-      link.download = "leads-google-places.csv";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      URL.revokeObjectURL(url);
-    }
-
-    function formatarCSV(valor) {
-      if (valor === null || valor === undefined) {
-        valor = "";
-      }
-
-      valor = String(valor).replace(/"/g, '""');
-
-      return '"' + valor + '"';
-    }
-
-    function limparSalvos() {
-      if (!leadsSalvos.length) {
-        alert("Nenhum lead salvo.");
-        return;
-      }
-
-      if (!confirm("Deseja apagar todos os leads salvos?")) {
-        return;
-      }
-
-      leadsSalvos = [];
-      localStorage.setItem("leads_salvos_google_places", JSON.stringify(leadsSalvos));
-
-      atualizarContadores();
-      renderizar();
-    }
-
-    function setLoading(status) {
-      document.getElementById("loading").classList.toggle("hidden", !status);
-      document.getElementById("extractBtn").disabled = status;
+      mostrarMensagem("Leads extraídos com sucesso.");
     }
 
     function escaparHtml(texto) {
-      if (!texto) {
-        return "";
-      }
-
       return String(texto)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
   </script>
 </body>
