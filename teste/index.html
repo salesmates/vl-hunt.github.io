@@ -3,353 +3,185 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VL Hunt Leads</title>
+  <title>VL Hunt - Pesquisa</title>
 
   <style>
+    :root {
+      --bg: #f3f6fb;
+      --card: #ffffff;
+      --dark: #071833;
+      --muted: #48607f;
+      --border: #d8e0ed;
+      --green: #22c55e;
+      --green-dark: #16a34a;
+      --green-soft: #dcfce7;
+      --blue-soft: #eaf2ff;
+      --yellow-soft: #fff3cd;
+      --danger-soft: #ffe4e6;
+      --sidebar: #064b38;
+      --sidebar-dark: #033629;
+      --nav: #125a45;
+      --shadow: 0 16px 40px rgba(7, 24, 51, 0.08);
+      --radius: 18px;
+    }
+
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, Helvetica, sans-serif;
     }
 
     body {
-      min-height: 100vh;
-      background: #f4f7fb;
-      color: #0f172a;
+      margin: 0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+    }
+
+    button,
+    input,
+    select {
+      font-family: inherit;
     }
 
     .app {
-      width: 100%;
-      min-height: 100vh;
       display: flex;
+      min-height: 100vh;
+      width: 100%;
     }
 
     .sidebar {
-      width: 270px;
-      background: linear-gradient(180deg, #064e3b, #022c22);
-      color: #ffffff;
-      padding: 28px 22px;
+      width: 267px;
+      background: linear-gradient(180deg, var(--sidebar), var(--sidebar-dark));
+      color: #fff;
+      padding: 32px 18px;
       position: fixed;
-      top: 0;
       left: 0;
+      top: 0;
       bottom: 0;
+      overflow-y: auto;
+      z-index: 10;
     }
 
-    .logo {
+    .brand {
       display: flex;
       align-items: center;
       gap: 12px;
       margin-bottom: 34px;
     }
 
-    .logo-icon {
-      width: 42px;
-      height: 42px;
+    .brand-icon {
+      width: 43px;
+      height: 43px;
       border-radius: 14px;
-      background: #22c55e;
+      background: var(--green);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
       font-weight: 900;
+      font-size: 24px;
     }
 
-    .logo-text h1 {
+    .brand h1 {
+      margin: 0;
       font-size: 18px;
-      line-height: 1;
-      margin-bottom: 4px;
+      line-height: 1.1;
     }
 
-    .logo-text span {
+    .brand p {
+      margin: 5px 0 0;
       font-size: 12px;
-      opacity: 0.78;
+      color: rgba(255, 255, 255, 0.78);
     }
 
     .menu-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      opacity: 0.55;
+      font-size: 12px;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.55);
+      letter-spacing: 1.4px;
       margin-bottom: 12px;
-      font-weight: 800;
     }
 
     .menu-item {
-      padding: 13px 14px;
-      border-radius: 14px;
+      border: 0;
+      width: 100%;
+      height: 46px;
+      border-radius: 13px;
+      background: var(--nav);
+      color: #fff;
+      font-weight: 900;
+      font-size: 15px;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 9px;
-      font-weight: 800;
-      font-size: 14px;
-      color: #d1fae5;
-      background: rgba(255, 255, 255, 0.06);
+      gap: 12px;
+      padding: 0 18px;
+      cursor: pointer;
+      text-align: left;
+      transition: 0.2s ease;
+    }
+
+    .menu-item:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
     }
 
     .menu-item.active {
-      background: #22c55e;
-      color: #052e16;
+      background: var(--green);
+      color: #061827;
     }
 
     .main {
-      flex: 1;
-      margin-left: 270px;
-      padding: 32px;
+      margin-left: 267px;
+      width: calc(100% - 267px);
+      padding: 36px 32px 60px;
     }
 
     .topbar {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: 26px;
-      gap: 20px;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 24px;
     }
 
-    .page-title h2 {
-      font-size: 28px;
-      font-weight: 900;
-      color: #0f172a;
-      margin-bottom: 6px;
+    .topbar h2 {
+      margin: 8px 0 0;
+      font-size: 30px;
+      font-weight: 950;
+      letter-spacing: -0.8px;
     }
 
-    .page-title p {
-      color: #64748b;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .user-box {
+    .user-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       gap: 12px;
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 18px;
-      padding: 12px 16px;
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+      min-width: 142px;
+      box-shadow: var(--shadow);
     }
 
-    .avatar {
+    .user-avatar {
       width: 40px;
       height: 40px;
       border-radius: 14px;
-      background: #dcfce7;
-      color: #047857;
+      background: var(--green-soft);
+      color: #059669;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
+      font-weight: 950;
+      font-size: 17px;
     }
 
-    .user-box strong {
+    .user-card strong {
       font-size: 14px;
-      display: block;
     }
 
-    .user-box span {
+    .user-card span {
       font-size: 12px;
-      color: #64748b;
-      font-weight: 700;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 22px;
-    }
-
-    .card {
-      background: #ffffff;
-      border-radius: 24px;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
-      padding: 24px;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 22px;
-      gap: 14px;
-    }
-
-    .card-title {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .card-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      background: #dcfce7;
-      color: #047857;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 21px;
-      font-weight: 900;
-    }
-
-    .card-title h3 {
-      font-size: 18px;
-      font-weight: 900;
-      color: #0f172a;
-    }
-
-    .card-title p {
-      font-size: 13px;
-      color: #64748b;
-      font-weight: 600;
-      margin-top: 3px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .form-grid.two {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .form-group {
-      width: 100%;
-    }
-
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 900;
-      color: #334155;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    input,
-    select {
-      width: 100%;
-      height: 48px;
-      border-radius: 14px;
-      border: 1px solid #cbd5e1;
-      padding: 0 14px;
-      outline: none;
-      background: #ffffff;
-      color: #0f172a;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    input:focus,
-    select:focus {
-      border-color: #22c55e;
-      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.14);
-    }
-
-    .actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 18px;
-    }
-
-    .btn {
-      height: 48px;
-      border: none;
-      border-radius: 14px;
-      padding: 0 18px;
-      font-weight: 900;
-      cursor: pointer;
-      transition: 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    .btn.primary {
-      background: #16a34a;
-      color: #ffffff;
-    }
-
-    .btn.primary:hover {
-      background: #15803d;
-      transform: translateY(-1px);
-    }
-
-    .btn.secondary {
-      background: #dcfce7;
-      color: #047857;
-    }
-
-    .btn.secondary:hover {
-      background: #bbf7d0;
-      transform: translateY(-1px);
-    }
-
-    .btn.dark {
-      background: #0f172a;
-      color: #ffffff;
-    }
-
-    .btn.dark:hover {
-      background: #1e293b;
-      transform: translateY(-1px);
-    }
-
-    .btn.warning {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .btn.warning:hover {
-      background: #fde68a;
-      transform: translateY(-1px);
-    }
-
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .message {
-      margin-top: 16px;
-      padding: 13px 14px;
-      border-radius: 14px;
-      font-size: 13px;
-      font-weight: 800;
-      display: none;
-    }
-
-    .message.success {
-      display: block;
-      background: #ecfdf5;
-      color: #047857;
-      border: 1px solid #bbf7d0;
-    }
-
-    .message.error {
-      display: block;
-      background: #fef2f2;
-      color: #b91c1c;
-      border: 1px solid #fecaca;
-    }
-
-    .message.info {
-      display: block;
-      background: #eff6ff;
-      color: #1d4ed8;
-      border: 1px solid #bfdbfe;
+      color: var(--muted);
     }
 
     .stats {
@@ -359,28 +191,222 @@
       margin-bottom: 22px;
     }
 
-    .stat {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 20px;
-      padding: 18px;
-      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      min-height: 102px;
+      box-shadow: var(--shadow);
     }
 
-    .stat span {
+    .stat-card span {
       display: block;
-      color: #64748b;
-      font-size: 12px;
-      font-weight: 900;
+      color: var(--muted);
+      font-weight: 950;
+      font-size: 13px;
+      letter-spacing: 0.6px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 30px;
+      font-weight: 950;
+    }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--green-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .section-title h3 {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 950;
+    }
+
+    .section-title p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 950;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 8px;
     }
 
-    .stat strong {
-      color: #0f172a;
-      font-size: 28px;
-      font-weight: 900;
+    .field input,
+    .field select {
+      width: 100%;
+      height: 48px;
+      border: 1px solid #c8d4e6;
+      border-radius: 14px;
+      padding: 0 15px;
+      font-weight: 800;
+      font-size: 14px;
+      outline: none;
+      background: #fff;
+      color: var(--dark);
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .btn {
+      border: 0;
+      min-height: 48px;
+      border-radius: 12px;
+      padding: 0 18px;
+      font-weight: 950;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(0.98);
+    }
+
+    .btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-green {
+      background: var(--green-dark);
+      color: #fff;
+    }
+
+    .btn-dark {
+      background: #071226;
+      color: #fff;
+    }
+
+    .btn-soft-green {
+      background: var(--green-soft);
+      color: #007a4c;
+    }
+
+    .btn-soft-blue {
+      background: var(--blue-soft);
+      color: #0648c9;
+    }
+
+    .btn-soft-gray {
+      background: #f1f5f9;
+      color: #071833;
+    }
+
+    .btn-soft-yellow {
+      background: var(--yellow-soft);
+      color: #92400e;
+    }
+
+    .btn-danger {
+      background: var(--danger-soft);
+      color: #be123c;
+    }
+
+    .results-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .bulk-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .select-all {
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0 14px;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .select-all input {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--green-dark);
     }
 
     .leads-grid {
@@ -390,18 +416,29 @@
     }
 
     .lead-card {
-      border: 1px solid #e2e8f0;
-      border-radius: 20px;
-      padding: 16px;
-      background: #ffffff;
-      transition: 0.2s ease;
       position: relative;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      background: #fff;
       overflow: hidden;
+      min-height: 390px;
     }
 
-    .lead-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 18px 36px rgba(15, 23, 42, 0.09);
+    .lead-card.selected {
+      border-color: var(--green-dark);
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
+    }
+
+    .lead-check {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      z-index: 2;
+      width: 20px;
+      height: 20px;
+      accent-color: var(--green-dark);
+      cursor: pointer;
     }
 
     .lead-photo {
@@ -409,75 +446,65 @@
       height: 145px;
       border-radius: 14px;
       object-fit: cover;
-      margin-bottom: 14px;
-      background: #f1f5f9;
-      border: 1px solid #e5e7eb;
+      background: #edf2f7;
       display: block;
+      margin-bottom: 14px;
     }
 
     .lead-photo-placeholder {
       width: 100%;
       height: 145px;
       border-radius: 14px;
-      margin-bottom: 14px;
-      background: #f1f5f9;
-      border: 1px dashed #cbd5e1;
+      background: linear-gradient(135deg, #e2e8f0, #f8fafc);
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 34px;
+      margin-bottom: 14px;
       color: #94a3b8;
-      font-size: 13px;
-      font-weight: 900;
     }
 
-    .lead-top {
+    .lead-title-row {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
       align-items: flex-start;
+      gap: 10px;
       margin-bottom: 10px;
     }
 
-    .lead-name {
-      font-size: 16px;
-      font-weight: 900;
-      color: #0f172a;
-      line-height: 1.25;
+    .lead-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 950;
+      line-height: 1.2;
+    }
+
+    .badge {
+      background: var(--green-soft);
+      color: #00985f;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 950;
+      white-space: nowrap;
     }
 
     .lead-info {
       font-size: 13px;
-      color: #475569;
-      font-weight: 700;
+      color: #18304f;
       line-height: 1.45;
-      margin-top: 7px;
+      margin: 7px 0;
+      font-weight: 650;
       word-break: break-word;
     }
 
-    .badge-status {
-      display: inline-flex;
-      align-items: center;
-      height: 24px;
-      padding: 0 10px;
-      border-radius: 999px;
-      background: #ecfdf5;
-      color: #047857;
-      font-size: 11px;
-      font-weight: 900;
-      white-space: nowrap;
+    .lead-info a {
+      color: #0749bd;
+      text-decoration: none;
+      font-weight: 850;
     }
 
-    .badge-status.exportado {
-      background: #eff6ff;
-      color: #1d4ed8;
-    }
-
-    .badge-status.bloqueado {
-      background: #fef2f2;
-      color: #b91c1c;
-    }
-
-    .lead-actions {
+    .lead-buttons {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
@@ -485,119 +512,130 @@
     }
 
     .small-btn {
+      border: 0;
       min-height: 34px;
-      border-radius: 11px;
-      border: none;
-      padding: 0 11px;
-      font-size: 12px;
-      font-weight: 900;
+      border-radius: 10px;
+      padding: 0 12px;
+      font-size: 13px;
+      font-weight: 950;
       cursor: pointer;
+      text-decoration: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      text-decoration: none;
-      background: #f1f5f9;
-      color: #0f172a;
     }
 
-    .small-btn.green {
-      background: #dcfce7;
-      color: #047857;
+    .lead-status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      flex-wrap: wrap;
     }
 
-    .small-btn.blue {
-      background: #dbeafe;
-      color: #1d4ed8;
-    }
-
-    .small-btn.dark {
-      background: #0f172a;
-      color: #ffffff;
-    }
-
-    .small-btn.red {
-      background: #fee2e2;
-      color: #b91c1c;
-    }
-
-    .small-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .status-select {
-      height: 34px;
-      border-radius: 11px;
+    .lead-status-row select {
+      height: 35px;
+      min-width: 136px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
       padding: 0 10px;
-      font-size: 12px;
-      font-weight: 900;
-      width: auto;
+      font-weight: 850;
+      background: #fff;
+    }
+
+    .status-pill {
+      height: 35px;
+      border-radius: 10px;
+      padding: 0 12px;
+      background: #f1f5f9;
+      display: inline-flex;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .hidden {
+      display: none !important;
     }
 
     .empty {
-      border: 1px dashed #cbd5e1;
-      border-radius: 20px;
-      padding: 34px;
+      padding: 36px;
       text-align: center;
-      color: #64748b;
+      color: var(--muted);
       font-weight: 800;
       background: #f8fafc;
+      border: 1px dashed var(--border);
+      border-radius: 16px;
     }
 
-    .loading {
+    .toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      background: #071226;
+      color: #fff;
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-weight: 850;
+      box-shadow: 0 16px 40px rgba(0,0,0,.2);
+      z-index: 9999;
+      max-width: 360px;
       display: none;
-      align-items: center;
-      gap: 10px;
-      margin-top: 16px;
-      color: #047857;
-      font-weight: 900;
-      font-size: 14px;
     }
 
-    .loading.active {
-      display: flex;
-    }
-
-    .spinner {
-      width: 18px;
-      height: 18px;
-      border: 3px solid #bbf7d0;
-      border-top-color: #16a34a;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    #map {
+    .map-hidden {
       width: 1px;
       height: 1px;
       opacity: 0;
-      pointer-events: none;
       position: fixed;
       left: -9999px;
-      top: -9999px;
+      bottom: -9999px;
     }
 
-    @media (max-width: 1180px) {
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    th {
+      font-weight: 950;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: #f8fafc;
+    }
+
+    @media (max-width: 1200px) {
       .leads-grid {
         grid-template-columns: repeat(2, 1fr);
       }
 
-      .stats {
+      .stats,
+      .grid-3 {
         grid-template-columns: repeat(2, 1fr);
       }
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 800px) {
       .sidebar {
         position: relative;
         width: 100%;
-        height: auto;
+        bottom: auto;
       }
 
       .app {
@@ -606,24 +644,20 @@
 
       .main {
         margin-left: 0;
-        padding: 22px;
+        width: 100%;
+        padding: 22px 16px;
       }
 
-      .topbar {
-        flex-direction: column;
+      .topbar,
+      .section-head {
         align-items: flex-start;
+        flex-direction: column;
       }
 
-      .form-grid,
-      .form-grid.two {
-        grid-template-columns: 1fr;
-      }
-
+      .stats,
+      .grid-3,
+      .grid-2,
       .leads-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .stats {
         grid-template-columns: 1fr;
       }
     }
@@ -633,1038 +667,1230 @@
 <body>
   <div class="app">
     <aside class="sidebar">
-      <div class="logo">
-        <div class="logo-icon">V</div>
-        <div class="logo-text">
+      <div class="brand">
+        <div class="brand-icon">V</div>
+        <div>
           <h1>VL Hunt</h1>
-          <span>Leads comerciais</span>
+          <p>Leads comerciais</p>
         </div>
       </div>
 
-      <div class="menu-title">Menu</div>
+      <div class="menu-title">MENU</div>
 
-      <div class="menu-item active">
-        <span>🔎</span>
-        <span>Extrair Leads</span>
-      </div>
+      <button class="menu-item active" data-section="extract" onclick="showSection('extract')">
+        🔎 Extrair Leads
+      </button>
 
-      <div class="menu-item">
-        <span>💾</span>
-        <span>Leads Salvos</span>
-      </div>
+      <button class="menu-item" data-section="saved" onclick="showSection('saved')">
+        💾 Leads Salvos
+      </button>
 
-      <div class="menu-item">
-        <span>📤</span>
-        <span>Pipedrive</span>
-      </div>
+      <button class="menu-item" data-section="pipedrive" onclick="showSection('pipedrive')">
+        📥 Pipedrive
+      </button>
+
+      <button class="menu-item" data-section="settings" onclick="showSection('settings')">
+        ⚙️ Configurações
+      </button>
     </aside>
 
     <main class="main">
       <div class="topbar">
-        <div class="page-title">
-          <h2>Extrator de Leads Google Maps</h2>
-          <p>Busque empresas por nicho, cidade e bairro, salve leads e exporte para o Pipedrive.</p>
+        <div>
+          <h2>Pesquisa</h2>
         </div>
 
-        <div class="user-box">
-          <div class="avatar">VL</div>
+        <div class="user-card">
+          <div class="user-avatar">VL</div>
           <div>
-            <strong>Victor</strong>
+            <strong id="topUserName">Victor</strong><br />
             <span>Comercial</span>
           </div>
         </div>
       </div>
 
-      <section class="stats">
-        <div class="stat">
+      <div class="stats">
+        <div class="stat-card">
           <span>Encontrados</span>
-          <strong id="statEncontrados">0</strong>
+          <strong id="foundCount">0</strong>
         </div>
 
-        <div class="stat">
+        <div class="stat-card">
           <span>Salvos</span>
-          <strong id="statSalvos">0</strong>
+          <strong id="savedCount">0</strong>
         </div>
 
-        <div class="stat">
+        <div class="stat-card">
           <span>Exportados</span>
-          <strong id="statExportados">0</strong>
+          <strong id="exportedCount">0</strong>
         </div>
 
-        <div class="stat">
+        <div class="stat-card">
           <span>Pendentes</span>
-          <strong id="statPendentes">0</strong>
+          <strong id="pendingCount">0</strong>
         </div>
-      </section>
+      </div>
 
-      <div class="grid">
-        <section class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <div class="card-icon">⚙️</div>
-              <div>
-                <h3>Configurações</h3>
-                <p>Configure suas chaves e o comercial responsável.</p>
-              </div>
+      <!-- ABA EXTRair -->
+      <section id="extractSection">
+        <div class="section">
+          <div class="section-title" style="margin-bottom: 22px;">
+            <div class="section-icon">🔎</div>
+            <div>
+              <h3>Buscar leads</h3>
+              <p>Digite o nicho e a região para encontrar empresas.</p>
             </div>
           </div>
 
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="googleApiKey">API Key Google Maps</label>
-              <input id="googleApiKey" type="password" placeholder="Cole sua API Key do Google Maps" />
+          <div class="grid-3">
+            <div class="field">
+              <label for="nicheInput">Nicho</label>
+              <input id="nicheInput" type="text" placeholder="Ex: restaurantes" />
             </div>
 
-            <div class="form-group">
-              <label for="pipedriveToken">Token Pipedrive</label>
-              <input id="pipedriveToken" type="password" placeholder="Cole seu token do Pipedrive" />
+            <div class="field">
+              <label for="cityInput">Cidade</label>
+              <input id="cityInput" type="text" placeholder="Ex: Maringá" />
             </div>
 
-            <div class="form-group">
-              <label for="comercialId">Comercial</label>
-              <input id="comercialId" type="text" placeholder="Ex: victor" />
-            </div>
-          </div>
-
-          <div class="actions">
-            <button class="btn secondary" onclick="salvarConfiguracoes()">Salvar configurações</button>
-            <button class="btn warning" onclick="limparConfiguracoes()">Limpar configurações</button>
-          </div>
-
-          <div id="msgConfig" class="message"></div>
-        </section>
-
-        <section class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <div class="card-icon">🔎</div>
-              <div>
-                <h3>Buscar leads</h3>
-                <p>Digite o nicho e a região para encontrar empresas no Google Maps.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="nicho">Nicho</label>
-              <input id="nicho" type="text" placeholder="Ex: clínica odontológica" />
-            </div>
-
-            <div class="form-group">
-              <label for="cidade">Cidade</label>
-              <input id="cidade" type="text" placeholder="Ex: Maringá" />
-            </div>
-
-            <div class="form-group">
-              <label for="bairro">Bairro</label>
-              <input id="bairro" type="text" placeholder="Ex: Zona 7" />
+            <div class="field">
+              <label for="districtInput">Bairro</label>
+              <input id="districtInput" type="text" placeholder="Ex: Zona 7" />
             </div>
           </div>
 
           <div class="actions">
-            <button id="btnExtrair" class="btn primary" onclick="extrairLeads()">Extrair Leads</button>
-            <button class="btn dark" onclick="mostrarLeadsSalvos()">Ver Leads Salvos</button>
-            <button class="btn secondary" onclick="exportarLotePipedrive()">Exportar lote Pipedrive</button>
-            <button class="btn warning" onclick="limparResultados()">Limpar resultados</button>
+            <button class="btn btn-green" onclick="searchLeads()" id="searchBtn">
+              Extrair Leads
+            </button>
+
+            <button class="btn btn-dark" onclick="showSection('saved')">
+              Ver Leads Salvos
+            </button>
+
+            <button class="btn btn-soft-green" onclick="exportAllCurrentToPipedrive()">
+              Exportar lote Pipedrive
+            </button>
+
+            <button class="btn btn-soft-yellow" onclick="clearResults()">
+              Limpar resultados
+            </button>
           </div>
+        </div>
 
-          <div id="loading" class="loading">
-            <div class="spinner"></div>
-            <span>Buscando leads...</span>
-          </div>
-
-          <div id="msgBusca" class="message"></div>
-        </section>
-
-        <section class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <div class="card-icon">📍</div>
+        <div class="section">
+          <div class="section-head">
+            <div class="section-title">
+              <div class="section-icon">📍</div>
               <div>
                 <h3>Resultados</h3>
                 <p>Leads encontrados com foto, contato, endereço, site e ações.</p>
               </div>
             </div>
 
-            <button id="btnCarregarMaisTop" class="btn secondary" onclick="carregarMaisLeads()" style="display:none;">
+            <button id="loadMoreBtn" class="btn btn-soft-green hidden" onclick="loadMoreLeads()">
               Carregar mais
             </button>
           </div>
 
-          <div id="leadsContainer" class="leads-grid"></div>
+          <div class="results-toolbar">
+            <div class="bulk-actions">
+              <label class="select-all">
+                <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this.checked)" />
+                Selecionar todos
+              </label>
 
-          <div class="actions" style="justify-content:center;">
-            <button id="btnCarregarMais" class="btn secondary" onclick="carregarMaisLeads()" style="display:none;">
-              Carregar mais
+              <button class="btn btn-soft-green" onclick="saveSelectedLeads()">
+                Salvar selecionados
+              </button>
+
+              <button class="btn btn-dark" onclick="sendSelectedToPipedrive()">
+                Enviar selecionados
+              </button>
+
+              <button class="btn btn-soft-gray" onclick="clearSelected()">
+                Limpar seleção
+              </button>
+            </div>
+          </div>
+
+          <div id="resultsEmpty" class="empty">
+            Nenhum lead pesquisado ainda.
+          </div>
+
+          <div id="leadsGrid" class="leads-grid"></div>
+        </div>
+      </section>
+
+      <!-- ABA SALVOS -->
+      <section id="savedSection" class="hidden">
+        <div class="section">
+          <div class="section-head">
+            <div class="section-title">
+              <div class="section-icon">💾</div>
+              <div>
+                <h3>Leads Salvos</h3>
+                <p>Empresas salvas para prospecção.</p>
+              </div>
+            </div>
+
+            <div class="actions" style="margin-top:0;">
+              <button class="btn btn-soft-green" onclick="exportSavedToCSV()">
+                Exportar CSV
+              </button>
+
+              <button class="btn btn-danger" onclick="clearSavedLeads()">
+                Limpar salvos
+              </button>
+            </div>
+          </div>
+
+          <div id="savedEmpty" class="empty">
+            Nenhum lead salvo ainda.
+          </div>
+
+          <div id="savedGrid" class="leads-grid"></div>
+        </div>
+      </section>
+
+      <!-- ABA PIPEDRIVE -->
+      <section id="pipedriveSection" class="hidden">
+        <div class="section">
+          <div class="section-title" style="margin-bottom: 22px;">
+            <div class="section-icon">📥</div>
+            <div>
+              <h3>Pipedrive</h3>
+              <p>Histórico local de leads enviados para o Pipedrive.</p>
+            </div>
+          </div>
+
+          <div id="exportedEmpty" class="empty">
+            Nenhum lead exportado ainda.
+          </div>
+
+          <div id="exportedTableWrap" class="table-wrap hidden">
+            <table>
+              <thead>
+                <tr>
+                  <th>Empresa</th>
+                  <th>Telefone</th>
+                  <th>Site</th>
+                  <th>Data</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="exportedTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABA CONFIGURAÇÕES -->
+      <section id="settingsSection" class="hidden">
+        <div class="section">
+          <div class="section-title" style="margin-bottom: 22px;">
+            <div class="section-icon">⚙️</div>
+            <div>
+              <h3>Configurações</h3>
+              <p>Configure suas chaves e o comercial responsável.</p>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="field">
+              <label for="googleApiKeyInput">API Key Google Maps</label>
+              <input id="googleApiKeyInput" type="password" placeholder="Cole sua API Key do Google Maps" />
+            </div>
+
+            <div class="field">
+              <label for="pipedriveTokenInput">Token Pipedrive</label>
+              <input id="pipedriveTokenInput" type="password" placeholder="Cole seu token do Pipedrive" />
+            </div>
+
+            <div class="field">
+              <label for="commercialInput">Comercial</label>
+              <input id="commercialInput" type="text" placeholder="Ex: Victor" />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-soft-green" onclick="saveSettings()">
+              Salvar configurações
+            </button>
+
+            <button class="btn btn-soft-yellow" onclick="clearSettings()">
+              Limpar configurações
+            </button>
+
+            <button class="btn btn-dark" onclick="reloadGoogleMapsScript()">
+              Recarregar Google Maps
             </button>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </main>
   </div>
 
-  <div id="map"></div>
+  <div id="map" class="map-hidden"></div>
+  <div id="toast" class="toast"></div>
 
   <script>
-    let googleMapsCarregado = false;
     let map = null;
-    let service = null;
-    let leads = [];
-    let placesJaAdicionados = new Set();
-    let paginationAtual = null;
-    let carregandoMais = false;
+    let placesService = null;
+    let placesPagination = null;
+    let isLoadingMore = false;
 
-    const STATUS_LEAD = {
-      NOVO: "Novo",
-      SALVO: "Salvo",
-      CONTATADO: "Contatado",
-      INTERESSADO: "Interessado",
-      SEM_INTERESSE: "Sem interesse",
-      EXPORTADO: "Exportado"
+    let leads = [];
+    let savedLeads = [];
+    let exportedLeads = [];
+    let selectedLeadIds = new Set();
+
+    const STORAGE_KEYS = {
+      settings: 'vlhunt_settings_v2',
+      saved: 'vlhunt_saved_leads_v2',
+      exported: 'vlhunt_exported_leads_v2'
     };
 
-    document.addEventListener("DOMContentLoaded", function () {
-      carregarConfiguracoes();
-      renderLeads();
-      atualizarStats();
+    document.addEventListener('DOMContentLoaded', () => {
+      loadLocalData();
+      fillSettingsFields();
+      updateCounters();
+      renderSavedLeads();
+      renderExportedLeads();
 
-      const apiKey = localStorage.getItem("vlhunt_google_api_key");
+      const savedNiche = localStorage.getItem('vlhunt_last_niche') || '';
+      const savedCity = localStorage.getItem('vlhunt_last_city') || '';
+      const savedDistrict = localStorage.getItem('vlhunt_last_district') || '';
 
-      if (apiKey) {
-        carregarGoogleMaps(apiKey);
+      document.getElementById('nicheInput').value = savedNiche;
+      document.getElementById('cityInput').value = savedCity;
+      document.getElementById('districtInput').value = savedDistrict;
+
+      const settings = getSettings();
+
+      if (settings.googleApiKey) {
+        loadGoogleMapsScript(settings.googleApiKey);
       }
     });
 
-    function salvarConfiguracoes() {
-      const googleApiKey = document.getElementById("googleApiKey").value.trim();
-      const pipedriveToken = document.getElementById("pipedriveToken").value.trim();
-      const comercialId = document.getElementById("comercialId").value.trim();
+    function showSection(section) {
+      const sections = {
+        extract: document.getElementById('extractSection'),
+        saved: document.getElementById('savedSection'),
+        pipedrive: document.getElementById('pipedriveSection'),
+        settings: document.getElementById('settingsSection')
+      };
 
-      if (googleApiKey) {
-        localStorage.setItem("vlhunt_google_api_key", googleApiKey);
+      Object.values(sections).forEach(el => el.classList.add('hidden'));
+
+      if (sections[section]) {
+        sections[section].classList.remove('hidden');
       }
 
-      if (pipedriveToken) {
-        localStorage.setItem("vlhunt_pipedrive_token", pipedriveToken);
+      document.querySelectorAll('.menu-item').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      const activeButton = document.querySelector(`.menu-item[data-section="${section}"]`);
+
+      if (activeButton) {
+        activeButton.classList.add('active');
       }
 
-      if (comercialId) {
-        localStorage.setItem("vlhunt_comercial_id", comercialId);
+      if (section === 'saved') {
+        renderSavedLeads();
       }
 
-      mostrarMensagem("msgConfig", "Configurações salvas com sucesso.", "success");
-
-      if (googleApiKey) {
-        carregarGoogleMaps(googleApiKey);
+      if (section === 'pipedrive') {
+        renderExportedLeads();
       }
     }
 
-    function limparConfiguracoes() {
-      localStorage.removeItem("vlhunt_google_api_key");
-      localStorage.removeItem("vlhunt_pipedrive_token");
-      localStorage.removeItem("vlhunt_comercial_id");
+    function toast(message) {
+      const el = document.getElementById('toast');
+      el.textContent = message;
+      el.style.display = 'block';
 
-      document.getElementById("googleApiKey").value = "";
-      document.getElementById("pipedriveToken").value = "";
-      document.getElementById("comercialId").value = "";
+      clearTimeout(window.__toastTimer);
 
-      mostrarMensagem("msgConfig", "Configurações removidas.", "info");
+      window.__toastTimer = setTimeout(() => {
+        el.style.display = 'none';
+      }, 3200);
     }
 
-    function carregarConfiguracoes() {
-      document.getElementById("googleApiKey").value = localStorage.getItem("vlhunt_google_api_key") || "";
-      document.getElementById("pipedriveToken").value = localStorage.getItem("vlhunt_pipedrive_token") || "";
-      document.getElementById("comercialId").value = localStorage.getItem("vlhunt_comercial_id") || "victor";
+    function loadLocalData() {
+      try {
+        savedLeads = JSON.parse(localStorage.getItem(STORAGE_KEYS.saved) || '[]');
+      } catch {
+        savedLeads = [];
+      }
+
+      try {
+        exportedLeads = JSON.parse(localStorage.getItem(STORAGE_KEYS.exported) || '[]');
+      } catch {
+        exportedLeads = [];
+      }
     }
 
-    function carregarGoogleMaps(apiKey) {
-      if (googleMapsCarregado && window.google && window.google.maps && window.google.maps.places) {
-        iniciarGoogleMaps();
+    function getSettings() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEYS.settings) || '{}');
+      } catch {
+        return {};
+      }
+    }
+
+    function fillSettingsFields() {
+      const settings = getSettings();
+
+      document.getElementById('googleApiKeyInput').value = settings.googleApiKey || '';
+      document.getElementById('pipedriveTokenInput').value = settings.pipedriveToken || '';
+      document.getElementById('commercialInput').value = settings.commercial || 'Victor';
+
+      document.getElementById('topUserName').textContent = settings.commercial || 'Victor';
+    }
+
+    function saveSettings() {
+      const settings = {
+        googleApiKey: document.getElementById('googleApiKeyInput').value.trim(),
+        pipedriveToken: document.getElementById('pipedriveTokenInput').value.trim(),
+        commercial: document.getElementById('commercialInput').value.trim() || 'Victor'
+      };
+
+      localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(settings));
+
+      document.getElementById('topUserName').textContent = settings.commercial;
+
+      toast('Configurações salvas.');
+
+      if (settings.googleApiKey) {
+        loadGoogleMapsScript(settings.googleApiKey);
+      }
+    }
+
+    function clearSettings() {
+      if (!confirm('Deseja limpar as configurações?')) return;
+
+      localStorage.removeItem(STORAGE_KEYS.settings);
+      fillSettingsFields();
+      toast('Configurações limpas.');
+    }
+
+    function reloadGoogleMapsScript() {
+      const settings = getSettings();
+
+      if (!settings.googleApiKey) {
+        toast('Informe e salve a API Key do Google Maps primeiro.');
         return;
       }
 
-      const scriptAntigo = document.getElementById("googleMapsScript");
-
-      if (scriptAntigo) {
-        scriptAntigo.remove();
-      }
-
-      window.initGoogleMapsVLHunt = function () {
-        googleMapsCarregado = true;
-        iniciarGoogleMaps();
-      };
-
-      const script = document.createElement("script");
-      script.id = "googleMapsScript";
-      script.src = "https://maps.googleapis.com/maps/api/js?key=" + encodeURIComponent(apiKey) + "&libraries=places&callback=initGoogleMapsVLHunt";
-      script.async = true;
-      script.defer = true;
-
-      script.onerror = function () {
-        mostrarMensagem("msgConfig", "Erro ao carregar Google Maps. Verifique a API Key.", "error");
-      };
-
-      document.head.appendChild(script);
+      loadGoogleMapsScript(settings.googleApiKey, true);
     }
 
-    function iniciarGoogleMaps() {
-      const mapElement = document.getElementById("map");
+    function loadGoogleMapsScript(apiKey, forceReload = false) {
+      if (window.google && window.google.maps && window.google.maps.places && !forceReload) {
+        initGoogleMaps();
+        return;
+      }
 
-      map = new google.maps.Map(mapElement, {
-        center: {
-          lat: -23.4205,
-          lng: -51.9333
-        },
+      const oldScript = document.getElementById('googleMapsScript');
+
+      if (oldScript) {
+        oldScript.remove();
+      }
+
+      window.initVLHuntGoogleMaps = function () {
+        initGoogleMaps();
+      };
+
+      const script = document.createElement('script');
+      script.id = 'googleMapsScript';
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&libraries=places&callback=initVLHuntGoogleMaps`;
+      script.async = true;
+      script.defer = true;
+      script.onerror = function () {
+        toast('Erro ao carregar Google Maps. Verifique sua API Key.');
+      };
+
+      document.body.appendChild(script);
+    }
+
+    function initGoogleMaps() {
+      const mapEl = document.getElementById('map');
+
+      map = new google.maps.Map(mapEl, {
+        center: { lat: -23.4205, lng: -51.9333 },
         zoom: 13
       });
 
-      service = new google.maps.places.PlacesService(map);
+      placesService = new google.maps.places.PlacesService(map);
 
-      mostrarMensagem("msgConfig", "Google Maps carregado com sucesso.", "success");
+      toast('Google Maps carregado.');
     }
 
-    function extrairLeads() {
-      const nicho = document.getElementById("nicho").value.trim();
-      const cidade = document.getElementById("cidade").value.trim();
-      const bairro = document.getElementById("bairro").value.trim();
+    function updateCounters() {
+      document.getElementById('foundCount').textContent = leads.length;
+      document.getElementById('savedCount').textContent = savedLeads.length;
+      document.getElementById('exportedCount').textContent = exportedLeads.length;
 
-      if (!nicho || !cidade) {
-        mostrarMensagem("msgBusca", "Preencha pelo menos o nicho e a cidade.", "error");
+      const pending = leads.filter(lead => !exportedLeads.some(exp => exp.place_id === lead.place_id)).length;
+
+      document.getElementById('pendingCount').textContent = pending;
+    }
+
+    function searchLeads() {
+      const niche = document.getElementById('nicheInput').value.trim();
+      const city = document.getElementById('cityInput').value.trim();
+      const district = document.getElementById('districtInput').value.trim();
+
+      if (!niche || !city) {
+        toast('Informe pelo menos nicho e cidade.');
         return;
       }
 
-      if (!service) {
-        const apiKey = localStorage.getItem("vlhunt_google_api_key");
+      const settings = getSettings();
 
-        if (!apiKey) {
-          mostrarMensagem("msgBusca", "Configure sua API Key do Google Maps primeiro.", "error");
-          return;
-        }
-
-        carregarGoogleMaps(apiKey);
-        mostrarMensagem("msgBusca", "Google Maps está carregando. Aguarde alguns segundos e tente novamente.", "info");
+      if (!settings.googleApiKey) {
+        toast('Configure a API Key do Google Maps primeiro.');
+        showSection('settings');
         return;
       }
+
+      if (!placesService) {
+        loadGoogleMapsScript(settings.googleApiKey);
+        toast('Google Maps estava carregando. Aguarde alguns segundos e tente novamente.');
+        return;
+      }
+
+      localStorage.setItem('vlhunt_last_niche', niche);
+      localStorage.setItem('vlhunt_last_city', city);
+      localStorage.setItem('vlhunt_last_district', district);
+
+      const query = district
+        ? `${niche} em ${district}, ${city}`
+        : `${niche} em ${city}`;
 
       leads = [];
-      placesJaAdicionados = new Set();
-      paginationAtual = null;
-      controlarBotaoCarregarMais(false);
+      selectedLeadIds.clear();
+      placesPagination = null;
+      isLoadingMore = false;
+
+      document.getElementById('selectAllCheckbox').checked = false;
+      document.getElementById('searchBtn').disabled = true;
+      document.getElementById('searchBtn').textContent = 'Buscando...';
+      document.getElementById('loadMoreBtn').classList.add('hidden');
+
       renderLeads();
 
-      const termoBusca = bairro
-        ? nicho + " em " + bairro + ", " + cidade
-        : nicho + " em " + cidade;
+      const request = {
+        query: query,
+        type: 'establishment'
+      };
 
-      setLoading(true);
-      mostrarMensagem("msgBusca", "Buscando: " + termoBusca, "info");
+      placesService.textSearch(request, (results, status, pagination) => {
+        document.getElementById('searchBtn').disabled = false;
+        document.getElementById('searchBtn').textContent = 'Extrair Leads';
 
-      service.textSearch(
+        handlePlacesResults(results, status, pagination, false);
+      });
+    }
+
+    function handlePlacesResults(results, status, pagination, append) {
+      if (status !== google.maps.places.PlacesServiceStatus.OK || !results || !results.length) {
+        if (!append) {
+          leads = [];
+          renderLeads();
+        }
+
+        toast('Nenhum lead encontrado nessa busca.');
+        updateLoadMoreButton();
+        updateCounters();
+        return;
+      }
+
+      results.forEach(place => {
+        const normalized = normalizePlace(place);
+
+        if (!leads.some(lead => lead.place_id === normalized.place_id)) {
+          leads.push(normalized);
+          fetchPlaceDetails(normalized.place_id);
+        }
+      });
+
+      placesPagination = pagination && pagination.hasNextPage ? pagination : null;
+
+      renderLeads();
+      updateLoadMoreButton();
+      updateCounters();
+
+      toast(`${results.length} leads carregados.`);
+    }
+
+    function loadMoreLeads() {
+      if (!placesPagination || !placesPagination.hasNextPage) {
+        toast('Não há mais resultados disponíveis para esta busca.');
+        updateLoadMoreButton();
+        return;
+      }
+
+      if (isLoadingMore) return;
+
+      isLoadingMore = true;
+
+      const btn = document.getElementById('loadMoreBtn');
+      btn.disabled = true;
+      btn.textContent = 'Carregando...';
+
+      setTimeout(() => {
+        try {
+          placesPagination.nextPage();
+        } catch (error) {
+          console.error(error);
+          toast('Erro ao carregar mais leads.');
+          isLoadingMore = false;
+          updateLoadMoreButton();
+        }
+      }, 2200);
+
+      const oldCallback = placesService.textSearch;
+
+      setTimeout(() => {
+        isLoadingMore = false;
+        updateLoadMoreButton();
+      }, 3200);
+    }
+
+    function updateLoadMoreButton() {
+      const btn = document.getElementById('loadMoreBtn');
+
+      if (placesPagination && placesPagination.hasNextPage) {
+        btn.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Carregar mais';
+      } else {
+        btn.classList.add('hidden');
+      }
+    }
+
+    function normalizePlace(place) {
+      const photoUrl = place.photos && place.photos.length
+        ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 })
+        : '';
+
+      return {
+        place_id: place.place_id,
+        name: place.name || '',
+        address: place.formatted_address || place.vicinity || '',
+        phone: '',
+        website: '',
+        url: place.url || '',
+        rating: place.rating || '',
+        user_ratings_total: place.user_ratings_total || '',
+        photo: photoUrl,
+        status: 'Novo',
+        exported: false,
+        savedAt: null,
+        exportedAt: null
+      };
+    }
+
+    function fetchPlaceDetails(placeId) {
+      if (!placesService || !placeId) return;
+
+      placesService.getDetails(
         {
-          query: termoBusca
+          placeId: placeId,
+          fields: [
+            'name',
+            'formatted_address',
+            'formatted_phone_number',
+            'international_phone_number',
+            'website',
+            'url',
+            'rating',
+            'user_ratings_total',
+            'photos'
+          ]
         },
-        function (results, status, pagination) {
-          setLoading(false);
+        (place, status) => {
+          if (status !== google.maps.places.PlacesServiceStatus.OK || !place) return;
 
-          if (status !== google.maps.places.PlacesServiceStatus.OK || !results || results.length === 0) {
-            mostrarMensagem("msgBusca", "Nenhum lead encontrado para essa busca.", "error");
-            renderLeads();
-            return;
-          }
+          const index = leads.findIndex(lead => lead.place_id === placeId);
 
-          paginationAtual = pagination || null;
+          if (index === -1) return;
 
-          buscarDetalhesDosLeads(results, function () {
-            mostrarMensagem("msgBusca", "Busca finalizada. Foram encontrados " + leads.length + " leads.", "success");
-            controlarBotaoCarregarMais(Boolean(paginationAtual && paginationAtual.hasNextPage));
-          });
+          leads[index] = {
+            ...leads[index],
+            name: place.name || leads[index].name,
+            address: place.formatted_address || leads[index].address,
+            phone: place.formatted_phone_number || place.international_phone_number || leads[index].phone,
+            website: place.website || leads[index].website,
+            url: place.url || leads[index].url,
+            rating: place.rating || leads[index].rating,
+            user_ratings_total: place.user_ratings_total || leads[index].user_ratings_total,
+            photo: place.photos && place.photos.length
+              ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 })
+              : leads[index].photo
+          };
+
+          renderLeads();
         }
       );
     }
 
-    function carregarMaisLeads() {
-      if (!paginationAtual || !paginationAtual.hasNextPage) {
-        mostrarMensagem("msgBusca", "Não há mais resultados disponíveis para carregar.", "info");
-        controlarBotaoCarregarMais(false);
+    function renderLeads() {
+      const grid = document.getElementById('leadsGrid');
+      const empty = document.getElementById('resultsEmpty');
+
+      grid.innerHTML = '';
+
+      if (!leads.length) {
+        empty.classList.remove('hidden');
+        updateCounters();
         return;
       }
 
-      if (carregandoMais) {
-        return;
-      }
+      empty.classList.add('hidden');
 
-      carregandoMais = true;
-      setLoading(true);
-      controlarBotaoCarregarMais(false);
-      mostrarMensagem("msgBusca", "Carregando mais leads...", "info");
+      leads.forEach(lead => {
+        grid.appendChild(createLeadCard(lead, 'current'));
+      });
 
-      setTimeout(function () {
-        paginationAtual.nextPage();
-      }, 900);
-
-      const originalTextSearchCallback = service.textSearch;
-      carregandoMais = false;
+      updateCounters();
     }
 
-    function buscarDetalhesDosLeads(results, callback) {
-      let totalProcessados = 0;
-      let novosInseridos = 0;
+    function createLeadCard(lead, source) {
+      const card = document.createElement('div');
+      card.className = 'lead-card';
 
-      if (!results || results.length === 0) {
-        if (callback) callback();
-        return;
+      if (selectedLeadIds.has(lead.place_id)) {
+        card.classList.add('selected');
       }
 
-      results.forEach(function (res) {
-        if (!res.place_id || placesJaAdicionados.has(res.place_id)) {
-          totalProcessados++;
+      const websiteLabel = lead.website ? lead.website : 'Site não encontrado';
+      const phoneLabel = lead.phone ? lead.phone : 'Telefone não encontrado';
+      const mapsUrl = lead.url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lead.name + ' ' + lead.address)}`;
+      const whatsappUrl = lead.phone ? makeWhatsAppUrl(lead.phone, lead.name) : '';
 
-          if (totalProcessados === results.length) {
-            renderLeads();
-            atualizarStats();
+      card.innerHTML = `
+        ${source === 'current' ? `
+          <input
+            type="checkbox"
+            class="lead-check"
+            ${selectedLeadIds.has(lead.place_id) ? 'checked' : ''}
+            onchange="toggleLeadSelection('${escapeAttr(lead.place_id)}', this.checked)"
+          />
+        ` : ''}
 
-            if (callback) callback();
-          }
-
-          return;
+        ${
+          lead.photo
+            ? `<img class="lead-photo" src="${escapeAttr(lead.photo)}" alt="${escapeAttr(lead.name)}" />`
+            : `<div class="lead-photo-placeholder">🏢</div>`
         }
 
-        placesJaAdicionados.add(res.place_id);
+        <div class="lead-title-row">
+          <h4 class="lead-title">${escapeHtml(lead.name)}</h4>
+          <span class="badge">${escapeHtml(lead.status || 'Novo')}</span>
+        </div>
 
-        service.getDetails(
-          {
-            placeId: res.place_id,
-            fields: [
-              "place_id",
-              "name",
-              "formatted_address",
-              "formatted_phone_number",
-              "international_phone_number",
-              "website",
-              "url",
-              "rating",
-              "user_ratings_total",
-              "photos",
-              "business_status",
-              "types"
-            ]
-          },
-          function (det, status) {
-            totalProcessados++;
+        <p class="lead-info">📍 ${escapeHtml(lead.address || 'Endereço não encontrado')}</p>
+        <p class="lead-info">📞 ${escapeHtml(phoneLabel)}</p>
+        <p class="lead-info">🌐 ${
+          lead.website
+            ? `<a href="${escapeAttr(lead.website)}" target="_blank">${escapeHtml(lead.website)}</a>`
+            : 'Site não encontrado'
+        }</p>
+        <p class="lead-info">⭐ ${
+          lead.rating
+            ? `${escapeHtml(String(lead.rating))} (${escapeHtml(String(lead.user_ratings_total || 0))} avaliações)`
+            : 'Sem avaliações'
+        }</p>
 
-            if (status === google.maps.places.PlacesServiceStatus.OK && det) {
-              let foto = "";
-
-              if (det.photos && det.photos.length > 0) {
-                foto = det.photos[0].getUrl({
-                  maxWidth: 800,
-                  maxHeight: 450
-                });
-              }
-
-              const lead = {
-                placeId: det.place_id || res.place_id,
-                nome: det.name || "",
-                endereco: det.formatted_address || "",
-                telefone: det.formatted_phone_number || det.international_phone_number || "",
-                site: det.website || "",
-                maps: det.url || "",
-                avaliacao: det.rating || "",
-                totalAvaliacoes: det.user_ratings_total || "",
-                foto: foto,
-                status: STATUS_LEAD.NOVO,
-                exportadoPipedrive: false,
-                salvo: false,
-                criadoEm: new Date().toISOString()
-              };
-
-              leads.push(lead);
-              novosInseridos++;
-            }
-
-            if (totalProcessados === results.length) {
-              renderLeads();
-              atualizarStats();
-
-              if (callback) callback(novosInseridos);
-            }
-          }
-        );
-      });
-    }
-
-    function renderLeads(listaPersonalizada) {
-      const container = document.getElementById("leadsContainer");
-      const lista = listaPersonalizada || leads;
-
-      container.innerHTML = "";
-
-      if (!lista || lista.length === 0) {
-        container.innerHTML = '<div class="empty">Nenhum lead para exibir ainda.</div>';
-        atualizarStats();
-        return;
-      }
-
-      lista.forEach(function (lead) {
-        const dadosSalvos = buscarLeadSalvo(lead.placeId);
-        const leadFinal = dadosSalvos || lead;
-        const bloqueado = verificarBloqueioLead(lead.placeId);
-        const telefoneLimpo = limparTelefone(leadFinal.telefone);
-        const whatsAppUrl = telefoneLimpo ? "https://wa.me/" + telefoneLimpo : "";
-
-        const card = document.createElement("div");
-        card.className = "lead-card";
-
-        card.innerHTML = `
+        <div class="lead-buttons">
           ${
-            leadFinal.foto
-              ? `<img class="lead-photo" src="${leadFinal.foto}" alt="${escapeHtml(leadFinal.nome)}">`
-              : `<div class="lead-photo-placeholder">Sem foto disponível</div>`
+            whatsappUrl
+              ? `<a class="small-btn btn-soft-green" href="${escapeAttr(whatsappUrl)}" target="_blank">WhatsApp</a>`
+              : ''
           }
 
-          <div class="lead-top">
-            <div class="lead-name">${escapeHtml(leadFinal.nome || "Sem nome")}</div>
-            ${
-              bloqueado
-                ? `<span class="badge-status bloqueado">Bloqueado</span>`
-                : `<span class="badge-status ${leadFinal.exportadoPipedrive ? "exportado" : ""}">${escapeHtml(leadFinal.status || STATUS_LEAD.NOVO)}</span>`
-            }
-          </div>
+          ${
+            lead.website
+              ? `<a class="small-btn btn-soft-blue" href="${escapeAttr(lead.website)}" target="_blank">Site</a>`
+              : ''
+          }
 
-          ${leadFinal.endereco ? `<div class="lead-info">📍 ${escapeHtml(leadFinal.endereco)}</div>` : ""}
-          ${leadFinal.telefone ? `<div class="lead-info">📞 ${escapeHtml(leadFinal.telefone)}</div>` : `<div class="lead-info">📞 Telefone não encontrado</div>`}
-          ${leadFinal.site ? `<div class="lead-info">🌐 ${escapeHtml(leadFinal.site)}</div>` : `<div class="lead-info">🌐 Site não encontrado</div>`}
-          ${leadFinal.avaliacao ? `<div class="lead-info">⭐ ${escapeHtml(String(leadFinal.avaliacao))} (${escapeHtml(String(leadFinal.totalAvaliacoes || 0))} avaliações)</div>` : ""}
-          ${bloqueado ? `<div class="lead-info">🔒 Lead já salvo por outro comercial.</div>` : ""}
+          <a class="small-btn btn-soft-gray" href="${escapeAttr(mapsUrl)}" target="_blank">Maps</a>
 
-          <div class="lead-actions">
-            ${
-              telefoneLimpo
-                ? `<a class="small-btn green" target="_blank" href="${whatsAppUrl}">WhatsApp</a>`
-                : ""
-            }
+          <button class="small-btn btn-soft-green" onclick="saveLeadById('${escapeAttr(lead.place_id)}')">
+            Salvar
+          </button>
 
-            ${
-              leadFinal.site
-                ? `<a class="small-btn blue" target="_blank" href="${escapeAttribute(leadFinal.site)}">Site</a>`
-                : ""
-            }
+          <button class="small-btn btn-dark" onclick="sendLeadByIdToPipedrive('${escapeAttr(lead.place_id)}')">
+            Pipedrive
+          </button>
+        </div>
 
-            ${
-              leadFinal.maps
-                ? `<a class="small-btn" target="_blank" href="${escapeAttribute(leadFinal.maps)}">Maps</a>`
-                : ""
-            }
+        <div class="lead-status-row">
+          <select onchange="changeLeadStatus('${escapeAttr(lead.place_id)}', this.value)">
+            <option value="Novo" ${lead.status === 'Novo' ? 'selected' : ''}>Novo</option>
+            <option value="Contato feito" ${lead.status === 'Contato feito' ? 'selected' : ''}>Contato feito</option>
+            <option value="Interessado" ${lead.status === 'Interessado' ? 'selected' : ''}>Interessado</option>
+            <option value="Sem interesse" ${lead.status === 'Sem interesse' ? 'selected' : ''}>Sem interesse</option>
+            <option value="Fechado" ${lead.status === 'Fechado' ? 'selected' : ''}>Fechado</option>
+          </select>
 
-            <button class="small-btn green" onclick="salvarLead('${escapeAttribute(leadFinal.placeId)}')" ${bloqueado ? "disabled" : ""}>
-              Salvar
-            </button>
+          <span class="status-pill">${lead.exported ? 'Exportado' : 'Pendente'}</span>
+        </div>
+      `;
 
-            <button class="small-btn dark" onclick="exportarLeadPipedrive('${escapeAttribute(leadFinal.placeId)}')" ${bloqueado ? "disabled" : ""}>
-              Pipedrive
-            </button>
-          </div>
-
-          <div class="lead-actions">
-            <select class="status-select" onchange="alterarStatusLead('${escapeAttribute(leadFinal.placeId)}', this.value)" ${bloqueado ? "disabled" : ""}>
-              <option value="${STATUS_LEAD.NOVO}" ${leadFinal.status === STATUS_LEAD.NOVO ? "selected" : ""}>Novo</option>
-              <option value="${STATUS_LEAD.SALVO}" ${leadFinal.status === STATUS_LEAD.SALVO ? "selected" : ""}>Salvo</option>
-              <option value="${STATUS_LEAD.CONTATADO}" ${leadFinal.status === STATUS_LEAD.CONTATADO ? "selected" : ""}>Contatado</option>
-              <option value="${STATUS_LEAD.INTERESSADO}" ${leadFinal.status === STATUS_LEAD.INTERESSADO ? "selected" : ""}>Interessado</option>
-              <option value="${STATUS_LEAD.SEM_INTERESSE}" ${leadFinal.status === STATUS_LEAD.SEM_INTERESSE ? "selected" : ""}>Sem interesse</option>
-              <option value="${STATUS_LEAD.EXPORTADO}" ${leadFinal.status === STATUS_LEAD.EXPORTADO ? "selected" : ""}>Exportado</option>
-            </select>
-
-            ${
-              leadFinal.exportadoPipedrive
-                ? `<span class="small-btn blue">Exportado</span>`
-                : `<span class="small-btn">Pendente</span>`
-            }
-          </div>
-        `;
-
-        container.appendChild(card);
-      });
-
-      atualizarStats();
+      return card;
     }
 
-    function salvarLead(placeId) {
-      const lead = encontrarLead(placeId);
-
-      if (!lead) {
-        mostrarMensagem("msgBusca", "Lead não encontrado.", "error");
-        return;
-      }
-
-      const comercialId = obterComercialId();
-
-      if (!comercialId) {
-        mostrarMensagem("msgBusca", "Informe o comercial nas configurações.", "error");
-        return;
-      }
-
-      const salvos = obterLeadsSalvos();
-
-      const jaSalvo = salvos.find(function (item) {
-        return item.placeId === placeId;
-      });
-
-      if (jaSalvo && jaSalvo.comercialId !== comercialId) {
-        mostrarMensagem("msgBusca", "Esse lead já está salvo por outro comercial.", "error");
-        renderLeads();
-        return;
-      }
-
-      if (jaSalvo && jaSalvo.comercialId === comercialId) {
-        mostrarMensagem("msgBusca", "Esse lead já está salvo neste comercial.", "info");
-        renderLeads();
-        return;
-      }
-
-      const leadParaSalvar = {
-        ...lead,
-        comercialId: comercialId,
-        status: STATUS_LEAD.SALVO,
-        salvo: true,
-        exportadoPipedrive: false,
-        salvoEm: new Date().toISOString()
-      };
-
-      salvos.push(leadParaSalvar);
-      localStorage.setItem("vlhunt_leads_salvos", JSON.stringify(salvos));
-
-      mostrarMensagem("msgBusca", "Lead salvo com sucesso.", "success");
-      renderLeads();
-      atualizarStats();
-    }
-
-    function alterarStatusLead(placeId, novoStatus) {
-      const salvos = obterLeadsSalvos();
-      const leadSalvo = salvos.find(function (item) {
-        return item.placeId === placeId;
-      });
-
-      if (leadSalvo) {
-        const comercialId = obterComercialId();
-
-        if (leadSalvo.comercialId !== comercialId) {
-          mostrarMensagem("msgBusca", "Você não pode alterar status de lead salvo por outro comercial.", "error");
-          renderLeads();
-          return;
-        }
-
-        leadSalvo.status = novoStatus;
-
-        if (novoStatus === STATUS_LEAD.EXPORTADO) {
-          leadSalvo.exportadoPipedrive = true;
-        }
-
-        localStorage.setItem("vlhunt_leads_salvos", JSON.stringify(salvos));
+    function toggleLeadSelection(placeId, checked) {
+      if (checked) {
+        selectedLeadIds.add(placeId);
       } else {
-        const lead = leads.find(function (item) {
-          return item.placeId === placeId;
-        });
-
-        if (lead) {
-          lead.status = novoStatus;
-        }
+        selectedLeadIds.delete(placeId);
       }
 
-      mostrarMensagem("msgBusca", "Status atualizado.", "success");
       renderLeads();
-      atualizarStats();
     }
 
-    async function exportarLeadPipedrive(placeId) {
-      const token = localStorage.getItem("vlhunt_pipedrive_token");
+    function toggleSelectAll(checked) {
+      if (checked) {
+        leads.forEach(lead => selectedLeadIds.add(lead.place_id));
+      } else {
+        selectedLeadIds.clear();
+      }
 
-      if (!token) {
-        mostrarMensagem("msgBusca", "Configure o token do Pipedrive primeiro.", "error");
+      renderLeads();
+    }
+
+    function clearSelected() {
+      selectedLeadIds.clear();
+      document.getElementById('selectAllCheckbox').checked = false;
+      renderLeads();
+      toast('Seleção limpa.');
+    }
+
+    function getSelectedLeads() {
+      return leads.filter(lead => selectedLeadIds.has(lead.place_id));
+    }
+
+    function saveSelectedLeads() {
+      const selected = getSelectedLeads();
+
+      if (!selected.length) {
+        toast('Selecione pelo menos um lead.');
         return;
       }
 
-      const bloqueado = verificarBloqueioLead(placeId);
+      selected.forEach(lead => saveLead(lead, false));
 
-      if (bloqueado) {
-        mostrarMensagem("msgBusca", "Esse lead está salvo por outro comercial e não pode ser exportado.", "error");
-        return;
-      }
+      persistSavedLeads();
+      renderSavedLeads();
+      updateCounters();
 
-      let lead = buscarLeadSalvo(placeId);
+      toast(`${selected.length} leads salvos.`);
+    }
+
+    function saveLeadById(placeId) {
+      const lead = leads.find(item => item.place_id === placeId) ||
+        savedLeads.find(item => item.place_id === placeId);
 
       if (!lead) {
-        const leadAtual = encontrarLead(placeId);
-
-        if (!leadAtual) {
-          mostrarMensagem("msgBusca", "Lead não encontrado.", "error");
-          return;
-        }
-
-        salvarLead(placeId);
-        lead = buscarLeadSalvo(placeId) || leadAtual;
-      }
-
-      try {
-        mostrarMensagem("msgBusca", "Exportando lead para o Pipedrive...", "info");
-
-        const body = {
-          name: lead.nome || "Lead sem nome",
-          phone: lead.telefone
-            ? [
-                {
-                  value: lead.telefone,
-                  primary: true
-                }
-              ]
-            : [],
-          visible_to: "3"
-        };
-
-        const response = await fetch("https://api.pipedrive.com/v1/persons?api_token=" + encodeURIComponent(token), {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(body)
-        });
-
-        const data = await response.json();
-
-        if (!response.ok || !data.success) {
-          mostrarMensagem("msgBusca", "Erro ao exportar para o Pipedrive.", "error");
-          return;
-        }
-
-        marcarComoExportado(placeId, data.data && data.data.id ? data.data.id : null);
-
-        mostrarMensagem("msgBusca", "Lead exportado para o Pipedrive com sucesso.", "success");
-        renderLeads();
-        atualizarStats();
-      } catch (error) {
-        mostrarMensagem("msgBusca", "Erro na conexão com o Pipedrive.", "error");
-      }
-    }
-
-    async function exportarLotePipedrive() {
-      const token = localStorage.getItem("vlhunt_pipedrive_token");
-
-      if (!token) {
-        mostrarMensagem("msgBusca", "Configure o token do Pipedrive primeiro.", "error");
+        toast('Lead não encontrado.');
         return;
       }
 
-      const comercialId = obterComercialId();
-      const salvos = obterLeadsSalvos();
+      saveLead(lead, true);
+    }
 
-      const pendentes = salvos.filter(function (lead) {
-        return lead.comercialId === comercialId && !lead.exportadoPipedrive;
+    function saveLead(lead, showMessage = true) {
+      if (savedLeads.some(item => item.place_id === lead.place_id)) {
+        if (showMessage) toast('Este lead já está salvo.');
+        return;
+      }
+
+      savedLeads.push({
+        ...lead,
+        savedAt: new Date().toISOString()
       });
 
-      if (pendentes.length === 0) {
-        mostrarMensagem("msgBusca", "Nenhum lead pendente para exportar.", "info");
+      persistSavedLeads();
+      updateCounters();
+
+      if (showMessage) toast('Lead salvo.');
+    }
+
+    function persistSavedLeads() {
+      localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
+    }
+
+    function renderSavedLeads() {
+      const grid = document.getElementById('savedGrid');
+      const empty = document.getElementById('savedEmpty');
+
+      grid.innerHTML = '';
+
+      if (!savedLeads.length) {
+        empty.classList.remove('hidden');
+        updateCounters();
         return;
       }
 
-      mostrarMensagem("msgBusca", "Exportando " + pendentes.length + " leads para o Pipedrive...", "info");
+      empty.classList.add('hidden');
 
-      for (const lead of pendentes) {
-        await exportarLeadPipedrive(lead.placeId);
-        await esperar(450);
-      }
+      savedLeads.forEach(lead => {
+        grid.appendChild(createLeadCard(lead, 'saved'));
+      });
 
-      mostrarMensagem("msgBusca", "Exportação em lote finalizada.", "success");
-      renderLeads();
-      atualizarStats();
+      updateCounters();
     }
 
-    function marcarComoExportado(placeId, pipedrivePersonId) {
-      const salvos = obterLeadsSalvos();
+    function clearSavedLeads() {
+      if (!confirm('Deseja apagar todos os leads salvos?')) return;
 
-      const atualizados = salvos.map(function (lead) {
-        if (lead.placeId === placeId) {
-          return {
-            ...lead,
-            exportadoPipedrive: true,
-            pipedrivePersonId: pipedrivePersonId || lead.pipedrivePersonId || "",
-            status: STATUS_LEAD.EXPORTADO,
-            exportadoEm: new Date().toISOString()
-          };
+      savedLeads = [];
+      persistSavedLeads();
+      renderSavedLeads();
+      updateCounters();
+      toast('Leads salvos apagados.');
+    }
+
+    function changeLeadStatus(placeId, status) {
+      leads = leads.map(lead => {
+        if (lead.place_id === placeId) {
+          return { ...lead, status };
         }
 
         return lead;
       });
 
-      localStorage.setItem("vlhunt_leads_salvos", JSON.stringify(atualizados));
-    }
-
-    function mostrarLeadsSalvos() {
-      const comercialId = obterComercialId();
-      const salvos = obterLeadsSalvos();
-
-      const meusLeads = salvos.filter(function (lead) {
-        return lead.comercialId === comercialId;
-      });
-
-      controlarBotaoCarregarMais(false);
-      renderLeads(meusLeads);
-
-      if (meusLeads.length === 0) {
-        mostrarMensagem("msgBusca", "Nenhum lead salvo para esse comercial.", "info");
-      } else {
-        mostrarMensagem("msgBusca", "Exibindo " + meusLeads.length + " leads salvos.", "success");
-      }
-    }
-
-    function encontrarLead(placeId) {
-      const leadAtual = leads.find(function (lead) {
-        return lead.placeId === placeId;
-      });
-
-      if (leadAtual) {
-        return leadAtual;
-      }
-
-      return buscarLeadSalvo(placeId);
-    }
-
-    function buscarLeadSalvo(placeId) {
-      const salvos = obterLeadsSalvos();
-
-      return salvos.find(function (lead) {
-        return lead.placeId === placeId;
-      });
-    }
-
-    function verificarBloqueioLead(placeId) {
-      const comercialId = obterComercialId();
-      const salvos = obterLeadsSalvos();
-
-      const jaSalvo = salvos.find(function (lead) {
-        return lead.placeId === placeId;
-      });
-
-      return Boolean(jaSalvo && jaSalvo.comercialId !== comercialId);
-    }
-
-    function obterLeadsSalvos() {
-      return JSON.parse(localStorage.getItem("vlhunt_leads_salvos") || "[]");
-    }
-
-    function obterComercialId() {
-      const inputComercial = document.getElementById("comercialId").value.trim();
-      const salvo = localStorage.getItem("vlhunt_comercial_id") || "";
-
-      return inputComercial || salvo;
-    }
-
-    function limparResultados() {
-      leads = [];
-      placesJaAdicionados = new Set();
-      paginationAtual = null;
-      controlarBotaoCarregarMais(false);
-      renderLeads();
-      mostrarMensagem("msgBusca", "Resultados limpos.", "info");
-      atualizarStats();
-    }
-
-    function atualizarStats() {
-      const salvos = obterLeadsSalvos();
-      const comercialId = obterComercialId();
-
-      const meusSalvos = salvos.filter(function (lead) {
-        return lead.comercialId === comercialId;
-      });
-
-      const exportados = meusSalvos.filter(function (lead) {
-        return lead.exportadoPipedrive;
-      });
-
-      const pendentes = meusSalvos.filter(function (lead) {
-        return !lead.exportadoPipedrive;
-      });
-
-      document.getElementById("statEncontrados").innerText = leads.length;
-      document.getElementById("statSalvos").innerText = meusSalvos.length;
-      document.getElementById("statExportados").innerText = exportados.length;
-      document.getElementById("statPendentes").innerText = pendentes.length;
-    }
-
-    function controlarBotaoCarregarMais(exibir) {
-      document.getElementById("btnCarregarMais").style.display = exibir ? "inline-flex" : "none";
-      document.getElementById("btnCarregarMaisTop").style.display = exibir ? "inline-flex" : "none";
-    }
-
-    function setLoading(ativo) {
-      document.getElementById("loading").classList.toggle("active", ativo);
-      document.getElementById("btnExtrair").disabled = ativo;
-    }
-
-    function mostrarMensagem(id, texto, tipo) {
-      const el = document.getElementById(id);
-
-      el.className = "message " + tipo;
-      el.innerText = texto;
-
-      if (texto) {
-        setTimeout(function () {
-          el.style.display = "none";
-        }, 6500);
-
-        el.style.display = "block";
-      }
-    }
-
-    function limparTelefone(telefone) {
-      if (!telefone) {
-        return "";
-      }
-
-      let numero = telefone.replace(/\D/g, "");
-
-      if (!numero) {
-        return "";
-      }
-
-      if (numero.startsWith("55")) {
-        return numero;
-      }
-
-      if (numero.length === 10 || numero.length === 11) {
-        return "55" + numero;
-      }
-
-      return numero;
-    }
-
-    function esperar(ms) {
-      return new Promise(function (resolve) {
-        setTimeout(resolve, ms);
-      });
-    }
-
-    function escapeHtml(texto) {
-      return String(texto || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function escapeAttribute(texto) {
-      return escapeHtml(texto).replace(/`/g, "&#096;");
-    }
-
-    /*
-      Ajuste importante:
-      O Google Places retorna os próximos resultados pelo próprio pagination.nextPage().
-      Quando nextPage é chamado, ele executa novamente o callback original do textSearch.
-      Por isso, sobrescrevemos o comportamento global abaixo.
-    */
-
-    const textSearchOriginalPatch = function () {
-      if (!window.google || !google.maps || !google.maps.places) {
-        return;
-      }
-    };
-
-    /*
-      Correção para paginação:
-      Como o callback do textSearch original não é reutilizável fora da chamada,
-      a função abaixo recria a busca usando o mesmo termo quando clicar em carregar mais.
-    */
-
-    let ultimaBusca = {
-      query: ""
-    };
-
-    const extrairLeadsOriginal = extrairLeads;
-
-    extrairLeads = function () {
-      const nicho = document.getElementById("nicho").value.trim();
-      const cidade = document.getElementById("cidade").value.trim();
-      const bairro = document.getElementById("bairro").value.trim();
-
-      ultimaBusca.query = bairro
-        ? nicho + " em " + bairro + ", " + cidade
-        : nicho + " em " + cidade;
-
-      const apiKey = localStorage.getItem("vlhunt_google_api_key");
-
-      if (!apiKey && !service) {
-        mostrarMensagem("msgBusca", "Configure sua API Key do Google Maps primeiro.", "error");
-        return;
-      }
-
-      if (!service) {
-        carregarGoogleMaps(apiKey);
-        mostrarMensagem("msgBusca", "Google Maps está carregando. Aguarde alguns segundos e tente novamente.", "info");
-        return;
-      }
-
-      if (!nicho || !cidade) {
-        mostrarMensagem("msgBusca", "Preencha pelo menos o nicho e a cidade.", "error");
-        return;
-      }
-
-      leads = [];
-      placesJaAdicionados = new Set();
-      paginationAtual = null;
-      controlarBotaoCarregarMais(false);
-      renderLeads();
-
-      setLoading(true);
-      mostrarMensagem("msgBusca", "Buscando: " + ultimaBusca.query, "info");
-
-      service.textSearch(
-        {
-          query: ultimaBusca.query
-        },
-        function callbackBusca(results, status, pagination) {
-          setLoading(false);
-          carregandoMais = false;
-
-          if (status !== google.maps.places.PlacesServiceStatus.OK || !results || results.length === 0) {
-            mostrarMensagem("msgBusca", "Nenhum lead encontrado para essa busca.", "error");
-            controlarBotaoCarregarMais(false);
-            renderLeads();
-            return;
-          }
-
-          paginationAtual = pagination || null;
-
-          buscarDetalhesDosLeads(results, function () {
-            mostrarMensagem("msgBusca", "Busca atualizada. Total na tela: " + leads.length + " leads.", "success");
-            controlarBotaoCarregarMais(Boolean(paginationAtual && paginationAtual.hasNextPage));
-          });
-
-          window.callbackBuscaGoogleMapsVLHunt = callbackBusca;
+      savedLeads = savedLeads.map(lead => {
+        if (lead.place_id === placeId) {
+          return { ...lead, status };
         }
-      );
-    };
 
-    carregarMaisLeads = function () {
-      if (!paginationAtual || !paginationAtual.hasNextPage) {
-        mostrarMensagem("msgBusca", "Não há mais resultados disponíveis para carregar.", "info");
-        controlarBotaoCarregarMais(false);
+        return lead;
+      });
+
+      persistSavedLeads();
+      renderLeads();
+      renderSavedLeads();
+    }
+
+    async function sendSelectedToPipedrive() {
+      const selected = getSelectedLeads();
+
+      if (!selected.length) {
+        toast('Selecione pelo menos um lead.');
         return;
       }
 
-      if (carregandoMais) {
+      await sendLeadsToPipedrive(selected);
+    }
+
+    async function sendLeadByIdToPipedrive(placeId) {
+      const lead = leads.find(item => item.place_id === placeId) ||
+        savedLeads.find(item => item.place_id === placeId);
+
+      if (!lead) {
+        toast('Lead não encontrado.');
         return;
       }
 
-      carregandoMais = true;
-      setLoading(true);
-      controlarBotaoCarregarMais(false);
-      mostrarMensagem("msgBusca", "Carregando mais leads...", "info");
+      await sendLeadsToPipedrive([lead]);
+    }
 
-      setTimeout(function () {
-        paginationAtual.nextPage();
-      }, 900);
-    };
+    async function exportAllCurrentToPipedrive() {
+      if (!leads.length) {
+        toast('Nenhum lead na tela para exportar.');
+        return;
+      }
+
+      await sendLeadsToPipedrive(leads);
+    }
+
+    async function sendLeadsToPipedrive(list) {
+      const settings = getSettings();
+
+      if (!settings.pipedriveToken) {
+        toast('Configure o token do Pipedrive primeiro.');
+        showSection('settings');
+        return;
+      }
+
+      let success = 0;
+      let failed = 0;
+
+      toast(`Enviando ${list.length} lead(s) para o Pipedrive...`);
+
+      for (const lead of list) {
+        try {
+          await sendOneLeadToPipedrive(lead, settings);
+          markLeadAsExported(lead);
+          success++;
+        } catch (error) {
+          console.error(error);
+          failed++;
+        }
+      }
+
+      persistExportedLeads();
+      persistSavedLeads();
+      renderLeads();
+      renderSavedLeads();
+      renderExportedLeads();
+      updateCounters();
+
+      if (failed) {
+        toast(`${success} enviado(s), ${failed} com erro.`);
+      } else {
+        toast(`${success} lead(s) enviado(s) para o Pipedrive.`);
+      }
+    }
+
+    async function sendOneLeadToPipedrive(lead, settings) {
+      const token = encodeURIComponent(settings.pipedriveToken);
+
+      const orgPayload = {
+        name: lead.name,
+        address: lead.address || undefined
+      };
+
+      const orgResponse = await fetch(`https://api.pipedrive.com/v1/organizations?api_token=${token}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orgPayload)
+      });
+
+      const orgData = await orgResponse.json();
+
+      if (!orgResponse.ok || !orgData.success) {
+        throw new Error('Erro ao criar organização no Pipedrive');
+      }
+
+      const orgId = orgData.data.id;
+
+      const dealPayload = {
+        title: `${lead.name} - ${settings.commercial || 'Comercial'}`,
+        org_id: orgId,
+        status: 'open'
+      };
+
+      const dealResponse = await fetch(`https://api.pipedrive.com/v1/deals?api_token=${token}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dealPayload)
+      });
+
+      const dealData = await dealResponse.json();
+
+      if (!dealResponse.ok || !dealData.success) {
+        throw new Error('Erro ao criar negócio no Pipedrive');
+      }
+
+      const noteContent = `
+Empresa: ${lead.name}
+Telefone: ${lead.phone || 'Não encontrado'}
+Site: ${lead.website || 'Não encontrado'}
+Endereço: ${lead.address || 'Não encontrado'}
+Google Maps: ${lead.url || ''}
+Avaliação: ${lead.rating || 'Sem avaliação'}
+Comercial: ${settings.commercial || ''}
+      `.trim();
+
+      await fetch(`https://api.pipedrive.com/v1/notes?api_token=${token}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          content: noteContent,
+          deal_id: dealData.data.id,
+          org_id: orgId
+        })
+      });
+    }
+
+    function markLeadAsExported(lead) {
+      const exportedRecord = {
+        ...lead,
+        exported: true,
+        exportedAt: new Date().toISOString()
+      };
+
+      if (!exportedLeads.some(item => item.place_id === lead.place_id)) {
+        exportedLeads.push(exportedRecord);
+      }
+
+      leads = leads.map(item => {
+        if (item.place_id === lead.place_id) {
+          return {
+            ...item,
+            exported: true,
+            exportedAt: exportedRecord.exportedAt
+          };
+        }
+
+        return item;
+      });
+
+      savedLeads = savedLeads.map(item => {
+        if (item.place_id === lead.place_id) {
+          return {
+            ...item,
+            exported: true,
+            exportedAt: exportedRecord.exportedAt
+          };
+        }
+
+        return item;
+      });
+    }
+
+    function persistExportedLeads() {
+      localStorage.setItem(STORAGE_KEYS.exported, JSON.stringify(exportedLeads));
+    }
+
+    function renderExportedLeads() {
+      const empty = document.getElementById('exportedEmpty');
+      const wrap = document.getElementById('exportedTableWrap');
+      const tbody = document.getElementById('exportedTableBody');
+
+      tbody.innerHTML = '';
+
+      if (!exportedLeads.length) {
+        empty.classList.remove('hidden');
+        wrap.classList.add('hidden');
+        updateCounters();
+        return;
+      }
+
+      empty.classList.add('hidden');
+      wrap.classList.remove('hidden');
+
+      exportedLeads.forEach(lead => {
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+          <td><strong>${escapeHtml(lead.name)}</strong><br>${escapeHtml(lead.address || '')}</td>
+          <td>${escapeHtml(lead.phone || 'Não encontrado')}</td>
+          <td>${
+            lead.website
+              ? `<a href="${escapeAttr(lead.website)}" target="_blank">${escapeHtml(lead.website)}</a>`
+              : 'Não encontrado'
+          }</td>
+          <td>${lead.exportedAt ? formatDate(lead.exportedAt) : '-'}</td>
+          <td><span class="badge">Exportado</span></td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      updateCounters();
+    }
+
+    function clearResults() {
+      leads = [];
+      selectedLeadIds.clear();
+      placesPagination = null;
+      isLoadingMore = false;
+
+      document.getElementById('selectAllCheckbox').checked = false;
+      document.getElementById('loadMoreBtn').classList.add('hidden');
+
+      renderLeads();
+      updateCounters();
+      toast('Resultados limpos.');
+    }
+
+    function exportSavedToCSV() {
+      if (!savedLeads.length) {
+        toast('Nenhum lead salvo para exportar.');
+        return;
+      }
+
+      const headers = [
+        'Empresa',
+        'Telefone',
+        'Site',
+        'Endereço',
+        'Avaliação',
+        'Total de avaliações',
+        'Status',
+        'Google Maps'
+      ];
+
+      const rows = savedLeads.map(lead => [
+        lead.name || '',
+        lead.phone || '',
+        lead.website || '',
+        lead.address || '',
+        lead.rating || '',
+        lead.user_ratings_total || '',
+        lead.status || '',
+        lead.url || ''
+      ]);
+
+      const csv = [
+        headers,
+        ...rows
+      ].map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(';')).join('\n');
+
+      const blob = new Blob(['\ufeff' + csv], {
+        type: 'text/csv;charset=utf-8;'
+      });
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+
+      a.href = url;
+      a.download = `leads-salvos-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+
+      URL.revokeObjectURL(url);
+
+      toast('CSV exportado.');
+    }
+
+    function makeWhatsAppUrl(phone, companyName) {
+      const digits = String(phone).replace(/\D/g, '');
+
+      if (!digits) return '';
+
+      const finalPhone = digits.startsWith('55') ? digits : `55${digits}`;
+
+      const message = `Olá, tudo bem? Falo com o responsável pela empresa ${companyName}?`;
+
+      return `https://wa.me/${finalPhone}?text=${encodeURIComponent(message)}`;
+    }
+
+    function formatDate(dateString) {
+      try {
+        return new Date(dateString).toLocaleString('pt-BR');
+      } catch {
+        return dateString;
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value).replace(/`/g, '&#096;');
+    }
   </script>
 </body>
 </html>
