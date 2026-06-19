@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VL Hunt</title>
 
-
   <style>
     :root {
       --bg: #f3f6fb;
@@ -275,7 +274,6 @@
       gap: 16px;
     }
 
-    /* Classe auxiliar adicionada para colocar o botão ao lado dos 3 inputs */
     .grid-search {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr auto;
@@ -752,7 +750,6 @@
             </div>
           </div>
 
-          <!-- Modificação 1: Usando grid-search para o botão ficar ao lado -->
           <div class="grid-search">
             <div class="field">
               <label for="nicheInput">Nicho</label>
@@ -776,7 +773,6 @@
             </div>
           </div>
 
-          <!-- Os outros botões continuam na mesma área, logo abaixo -->
           <div class="actions">
             <button class="btn btn-dark" onclick="showSection('saved')">
               Ver Leads Salvos
@@ -801,7 +797,6 @@
                 <p>Leads encontrados com foto, contato, endereço, site e ações.</p>
               </div>
             </div>
-            <!-- Removido o botão de carregar mais daqui. A paginação ficará embaixo -->
           </div>
 
           <div class="results-toolbar">
@@ -831,7 +826,6 @@
 
           <div id="leadsGrid" class="leads-grid"></div>
           
-          <!-- Controles de Paginação -->
           <div id="paginationControls" class="actions" style="justify-content: center; margin-top: 24px;"></div>
 
         </div>
@@ -955,6 +949,10 @@
     let placesPagination = null;
     let isLoadingMore = false;
 
+    // Fila anti-travamento para chamadas da API do Google
+    let detailsQueue = [];
+    let isProcessingQueue = false;
+
     // Variáveis da Paginação
     let currentPage = 1;
     const leadsPerPage = 20;
@@ -991,7 +989,6 @@
         loadGoogleMapsScript(settings.googleApiKey);
       }
 
-      // Modificação 2: Ativar pesquisa ao apertar Enter
       const searchFields = document.querySelectorAll('#nicheInput, #cityInput, #districtInput');
       searchFields.forEach(field => {
         field.addEventListener('keypress', (event) => {
@@ -1158,7 +1155,6 @@
       toast('Google Maps carregado.');
     }
 
-    // Modificação 3: Correção do cálculo de pendentes
     function updateCounters() {
       const encontrados = leads.length;
       const salvos = savedLeads.length;
@@ -1205,11 +1201,14 @@
         ? `${niche} em ${district}, ${city}`
         : `${niche} em ${city}`;
 
+      // Reset total
+      detailsQueue = [];
+      isProcessingQueue = false;
       leads = [];
       selectedLeadIds.clear();
       placesPagination = null;
       isLoadingMore = false;
-      currentPage = 1; // Reseta a paginação ao fazer nova busca
+      currentPage = 1;
 
       document.getElementById('selectAllCheckbox').checked = false;
       document.getElementById('searchBtn').disabled = true;
@@ -1237,7 +1236,7 @@
           renderLeads();
         }
 
-        toast('Nenhum novo lead encontrado nessa busca.');
+        toast('Fim dos resultados ou nenhum lead encontrado.');
         isLoadingMore = false;
         renderPaginationControls(leads.length);
         updateCounters();
@@ -1249,13 +1248,13 @@
 
         if (!leads.some(lead => lead.place_id === normalized.place_id)) {
           leads.push(normalized);
-          fetchPlaceDetails(normalized.place_id);
+          // Substituída a busca imediata pela FILA ANTI-TRAVAMENTO
+          fetchPlaceDetailsQueue(normalized.place_id);
         }
       });
 
       placesPagination = pagination && pagination.hasNextPage ? pagination : null;
 
-      // Se estávamos carregando mais pela paginação, avança a página agora
       if (isLoadingMore) {
         currentPage++;
         isLoadingMore = false;
@@ -1267,22 +1266,17 @@
       toast(`${results.length} leads carregados.`);
     }
 
-    // Modificação 4: Paginação (Substitui o carregar mais simples)
     function changePage(direction) {
       const totalPages = Math.ceil(leads.length / leadsPerPage);
 
       if (direction === 1) {
-        // Indo para a próxima página
         if (currentPage >= totalPages && placesPagination && placesPagination.hasNextPage) {
-          // Precisamos puxar mais da API do Google
           loadMoreLeadsForPagination();
         } else if (currentPage < totalPages) {
-          // Já temos em memória, só avançar
           currentPage++;
           renderLeads();
         }
       } else if (direction === -1) {
-        // Voltando a página
         if (currentPage > 1) {
           currentPage--;
           renderLeads();
@@ -1297,9 +1291,8 @@
       isLoadingMore = true;
 
       const container = document.getElementById('paginationControls');
-      container.innerHTML = `<span style="display: flex; align-items: center; font-weight: 800; font-size: 14px; color: var(--muted);">Buscando mais resultados no Google...</span>`;
+      container.innerHTML = `<span style="display: flex; align-items: center; font-weight: 800; font-size: 14px; color: var(--muted);">Buscando mais resultados no Google... ⏳</span>`;
 
-      // Timeout necessário pela API do Google Places (Rate Limit para nextPage)
       setTimeout(() => {
         try {
           placesPagination.nextPage();
@@ -1324,12 +1317,15 @@
       const totalPages = Math.ceil(totalLeads / leadsPerPage);
       const hasMoreFromApi = placesPagination && placesPagination.hasNextPage;
 
+      const isNextDisabled = (!hasMoreFromApi && currentPage >= totalPages) || isLoadingMore;
+      const isPrevDisabled = currentPage === 1 || isLoadingMore;
+
       container.innerHTML = `
-        <button class="btn btn-soft-gray" onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>Anterior</button>
+        <button class="btn btn-soft-gray" onclick="changePage(-1)" ${isPrevDisabled ? 'disabled' : ''}>Anterior</button>
         <span style="display: flex; align-items: center; font-weight: 800; font-size: 14px; padding: 0 15px; color: var(--muted);">
-          Página ${currentPage}
+          Página ${currentPage} ${totalPages > 1 ? `de ${Math.max(totalPages, currentPage)}` : ''}
         </span>
-        <button class="btn btn-soft-gray" onclick="changePage(1)" ${(!hasMoreFromApi && currentPage >= totalPages) ? 'disabled' : ''}>Próxima</button>
+        <button class="btn btn-soft-gray" onclick="changePage(1)" ${isNextDisabled ? 'disabled' : ''}>Próxima</button>
       `;
     }
 
@@ -1355,46 +1351,65 @@
       };
     }
 
-    function fetchPlaceDetails(placeId) {
-      if (!placesService || !placeId) return;
+    // NOVA FUNÇÃO: Fila Anti-Travamento (Substitui a antiga que dava Over Query Limit)
+    function fetchPlaceDetailsQueue(placeId) {
+      detailsQueue.push(placeId);
+      processQueue();
+    }
+
+    function processQueue() {
+      if (isProcessingQueue || detailsQueue.length === 0) return;
+      isProcessingQueue = true;
+
+      const placeId = detailsQueue.shift();
+
+      if (!placesService) {
+        isProcessingQueue = false;
+        return;
+      }
 
       placesService.getDetails(
         {
           placeId: placeId,
           fields: [
-            'name',
-            'formatted_address',
-            'formatted_phone_number',
-            'international_phone_number',
-            'website',
-            'url',
-            'rating',
-            'user_ratings_total',
-            'photos'
+            'name', 'formatted_address', 'formatted_phone_number', 
+            'international_phone_number', 'website', 'url', 'rating', 
+            'user_ratings_total', 'photos'
           ]
         },
         (place, status) => {
-          if (status !== google.maps.places.PlacesServiceStatus.OK || !place) return;
+          if (status === google.maps.places.PlacesServiceStatus.OK && place) {
+            const index = leads.findIndex(lead => lead.place_id === placeId);
 
-          const index = leads.findIndex(lead => lead.place_id === placeId);
+            if (index !== -1) {
+              leads[index] = {
+                ...leads[index],
+                name: place.name || leads[index].name,
+                address: place.formatted_address || leads[index].address,
+                phone: place.formatted_phone_number || place.international_phone_number || leads[index].phone,
+                website: place.website || leads[index].website,
+                url: place.url || leads[index].url,
+                rating: place.rating || leads[index].rating,
+                user_ratings_total: place.user_ratings_total || leads[index].user_ratings_total,
+                photo: place.photos && place.photos.length
+                  ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 })
+                  : leads[index].photo
+              };
 
-          if (index === -1) return;
+              // Só força atualizar a tela se o lead modificado estiver na página atual do usuário
+              const startIndex = (currentPage - 1) * leadsPerPage;
+              const endIndex = startIndex + leadsPerPage;
+              if (index >= startIndex && index < endIndex) {
+                renderLeads();
+              }
+            }
+          }
 
-          leads[index] = {
-            ...leads[index],
-            name: place.name || leads[index].name,
-            address: place.formatted_address || leads[index].address,
-            phone: place.formatted_phone_number || place.international_phone_number || leads[index].phone,
-            website: place.website || leads[index].website,
-            url: place.url || leads[index].url,
-            rating: place.rating || leads[index].rating,
-            user_ratings_total: place.user_ratings_total || leads[index].user_ratings_total,
-            photo: place.photos && place.photos.length
-              ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 })
-              : leads[index].photo
-          };
-
-          renderLeads();
+          // Espera 350 milissegundos antes de pedir o próximo para não travar a API do Google
+          setTimeout(() => {
+            isProcessingQueue = false;
+            processQueue();
+          }, 350);
         }
       );
     }
@@ -1414,7 +1429,6 @@
 
       empty.classList.add('hidden');
 
-      // Aplica o slice no array para renderizar só os da página atual
       const startIndex = (currentPage - 1) * leadsPerPage;
       const endIndex = startIndex + leadsPerPage;
       const leadsToDisplay = leads.slice(startIndex, endIndex);
@@ -1526,7 +1540,6 @@
 
     function toggleSelectAll(checked) {
       if (checked) {
-        // Seleciona todos da view atual (não de todas as páginas) para evitar bugs de navegação
         const startIndex = (currentPage - 1) * leadsPerPage;
         const endIndex = startIndex + leadsPerPage;
         const leadsToDisplay = leads.slice(startIndex, endIndex);
@@ -1682,7 +1695,6 @@
         return;
       }
 
-      // Exporta todos da array de pesquisa principal
       await sendLeadsToPipedrive(leads);
     }
 
@@ -1871,6 +1883,8 @@ Comercial: ${settings.commercial || ''}
     }
 
     function clearResults() {
+      detailsQueue = [];
+      isProcessingQueue = false;
       leads = [];
       selectedLeadIds.clear();
       placesPagination = null;
