@@ -421,7 +421,7 @@
       padding: 16px;
       background: #fff;
       overflow: hidden;
-      min-height: 390px; /* Voltou pro tamanho com foto */
+      min-height: 390px;
     }
 
     .lead-card.selected {
@@ -440,7 +440,6 @@
       cursor: pointer;
     }
 
-    /* CSS DAS FOTOS DE VOLTA! */
     .lead-photo {
       width: 100%;
       height: 145px;
@@ -619,7 +618,6 @@
       background: #f8fafc;
     }
 
-    /* ======== MODAL PASTAS ======== */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 10000; }
     .modal { background: #fff; padding: 24px; border-radius: 18px; width: 400px; max-width: 90%; box-shadow: var(--shadow); }
     .modal h3 { margin-top: 0; font-size: 20px; font-weight: 950; margin-bottom: 8px; color: var(--dark); }
@@ -810,7 +808,6 @@
             </div>
           </div>
 
-          <!-- BOTÕES LIMPOS DA TELA DE PESQUISA -->
           <div class="actions">
             <button class="btn btn-soft-yellow" onclick="clearResults()">
               Limpar resultados e pesquisa
@@ -866,7 +863,6 @@
               </div>
             </div>
 
-            <!-- FILTRO DE PASTAS E BOTÕES DE EXPORTAÇÃO -->
             <div class="actions" style="margin-top:0; align-items: center;">
               
               <div class="folder-filter-wrap">
@@ -1013,7 +1009,7 @@
     let exportedLeads = [];
     let selectedLeadIds = new Set();
     let isSearching = false;
-    let pendingLeadsToSave = []; // Gerenciar o Modal de Pastas
+    let pendingLeadsToSave = []; 
 
     const STORAGE_KEYS = {
       settings: 'vlhunt_settings_v2',
@@ -1170,14 +1166,12 @@
       document.getElementById('pendingCount').textContent = leads.length; 
     }
 
-    // REMOVE ACENTOS E FACILITA COMPARAÇÃO PARA O FILTRO ANTIBAGUNÇA DO GOOGLE
     function normalizeString(str) {
       return (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     }
 
-    // TRAVA DE SEGURANÇA: Se digitar a rua/bairro, o endereço OBRIGATORIAMENTE tem que conter.
     function isStrictMatch(place, district, street) {
-      if (!district && !street) return true; // Se não pesquisou rua nem bairro, deixa passar
+      if (!district && !street) return true; 
       
       const addr = normalizeString(place.formatted_address || place.vicinity || place.name || '');
       let matchDistrict = true;
@@ -1189,7 +1183,6 @@
       }
 
       if (street) {
-         // O usuário digita "Av. Brasil", retiramos prefixos pra evitar erro bobo.
          let sStr = normalizeString(street).replace(/^(rua|av|avenida|trav|travessa|alameda|rodovia|rod)\.?\s+/g, '');
          matchStreet = addr.includes(sStr);
       }
@@ -1206,7 +1199,6 @@
       const district = document.getElementById('districtInput').value.trim();
       const street = document.getElementById('streetInput').value.trim();
 
-      // NOVA REGRA DE BUSCA FLEXÍVEL APLICADA
       if (!name && (!niche || !city)) {
         toast('Digite o NOME da empresa OU preencha NICHO e CIDADE.');
         return;
@@ -1239,7 +1231,6 @@
       
       const query = queryParts.join(' ');
 
-      // Reset total
       leads = [];
       detailsQueue = [];
       selectedLeadIds.clear();
@@ -1251,7 +1242,7 @@
       btn.disabled = true;
       btn.textContent = 'Buscando (0)...';
 
-      renderLeads(); // Limpa grid
+      renderLeads();
 
       placesService.textSearch({ query: query, type: 'establishment' }, handlePlacesResults);
     }
@@ -1269,7 +1260,6 @@
         const street = document.getElementById('streetInput').value.trim();
 
         results.forEach(place => {
-          // FILTRO ATIVADO: Só entra se não for "misturado"
           if (isStrictMatch(place, district, street)) {
              const normalized = normalizePlace(place);
              if (!leads.some(l => l.place_id === normalized.place_id) && !savedLeads.some(s => s.place_id === normalized.place_id)) {
@@ -1285,11 +1275,8 @@
 
       const btn = document.getElementById('searchBtn');
       
-      // MÁGICA: Se houver mais páginas no Google, ele pede sozinho
       if (pagination && pagination.hasNextPage) {
         btn.textContent = `Buscando mais... (${leads.length})`;
-        
-        // Timeout de 2 segundos obrigatório da API do Google para a próxima página
         setTimeout(() => {
           pagination.nextPage();
         }, 2000);
@@ -1319,7 +1306,7 @@
         url: place.url || '',
         rating: place.rating || '',
         user_ratings_total: place.user_ratings_total || '',
-        photo: photoUrl, // FOTO DE VOLTA!
+        photo: photoUrl,
         status: 'Novo',
         exported: false,
         savedAt: null,
@@ -1348,7 +1335,7 @@
       placesService.getDetails(
         {
           placeId: placeId,
-          fields: ['name', 'formatted_address', 'formatted_phone_number', 'international_phone_number', 'website', 'url', 'rating', 'user_ratings_total', 'photos'] // FOTO DE VOLTA
+          fields: ['name', 'formatted_address', 'formatted_phone_number', 'international_phone_number', 'website', 'url', 'rating', 'user_ratings_total', 'photos'] 
         },
         (place, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
@@ -1374,7 +1361,7 @@
                 user_ratings_total: place.user_ratings_total || leads[index].user_ratings_total,
                 photo: place.photos && place.photos.length
                   ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 })
-                  : leads[index].photo // FOTO DE VOLTA
+                  : leads[index].photo 
               };
               renderLeads();
             }
@@ -1406,7 +1393,6 @@
 
       empty.classList.add('hidden');
 
-      // Agora renderiza todos de uma vez (até 60) sem precisar de botões de página!
       leads.forEach(lead => {
         grid.appendChild(createLeadCard(lead, 'current'));
       });
@@ -1425,7 +1411,6 @@
       const mapsUrl = lead.url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lead.name + ' ' + lead.address)}`;
       const whatsappUrl = lead.phone ? makeWhatsAppUrl(lead.phone, lead.name) : '';
 
-      // Badge de Pasta se for na aba de Salvos
       const folderBadge = source === 'saved' ? `
         <div style="margin-bottom: 14px;">
             <span style="background: #e0f2fe; color: #0369a1; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 900; letter-spacing: 0.5px;">📁 PASTA: ${escapeHtml(lead.folder || 'Geral')}</span>
@@ -1535,8 +1520,6 @@
       return leads.filter(lead => selectedLeadIds.has(lead.place_id));
     }
 
-    // ========== SISTEMA DE PASTAS MODAL ==========
-
     function openFolderModal() {
       const select = document.getElementById('folderSelect');
       const uniqueFolders = [...new Set(savedLeads.map(l => l.folder || 'Geral'))];
@@ -1568,7 +1551,6 @@
             savedAt: new Date().toISOString()
          });
          
-         // Remove da tela de busca atual
          leads = leads.filter(item => item.place_id !== lead.place_id);
          selectedLeadIds.delete(lead.place_id);
          count++;
@@ -1611,13 +1593,9 @@
       openFolderModal();
     }
 
-    // =============================================
-
     function persistSavedLeads() {
       localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
     }
-
-    // ========== FILTRO DE PASTAS NA ABA SALVOS ==========
 
     function updateFolderFilterDropdown() {
       const filter = document.getElementById('savedFolderFilter');
@@ -1692,7 +1670,6 @@
       renderSavedLeads();
     }
 
-    // EXPORTAÇÕES AGORA SÃO BASEADAS NO FILTRO DE PASTA
     async function sendSavedToPipedrive() {
       const list = getFilteredSavedLeads();
       if (!list.length) {
@@ -1714,7 +1691,7 @@
       toast(`Enviando ${list.length} lead(s) para o Pipedrive...`);
 
       for (const lead of list) {
-        if(lead.exported) continue; // Evita re-exportar os mesmos acidentalmente
+        if(lead.exported) continue; 
         
         try {
           await sendOneLeadToPipedrive(lead, settings);
@@ -1916,5 +1893,16 @@ Comercial: ${settings.commercial || ''}
       return escapeHtml(value).replace(/`/g, '&#096;');
     }
   </script>
+
+  <!-- INÍCIO DA CONEXÃO COM O SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseUrl = 'https://sowbnurzaukkxybqbtxa.supabase.co';
+    const supabaseKey = 'sb_publishable_36PhUy-41qXKbCXG7OQkrA_fOiKgUOK';
+    
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    console.log("Supabase conectado com sucesso!");
+  </script>
+  <!-- FIM DA CONEXÃO COM O SUPABASE -->
 </body>
 </html>
