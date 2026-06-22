@@ -421,7 +421,7 @@
       padding: 16px;
       background: #fff;
       overflow: hidden;
-      min-height: 250px; /* Reduzido o min-height pois a foto saiu */
+      min-height: 390px; /* Voltou pro tamanho com foto */
     }
 
     .lead-card.selected {
@@ -440,13 +440,36 @@
       cursor: pointer;
     }
 
+    /* CSS DAS FOTOS DE VOLTA! */
+    .lead-photo {
+      width: 100%;
+      height: 145px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: #edf2f7;
+      display: block;
+      margin-bottom: 14px;
+    }
+
+    .lead-photo-placeholder {
+      width: 100%;
+      height: 145px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #e2e8f0, #f8fafc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      margin-bottom: 14px;
+      color: #94a3b8;
+    }
+
     .lead-title-row {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 10px;
       margin-bottom: 10px;
-      margin-top: 8px; /* Adicionado um respiro no topo já que a foto saiu */
     }
 
     .lead-title {
@@ -454,7 +477,6 @@
       font-size: 18px;
       font-weight: 950;
       line-height: 1.2;
-      padding-left: 28px; /* Espaço para o checkbox */
     }
 
     .badge {
@@ -844,7 +866,7 @@
               </div>
             </div>
 
-            <!-- NOVO FILTRO DE PASTAS E BOTÕES DE EXPORTAÇÃO MOVIDOS PARA CÁ -->
+            <!-- FILTRO DE PASTAS E BOTÕES DE EXPORTAÇÃO -->
             <div class="actions" style="margin-top:0; align-items: center;">
               
               <div class="folder-filter-wrap">
@@ -991,7 +1013,7 @@
     let exportedLeads = [];
     let selectedLeadIds = new Set();
     let isSearching = false;
-    let pendingLeadsToSave = []; // Nova variável para gerenciar o Modal de Pastas
+    let pendingLeadsToSave = []; // Gerenciar o Modal de Pastas
 
     const STORAGE_KEYS = {
       settings: 'vlhunt_settings_v2',
@@ -1285,6 +1307,9 @@
     }
 
     function normalizePlace(place) {
+      const photoUrl = place.photos && place.photos.length
+        ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 })
+        : '';
       return {
         place_id: place.place_id,
         name: place.name || '',
@@ -1294,6 +1319,7 @@
         url: place.url || '',
         rating: place.rating || '',
         user_ratings_total: place.user_ratings_total || '',
+        photo: photoUrl, // FOTO DE VOLTA!
         status: 'Novo',
         exported: false,
         savedAt: null,
@@ -1322,7 +1348,7 @@
       placesService.getDetails(
         {
           placeId: placeId,
-          fields: ['name', 'formatted_address', 'formatted_phone_number', 'international_phone_number', 'website', 'url', 'rating', 'user_ratings_total']
+          fields: ['name', 'formatted_address', 'formatted_phone_number', 'international_phone_number', 'website', 'url', 'rating', 'user_ratings_total', 'photos'] // FOTO DE VOLTA
         },
         (place, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
@@ -1345,7 +1371,10 @@
                 website: place.website || leads[index].website,
                 url: place.url || leads[index].url,
                 rating: place.rating || leads[index].rating,
-                user_ratings_total: place.user_ratings_total || leads[index].user_ratings_total
+                user_ratings_total: place.user_ratings_total || leads[index].user_ratings_total,
+                photo: place.photos && place.photos.length
+                  ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 })
+                  : leads[index].photo // FOTO DE VOLTA
               };
               renderLeads();
             }
@@ -1398,8 +1427,8 @@
 
       // Badge de Pasta se for na aba de Salvos
       const folderBadge = source === 'saved' ? `
-        <div style="margin-bottom: 12px; margin-top: -5px;">
-            <span style="background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 900;">📁 ${escapeHtml(lead.folder || 'Geral')}</span>
+        <div style="margin-bottom: 14px;">
+            <span style="background: #e0f2fe; color: #0369a1; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 900; letter-spacing: 0.5px;">📁 PASTA: ${escapeHtml(lead.folder || 'Geral')}</span>
         </div>
       ` : '';
 
@@ -1413,10 +1442,16 @@
           />
         ` : ''}
 
+        ${
+          lead.photo
+            ? `<img class="lead-photo" src="${escapeAttr(lead.photo)}" alt="${escapeAttr(lead.name)}" />`
+            : `<div class="lead-photo-placeholder">🏢</div>`
+        }
+
         ${folderBadge}
 
-        <div class="lead-title-row" style="${source === 'saved' ? 'margin-top: 0;' : ''}">
-          <h4 class="lead-title" style="${source === 'saved' ? 'padding-left: 0;' : ''}">${escapeHtml(lead.name)}</h4>
+        <div class="lead-title-row">
+          <h4 class="lead-title">${escapeHtml(lead.name)}</h4>
           <span class="badge">${escapeHtml(lead.status || 'Novo')}</span>
         </div>
 
