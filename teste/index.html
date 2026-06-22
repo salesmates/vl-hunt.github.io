@@ -1444,7 +1444,7 @@
 
         ${
           lead.photo
-            ? `<img class="lead-photo" src="${escapeAttr(lead.photo)}" alt="${escapeAttr(lead.name)}" />`
+            ? `<img class="lead-photo" src="${escapeAttr(lead.photo)}" alt="${escapeAttr(lead.name)}" onerror="this.onerror=null; this.outerHTML='<div class=\\'lead-photo-placeholder\\'>🏢</div>';" />`
             : `<div class="lead-photo-placeholder">🏢</div>`
         }
 
