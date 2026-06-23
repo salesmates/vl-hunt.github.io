@@ -40,6 +40,69 @@
       font-family: inherit;
     }
 
+    /* --- TELA DE LOGIN BLINDADA --- */
+    #loginOverlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      padding: 20px;
+    }
+
+    .login-box {
+      background: #fff;
+      width: 100%;
+      max-width: 400px;
+      padding: 40px;
+      border-radius: 24px;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .login-brand {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background: var(--green);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 32px;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .login-box h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      font-weight: 950;
+      color: var(--dark);
+    }
+
+    .login-box p {
+      margin: 0 0 24px;
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .login-box .field {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+
+    .login-box .btn {
+      width: 100%;
+      height: 52px;
+      font-size: 16px;
+      margin-top: 8px;
+    }
+    /* ------------------------------ */
+
     .app {
       display: flex;
       min-height: 100vh;
@@ -57,6 +120,8 @@
       bottom: 0;
       overflow-y: auto;
       z-index: 10;
+      display: flex;
+      flex-direction: column;
     }
 
     .brand {
@@ -125,6 +190,15 @@
     .menu-item.active {
       background: var(--green);
       color: #061827;
+    }
+
+    .logout-btn {
+      margin-top: auto;
+      background: rgba(255,0,0,0.1);
+      color: #ff8a8a;
+    }
+    .logout-btn:hover {
+      background: rgba(255,0,0,0.2);
     }
 
     .main {
@@ -577,7 +651,7 @@
       border-radius: 14px;
       font-weight: 850;
       box-shadow: 0 16px 40px rgba(0,0,0,.2);
-      z-index: 9999;
+      z-index: 999999;
       max-width: 360px;
       display: none;
     }
@@ -671,7 +745,30 @@
 </head>
 
 <body>
-  <div class="app">
+
+  <!-- TELA DE LOGIN SEGURA -->
+  <div id="loginOverlay">
+    <div class="login-box">
+      <div class="login-brand">V</div>
+      <h2>VL Hunt</h2>
+      <p>Acesso restrito. Faça login para continuar.</p>
+      
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="field">
+          <label>E-mail</label>
+          <input type="email" id="loginEmail" required placeholder="Seu e-mail cadastrado" />
+        </div>
+        <div class="field">
+          <label>Senha</label>
+          <input type="password" id="loginPassword" required placeholder="Sua senha" />
+        </div>
+        <button type="submit" class="btn btn-green" id="loginBtn">Entrar no Sistema</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- APLICAÇÃO (INICIALMENTE ESCONDIDA) -->
+  <div class="app" id="mainApp" style="display: none;">
     <aside class="sidebar">
       <div class="brand">
         <div class="brand-icon">V</div>
@@ -697,6 +794,11 @@
 
       <button class="menu-item" data-section="settings" onclick="showSection('settings')">
         ⚙️ Configurações
+      </button>
+
+      <!-- BOTÃO DE SAIR ADICIONADO -->
+      <button class="menu-item logout-btn" onclick="handleLogout()">
+        🚪 Sair do Sistema
       </button>
     </aside>
 
@@ -749,13 +851,11 @@
           </div>
 
           <div class="grid-search">
-            <!-- NOME -->
             <div class="field">
               <label for="nameInput">Nome <span style="font-weight: normal; color: var(--muted); text-transform: none;">(Pesquisa direta)</span></label>
               <input id="nameInput" type="text" placeholder="Ex: Tempero Mineiro" />
             </div>
 
-            <!-- NICHO COM DATALIST -->
             <div class="field">
               <label for="nicheInput">Nicho</label>
               <input id="nicheInput" list="nicheList" type="text" placeholder="Ex: Restaurantes" autocomplete="off" />
@@ -782,25 +882,21 @@
               </datalist>
             </div>
 
-            <!-- CIDADE -->
             <div class="field">
               <label for="cityInput">Cidade</label>
               <input id="cityInput" type="text" placeholder="Ex: Maringá" />
             </div>
 
-            <!-- BAIRRO -->
             <div class="field">
               <label for="districtInput">Bairro <span style="font-weight: normal; color: var(--muted); text-transform: none;">(Opcional)</span></label>
               <input id="districtInput" type="text" placeholder="Ex: Zona 7" />
             </div>
 
-            <!-- RUA -->
             <div class="field">
               <label for="streetInput">Rua/Avenida <span style="font-weight: normal; color: var(--muted); text-transform: none;">(Opcional)</span></label>
               <input id="streetInput" type="text" placeholder="Ex: Av. Colombo" />
             </div>
 
-            <!-- BOTÃO -->
             <div class="field">
               <button class="btn btn-green" onclick="searchLeads()" id="searchBtn" style="height: 48px; width: 100%;">
                 Extrair Leads
@@ -997,13 +1093,77 @@
   <div id="map" class="map-hidden"></div>
   <div id="toast" class="toast"></div>
 
+  <!-- ========================================== -->
+  <!-- SCRIPT SUPABASE & LOGIN DEFINITIVO         -->
+  <!-- ========================================== -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // 1. Conexão com suas chaves oficiais
+    const supabaseUrl = 'https://sowbnurzaukkxybqbtxa.supabase.co';
+    const supabaseKey = 'sb_publishable_36PhUy-41qXKbCXG7OQkrA_fOiKgUOK';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // 2. Lógica para exibir a tela certa
+    function showMainSystem() {
+      document.getElementById('loginOverlay').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'flex';
+      initSystem(); // Chama a função que você já tinha para rodar o app
+    }
+
+    function showLoginScreen() {
+      document.getElementById('loginOverlay').style.display = 'flex';
+      document.getElementById('mainApp').style.display = 'none';
+    }
+
+    // 3. Verifica se já está logado ao abrir a página
+    document.addEventListener('DOMContentLoaded', async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        showMainSystem();
+      } else {
+        showLoginScreen();
+      }
+    });
+
+    // 4. Função de clique no botão de entrar
+    async function handleLogin(e) {
+      e.preventDefault(); // Impede a página de recarregar
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const btn = document.getElementById('loginBtn');
+
+      btn.disabled = true;
+      btn.textContent = 'Acessando...';
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      if (error) {
+        toast('E-mail ou senha incorretos.'); // Usa o toast do seu sistema!
+        btn.disabled = false;
+        btn.textContent = 'Entrar no Sistema';
+      } else {
+        showMainSystem();
+      }
+    }
+
+    // 5. Função de Logout
+    async function handleLogout() {
+      await supabase.auth.signOut();
+      location.reload(); // Recarrega a página, voltando pro login automático
+    }
+  </script>
+
+  <!-- ========================================== -->
+  <!-- SCRIPT ORIGINAL DO SISTEMA (MAPS, PIPEDRIVE)-->
+  <!-- ========================================== -->
   <script>
     let map = null;
     let placesService = null;
-
     let detailsQueue = [];
     let isProcessingQueue = false;
-
     let leads = [];
     let savedLeads = [];
     let exportedLeads = [];
@@ -1017,7 +1177,8 @@
       exported: 'vlhunt_exported_leads_v2'
     };
 
-    document.addEventListener('DOMContentLoaded', () => {
+    // Mudei o nome daqui para initSystem para só rodar depois do login!
+    function initSystem() {
       loadLocalData();
       fillSettingsFields();
       updateCounters();
@@ -1051,7 +1212,7 @@
           }
         });
       });
-    });
+    }
 
     function showSection(section) {
       const sections = {
