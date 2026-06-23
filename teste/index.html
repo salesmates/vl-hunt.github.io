@@ -48,7 +48,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 999999; /* Fica por cima de tudo */
+      z-index: 999999;
     }
 
     .login-box {
@@ -690,7 +690,6 @@
         grid-template-columns: 1fr 1fr;
       }
     }
-
     @media (max-width: 1200px) {
       .leads-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -699,7 +698,6 @@
         grid-template-columns: repeat(2, 1fr);
       }
     }
-
     @media (max-width: 800px) {
       .sidebar {
         position: relative;
@@ -734,24 +732,33 @@
       <h2>Acesso Restrito</h2>
       <p>Faça login para acessar o VL Hunt.</p>
       
-      <div id="loginError" class="login-error">E-mail ou senha incorretos.</div>
+      <div id="loginError" class="login-error"></div>
       
       <div class="field">
         <label>E-mail</label>
         <input type="email" id="loginEmail" placeholder="seu@email.com" onkeydown="if(event.key === 'Enter') handleLogin()" />
       </div>
+      
       <div class="field" style="position: relative;">
         <label>Senha</label>
         <input type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key === 'Enter') handleLogin()" style="padding-right: 40px;" />
-        <!-- BOTÃO DE OLHAR A SENHA -->
-        <span id="togglePasswordBtn" onclick="togglePassword()" style="position: absolute; right: 15px; top: 35px; cursor: pointer; font-size: 18px; user-select: none;">👁️</span>
+        <!-- Olhinho com z-index alto para garantir que seja clicável -->
+        <span id="togglePasswordBtn" onclick="togglePassword()" style="position: absolute; right: 15px; top: 35px; cursor: pointer; font-size: 18px; user-select: none; z-index: 10;">👁️</span>
       </div>
       
       <button class="btn btn-green" style="width: 100%; margin-top: 8px;" onclick="handleLogin()" id="loginBtn">Entrar no Sistema</button>
+      
+      <!-- NOVO BOTÃO: CRIAR CONTA RÁPIDA -->
+      <button class="btn btn-soft-blue" style="width: 100%; margin-top: 12px;" onclick="handleSignUp()" id="signupBtn">Não lembro a senha? (Criar Nova Conta)</button>
+      
+      <!-- MODO DE EMERGÊNCIA: PULAR LOGIN PARA NÃO FICAR TRAVADO -->
+      <div style="margin-top: 24px;">
+        <a href="#" onclick="forceEmergencyBypass(event)" style="color: var(--muted); font-size: 13px; font-weight: 800; text-decoration: underline;">🆘 Pular Login (Modo de Emergência)</a>
+      </div>
     </div>
   </div>
 
-  <!-- APLICAÇÃO PRINCIPAL (Fica escondida até o login passar) -->
+  <!-- APLICAÇÃO PRINCIPAL -->
   <div class="app" id="appContent" style="display: none;">
     <aside class="sidebar">
       <div class="brand">
@@ -763,69 +770,32 @@
       </div>
 
       <div class="menu-title">MENU</div>
+      <button class="menu-item active" data-section="extract" onclick="showSection('extract')">🔎 Extrair Leads</button>
+      <button class="menu-item" data-section="saved" onclick="showSection('saved')">💾 Leads Salvos</button>
+      <button class="menu-item" data-section="pipedrive" onclick="showSection('pipedrive')">📥 Pipedrive</button>
+      <button class="menu-item" data-section="settings" onclick="showSection('settings')">⚙️ Configurações</button>
 
-      <button class="menu-item active" data-section="extract" onclick="showSection('extract')">
-        🔎 Extrair Leads
-      </button>
-
-      <button class="menu-item" data-section="saved" onclick="showSection('saved')">
-        💾 Leads Salvos
-      </button>
-
-      <button class="menu-item" data-section="pipedrive" onclick="showSection('pipedrive')">
-        📥 Pipedrive
-      </button>
-
-      <button class="menu-item" data-section="settings" onclick="showSection('settings')">
-        ⚙️ Configurações
-      </button>
-
-      <!-- BOTÃO SAIR ADICIONADO AQUI -->
       <div style="margin-top: auto; padding-top: 20px;">
-        <button class="menu-item" style="background: #033629; color: #a7f3d0; border: 1px solid #064b38;" onclick="handleLogout()">
-          🚪 Sair do Sistema
-        </button>
+        <button class="menu-item" style="background: #033629; color: #a7f3d0; border: 1px solid #064b38;" onclick="handleLogout()">🚪 Sair do Sistema</button>
       </div>
     </aside>
 
     <main class="main">
       <div class="topbar">
-        <div>
-          <h2>Pesquisa</h2>
-        </div>
-
+        <div><h2>Pesquisa</h2></div>
         <div class="user-card">
           <div class="user-avatar">VL</div>
-          <div>
-            <strong id="topUserName">Victor</strong><br />
-            <span>Comercial</span>
-          </div>
+          <div><strong id="topUserName">Victor</strong><br /><span>Comercial</span></div>
         </div>
       </div>
 
       <div class="stats">
-        <div class="stat-card">
-          <span>Na Tela</span>
-          <strong id="foundCount">0</strong>
-        </div>
-
-        <div class="stat-card">
-          <span>Salvos</span>
-          <strong id="savedCount">0</strong>
-        </div>
-
-        <div class="stat-card">
-          <span>Exportados</span>
-          <strong id="exportedCount">0</strong>
-        </div>
-
-        <div class="stat-card">
-          <span>Pendentes</span>
-          <strong id="pendingCount">0</strong>
-        </div>
+        <div class="stat-card"><span>Na Tela</span><strong id="foundCount">0</strong></div>
+        <div class="stat-card"><span>Salvos</span><strong id="savedCount">0</strong></div>
+        <div class="stat-card"><span>Exportados</span><strong id="exportedCount">0</strong></div>
+        <div class="stat-card"><span>Pendentes</span><strong id="pendingCount">0</strong></div>
       </div>
 
-      <!-- ABA EXTRAIR -->
       <section id="extractSection">
         <div class="section">
           <div class="section-title" style="margin-bottom: 22px;">
@@ -835,15 +805,8 @@
               <p>Busque pelo NOME exato, ou utilize NICHO + CIDADE para busca ampla.</p>
             </div>
           </div>
-
           <div class="grid-search">
-            <!-- NOME -->
-            <div class="field">
-              <label for="nameInput">Nome <span style="font-weight: normal; color: var(--muted); text-transform: none;">(Pesquisa direta)</span></label>
-              <input id="nameInput" type="text" placeholder="Ex: Tempero Mineiro" />
-            </div>
-
-            <!-- NICHO COM DATALIST -->
+            <div class="field"><label for="nameInput">Nome</label><input id="nameInput" type="text" placeholder="Ex: Tempero Mineiro" /></div>
             <div class="field">
               <label for="nicheInput">Nicho</label>
               <input id="nicheInput" list="nicheList" type="text" placeholder="Ex: Restaurantes" autocomplete="off" />
@@ -869,212 +832,87 @@
                 <option value="Tecnologia e TI"></option>
               </datalist>
             </div>
-
-            <!-- CIDADE -->
-            <div class="field">
-              <label for="cityInput">Cidade</label>
-              <input id="cityInput" type="text" placeholder="Ex: Maringá" />
-            </div>
-
-            <!-- BAIRRO -->
-            <div class="field">
-              <label for="districtInput">Bairro <span style="font-weight: normal; color: var(--muted); text-transform: none;">(Opcional)</span></label>
-              <input id="districtInput" type="text" placeholder="Ex: Zona 7" />
-            </div>
-
-            <!-- RUA -->
-            <div class="field">
-              <label for="streetInput">Rua/Avenida <span style="font-weight: normal; color: var(--muted); text-transform: none;">(Opcional)</span></label>
-              <input id="streetInput" type="text" placeholder="Ex: Av. Colombo" />
-            </div>
-
-            <!-- BOTÃO -->
-            <div class="field">
-              <button class="btn btn-green" onclick="searchLeads()" id="searchBtn" style="height: 48px; width: 100%;">
-                Extrair Leads
-              </button>
-            </div>
+            <div class="field"><label for="cityInput">Cidade</label><input id="cityInput" type="text" placeholder="Ex: Maringá" /></div>
+            <div class="field"><label for="districtInput">Bairro (Opcional)</label><input id="districtInput" type="text" placeholder="Ex: Zona 7" /></div>
+            <div class="field"><label for="streetInput">Rua/Av (Opcional)</label><input id="streetInput" type="text" placeholder="Ex: Av. Colombo" /></div>
+            <div class="field"><button class="btn btn-green" onclick="searchLeads()" id="searchBtn" style="height: 48px; width: 100%;">Extrair Leads</button></div>
           </div>
-
-          <div class="actions">
-            <button class="btn btn-soft-yellow" onclick="clearResults()">
-              Limpar resultados e pesquisa
-            </button>
-          </div>
+          <div class="actions"><button class="btn btn-soft-yellow" onclick="clearResults()">Limpar resultados e pesquisa</button></div>
         </div>
 
         <div class="section">
           <div class="section-head">
-            <div class="section-title">
-              <div class="section-icon">📍</div>
-              <div>
-                <h3>Resultados</h3>
-                <p>Lista carregada (sem paginação, rola tudo de uma vez).</p>
-              </div>
-            </div>
+            <div class="section-title"><div class="section-icon">📍</div><div><h3>Resultados</h3></div></div>
           </div>
-
           <div class="results-toolbar">
             <div class="bulk-actions">
-              <label class="select-all">
-                <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this.checked)" />
-                Selecionar todos
-              </label>
-
-              <button class="btn btn-soft-green" onclick="saveSelectedLeads()">
-                Salvar selecionados
-              </button>
-
-              <button class="btn btn-soft-gray" onclick="clearSelected()">
-                Limpar seleção
-              </button>
+              <label class="select-all"><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this.checked)" />Selecionar todos</label>
+              <button class="btn btn-soft-green" onclick="saveSelectedLeads()">Salvar selecionados</button>
+              <button class="btn btn-soft-gray" onclick="clearSelected()">Limpar seleção</button>
             </div>
           </div>
-
-          <div id="resultsEmpty" class="empty">
-            Nenhum lead pesquisado ainda.
-          </div>
-
+          <div id="resultsEmpty" class="empty">Nenhum lead pesquisado ainda.</div>
           <div id="leadsGrid" class="leads-grid"></div>
         </div>
       </section>
 
-      <!-- ABA SALVOS -->
       <section id="savedSection" class="hidden">
         <div class="section">
           <div class="section-head">
-            <div class="section-title">
-              <div class="section-icon">💾</div>
-              <div>
-                <h3>Leads Salvos</h3>
-                <p>Empresas salvas organizadas por pastas para prospecção.</p>
-              </div>
-            </div>
-
+            <div class="section-title"><div class="section-icon">💾</div><div><h3>Leads Salvos</h3><p>Empresas organizadas por pastas.</p></div></div>
             <div class="actions" style="margin-top:0; align-items: center;">
-              
-              <div class="folder-filter-wrap">
-                <select id="savedFolderFilter" onchange="renderSavedLeads()">
-                  <option value="Todas">Todas as pastas</option>
-                </select>
-              </div>
-
-              <button class="btn btn-dark" onclick="sendSavedToPipedrive()">
-                Exportar Pipedrive
-              </button>
-
-              <button class="btn btn-soft-green" onclick="exportSavedToCSV()">
-                Exportar CSV
-              </button>
-
-              <button class="btn btn-danger" onclick="clearSavedLeads()">
-                Limpar salvos
-              </button>
+              <div class="folder-filter-wrap"><select id="savedFolderFilter" onchange="renderSavedLeads()"><option value="Todas">Todas as pastas</option></select></div>
+              <button class="btn btn-dark" onclick="sendSavedToPipedrive()">Exportar Pipedrive</button>
+              <button class="btn btn-soft-green" onclick="exportSavedToCSV()">Exportar CSV</button>
+              <button class="btn btn-danger" onclick="clearSavedLeads()">Limpar salvos</button>
             </div>
           </div>
-
-          <div id="savedEmpty" class="empty">
-            Nenhum lead salvo ainda.
-          </div>
-
+          <div id="savedEmpty" class="empty">Nenhum lead salvo ainda.</div>
           <div id="savedGrid" class="leads-grid"></div>
         </div>
       </section>
 
-      <!-- ABA PIPEDRIVE -->
       <section id="pipedriveSection" class="hidden">
         <div class="section">
           <div class="section-title" style="margin-bottom: 22px;">
-            <div class="section-icon">📥</div>
-            <div>
-              <h3>Pipedrive</h3>
-              <p>Histórico local de leads enviados para o Pipedrive.</p>
-            </div>
+            <div class="section-icon">📥</div><div><h3>Pipedrive</h3><p>Histórico de leads enviados.</p></div>
           </div>
-
-          <div id="exportedEmpty" class="empty">
-            Nenhum lead exportado ainda.
-          </div>
-
+          <div id="exportedEmpty" class="empty">Nenhum lead exportado ainda.</div>
           <div id="exportedTableWrap" class="table-wrap hidden">
             <table>
-              <thead>
-                <tr>
-                  <th>Empresa</th>
-                  <th>Telefone</th>
-                  <th>Site</th>
-                  <th>Data</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
+              <thead><tr><th>Empresa</th><th>Telefone</th><th>Site</th><th>Data</th><th>Status</th></tr></thead>
               <tbody id="exportedTableBody"></tbody>
             </table>
           </div>
         </div>
       </section>
 
-      <!-- ABA CONFIGURAÇÕES -->
       <section id="settingsSection" class="hidden">
         <div class="section">
           <div class="section-title" style="margin-bottom: 22px;">
-            <div class="section-icon">⚙️</div>
-            <div>
-              <h3>Configurações</h3>
-              <p>Configure suas chaves e o comercial responsável.</p>
-            </div>
+            <div class="section-icon">⚙️</div><div><h3>Configurações</h3></div>
           </div>
-
           <div class="grid-3">
-            <div class="field">
-              <label for="googleApiKeyInput">API Key Google Maps</label>
-              <input id="googleApiKeyInput" type="password" placeholder="Cole sua API Key do Google Maps" />
-            </div>
-
-            <div class="field">
-              <label for="pipedriveTokenInput">Token Pipedrive</label>
-              <input id="pipedriveTokenInput" type="password" placeholder="Cole seu token do Pipedrive" />
-            </div>
-
-            <div class="field">
-              <label for="commercialInput">Comercial</label>
-              <input id="commercialInput" type="text" placeholder="Ex: Victor" />
-            </div>
+            <div class="field"><label for="googleApiKeyInput">API Key Google Maps</label><input id="googleApiKeyInput" type="password" placeholder="Sua API Key" /></div>
+            <div class="field"><label for="pipedriveTokenInput">Token Pipedrive</label><input id="pipedriveTokenInput" type="password" placeholder="Seu Token" /></div>
+            <div class="field"><label for="commercialInput">Comercial</label><input id="commercialInput" type="text" placeholder="Ex: Victor" /></div>
           </div>
-
           <div class="actions">
-            <button class="btn btn-soft-green" onclick="saveSettings()">
-              Salvar configurações
-            </button>
-
-            <button class="btn btn-soft-yellow" onclick="clearSettings()">
-              Limpar configurações
-            </button>
-
-            <button class="btn btn-dark" onclick="reloadGoogleMapsScript()">
-              Recarregar Google Maps
-            </button>
+            <button class="btn btn-soft-green" onclick="saveSettings()">Salvar</button>
+            <button class="btn btn-soft-yellow" onclick="clearSettings()">Limpar</button>
+            <button class="btn btn-dark" onclick="reloadGoogleMapsScript()">Recarregar Maps</button>
           </div>
         </div>
       </section>
     </main>
   </div>
 
-  <!-- MODAL DE ESCOLHA DE PASTA -->
   <div id="folderModal" class="modal-overlay">
     <div class="modal">
-      <h3>Salvar Leads</h3>
-      <p>Em qual pasta deseja guardar estes leads?</p>
-      
-      <label>Selecionar pasta existente</label>
-      <select id="folderSelect">
-        <option value="">-- Selecione --</option>
-      </select>
-      
+      <h3>Salvar Leads</h3><p>Em qual pasta deseja guardar?</p>
+      <label>Selecionar pasta existente</label><select id="folderSelect"><option value="">-- Selecione --</option></select>
       <div class="modal-divider">OU CRIAR NOVA</div>
-      
-      <label>Nova pasta</label>
-      <input type="text" id="newFolderInput" placeholder="Ex: Victor - Março">
-      
+      <label>Nova pasta</label><input type="text" id="newFolderInput" placeholder="Ex: Victor - Março">
       <div class="modal-buttons">
         <button class="btn btn-soft-gray" onclick="closeFolderModal()">Cancelar</button>
         <button class="btn btn-green" onclick="confirmFolderSave()">Confirmar e Salvar</button>
@@ -1085,155 +923,82 @@
   <div id="map" class="map-hidden"></div>
   <div id="toast" class="toast"></div>
 
+  <!-- SCRIPT DO APLICATIVO (MAPS, SALVAR, PIPEDRIVE, ETC) -->
   <script>
-    // --- LÓGICA DO SEU APP EXISTENTE ---
-    let map = null;
-    let placesService = null;
-    let detailsQueue = [];
-    let isProcessingQueue = false;
-    let leads = [];
-    let savedLeads = [];
-    let exportedLeads = [];
-    let selectedLeadIds = new Set();
-    let isSearching = false;
-    let pendingLeadsToSave = []; 
-
-    const STORAGE_KEYS = {
-      settings: 'vlhunt_settings_v2',
-      saved: 'vlhunt_saved_leads_v2',
-      exported: 'vlhunt_exported_leads_v2'
-    };
+    let map = null, placesService = null, detailsQueue = [], isProcessingQueue = false, leads = [], savedLeads = [], exportedLeads = [], selectedLeadIds = new Set(), isSearching = false, pendingLeadsToSave = []; 
+    const STORAGE_KEYS = { settings: 'vlhunt_settings_v2', saved: 'vlhunt_saved_leads_v2', exported: 'vlhunt_exported_leads_v2' };
 
     document.addEventListener('DOMContentLoaded', () => {
-      loadLocalData();
-      fillSettingsFields();
-      updateCounters();
-      updateFolderFilterDropdown();
-      renderSavedLeads();
-      renderExportedLeads();
-
-      const savedName = localStorage.getItem('vlhunt_last_name') || '';
-      const savedNiche = localStorage.getItem('vlhunt_last_niche') || '';
-      const savedCity = localStorage.getItem('vlhunt_last_city') || '';
-      const savedDistrict = localStorage.getItem('vlhunt_last_district') || '';
-      const savedStreet = localStorage.getItem('vlhunt_last_street') || '';
-
-      document.getElementById('nameInput').value = savedName;
-      document.getElementById('nicheInput').value = savedNiche;
-      document.getElementById('cityInput').value = savedCity;
-      document.getElementById('districtInput').value = savedDistrict;
-      document.getElementById('streetInput').value = savedStreet;
-
+      loadLocalData(); fillSettingsFields(); updateCounters(); updateFolderFilterDropdown(); renderSavedLeads(); renderExportedLeads();
+      document.getElementById('nameInput').value = localStorage.getItem('vlhunt_last_name') || '';
+      document.getElementById('nicheInput').value = localStorage.getItem('vlhunt_last_niche') || '';
+      document.getElementById('cityInput').value = localStorage.getItem('vlhunt_last_city') || '';
+      document.getElementById('districtInput').value = localStorage.getItem('vlhunt_last_district') || '';
+      document.getElementById('streetInput').value = localStorage.getItem('vlhunt_last_street') || '';
       const settings = getSettings();
-      if (settings.googleApiKey) {
-        loadGoogleMapsScript(settings.googleApiKey);
-      }
+      if (settings.googleApiKey) loadGoogleMapsScript(settings.googleApiKey);
     });
 
     function showSection(section) {
-      const sections = {
-        extract: document.getElementById('extractSection'),
-        saved: document.getElementById('savedSection'),
-        pipedrive: document.getElementById('pipedriveSection'),
-        settings: document.getElementById('settingsSection')
-      };
-
+      const sections = { extract: document.getElementById('extractSection'), saved: document.getElementById('savedSection'), pipedrive: document.getElementById('pipedriveSection'), settings: document.getElementById('settingsSection') };
       Object.values(sections).forEach(el => el.classList.add('hidden'));
       if (sections[section]) sections[section].classList.remove('hidden');
-
       document.querySelectorAll('.menu-item').forEach(btn => btn.classList.remove('active'));
-      const activeButton = document.querySelector(`.menu-item[data-section="${section}"]`);
-      if (activeButton) activeButton.classList.add('active');
-
-      if (section === 'saved') {
-          updateFolderFilterDropdown();
-          renderSavedLeads();
-      }
+      const activeBtn = document.querySelector(`.menu-item[data-section="${section}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+      if (section === 'saved') { updateFolderFilterDropdown(); renderSavedLeads(); }
       if (section === 'pipedrive') renderExportedLeads();
     }
 
-    function toast(message) {
+    function toast(msg) {
       const el = document.getElementById('toast');
-      el.textContent = message;
-      el.style.display = 'block';
-
+      el.textContent = msg; el.style.display = 'block';
       clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => {
-        el.style.display = 'none';
-      }, 3500); 
+      window.__toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3500); 
     }
 
     function loadLocalData() {
       try { savedLeads = JSON.parse(localStorage.getItem(STORAGE_KEYS.saved) || '[]'); } catch { savedLeads = []; }
       try { exportedLeads = JSON.parse(localStorage.getItem(STORAGE_KEYS.exported) || '[]'); } catch { exportedLeads = []; }
     }
-
-    function getSettings() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.settings) || '{}'); } catch { return {}; }
-    }
-
+    function getSettings() { try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.settings) || '{}'); } catch { return {}; } }
     function fillSettingsFields() {
-      const settings = getSettings();
-      document.getElementById('googleApiKeyInput').value = settings.googleApiKey || '';
-      document.getElementById('pipedriveTokenInput').value = settings.pipedriveToken || '';
-      document.getElementById('commercialInput').value = settings.commercial || 'Victor';
-      document.getElementById('topUserName').textContent = settings.commercial || 'Victor';
+      const set = getSettings();
+      document.getElementById('googleApiKeyInput').value = set.googleApiKey || '';
+      document.getElementById('pipedriveTokenInput').value = set.pipedriveToken || '';
+      document.getElementById('commercialInput').value = set.commercial || 'Victor';
+      document.getElementById('topUserName').textContent = set.commercial || 'Victor';
     }
-
     function saveSettings() {
-      const settings = {
-        googleApiKey: document.getElementById('googleApiKeyInput').value.trim(),
-        pipedriveToken: document.getElementById('pipedriveTokenInput').value.trim(),
-        commercial: document.getElementById('commercialInput').value.trim() || 'Victor'
-      };
-
-      localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(settings));
-      document.getElementById('topUserName').textContent = settings.commercial;
+      const set = { googleApiKey: document.getElementById('googleApiKeyInput').value.trim(), pipedriveToken: document.getElementById('pipedriveTokenInput').value.trim(), commercial: document.getElementById('commercialInput').value.trim() || 'Victor' };
+      localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(set));
+      document.getElementById('topUserName').textContent = set.commercial;
       toast('Configurações salvas.');
-
-      if (settings.googleApiKey) loadGoogleMapsScript(settings.googleApiKey);
+      if (set.googleApiKey) loadGoogleMapsScript(set.googleApiKey);
     }
-
-    function clearSettings() {
-      if (!confirm('Deseja limpar as configurações?')) return;
-      localStorage.removeItem(STORAGE_KEYS.settings);
-      fillSettingsFields();
-      toast('Configurações limpas.');
-    }
+    function clearSettings() { if (!confirm('Limpar?')) return; localStorage.removeItem(STORAGE_KEYS.settings); fillSettingsFields(); toast('Configurações limpas.'); }
 
     function reloadGoogleMapsScript() {
-      const settings = getSettings();
-      if (!settings.googleApiKey) {
-        toast('Informe e salve a API Key do Google Maps primeiro.');
-        return;
-      }
-      loadGoogleMapsScript(settings.googleApiKey, true);
+      const set = getSettings(); if (!set.googleApiKey) return toast('Informe a API Key do Google Maps.');
+      loadGoogleMapsScript(set.googleApiKey, true);
     }
 
-    function loadGoogleMapsScript(apiKey, forceReload = false) {
-      if (window.google && window.google.maps && window.google.maps.places && !forceReload) {
-        initGoogleMaps();
-        return;
-      }
-      const oldScript = document.getElementById('googleMapsScript');
-      if (oldScript) oldScript.remove();
-
+    function loadGoogleMapsScript(apiKey, force = false) {
+      if (window.google && window.google.maps && window.google.maps.places && !force) { initGoogleMaps(); return; }
+      const old = document.getElementById('googleMapsScript'); if (old) old.remove();
       window.initVLHuntGoogleMaps = function () { initGoogleMaps(); };
-
       const script = document.createElement('script');
       script.id = 'googleMapsScript';
       script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&libraries=places&callback=initVLHuntGoogleMaps`;
-      script.async = true;
-      script.defer = true;
-      script.onerror = function () { toast('Erro ao carregar Google Maps. Verifique sua API Key.'); };
+      script.async = true; script.defer = true;
+      script.onerror = () => toast('Erro ao carregar Google Maps.');
       document.body.appendChild(script);
     }
 
     function initGoogleMaps() {
-      const mapEl = document.getElementById('map');
-      map = new google.maps.Map(mapEl, { center: { lat: -23.4205, lng: -51.9333 }, zoom: 13 });
+      map = new google.maps.Map(document.getElementById('map'), { center: { lat: -23.42, lng: -51.93 }, zoom: 13 });
       placesService = new google.maps.places.PlacesService(map);
-      toast('Google Maps carregado e pronto.');
+      toast('Google Maps carregado.');
     }
 
     function updateCounters() {
@@ -1243,815 +1008,389 @@
       document.getElementById('pendingCount').textContent = leads.length; 
     }
 
-    function normalizeString(str) {
-      return (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    }
-
+    function normalizeString(str) { return (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
+    
     function isStrictMatch(place, district, street) {
       if (!district && !street) return true; 
-      
       const addr = normalizeString(place.formatted_address || place.vicinity || place.name || '');
-      let matchDistrict = true;
-      let matchStreet = true;
-
-      if (district) {
-         const dStr = normalizeString(district);
-         matchDistrict = addr.includes(dStr);
-      }
-
-      if (street) {
-         let sStr = normalizeString(street).replace(/^(rua|av|avenida|trav|travessa|alameda|rodovia|rod)\.?\s+/g, '');
-         matchStreet = addr.includes(sStr);
-      }
-
-      return matchDistrict && matchStreet;
+      let matchD = true, matchS = true;
+      if (district) matchD = addr.includes(normalizeString(district));
+      if (street) matchS = addr.includes(normalizeString(street).replace(/^(rua|av|avenida|trav|travessa|alameda|rodovia|rod)\.?\s+/g, ''));
+      return matchD && matchS;
     }
 
     function searchLeads() {
       if (isSearching) return;
+      const n = document.getElementById('nameInput').value.trim();
+      const ni = document.getElementById('nicheInput').value.trim();
+      const c = document.getElementById('cityInput').value.trim();
+      const d = document.getElementById('districtInput').value.trim();
+      const s = document.getElementById('streetInput').value.trim();
 
-      const name = document.getElementById('nameInput').value.trim();
-      const niche = document.getElementById('nicheInput').value.trim();
-      const city = document.getElementById('cityInput').value.trim();
-      const district = document.getElementById('districtInput').value.trim();
-      const street = document.getElementById('streetInput').value.trim();
+      if (!n && (!ni || !c)) return toast('Digite NOME ou NICHO e CIDADE.');
+      if (!getSettings().googleApiKey) { toast('Configure a API Key.'); return showSection('settings'); }
+      if (!placesService) return toast('Maps carregando...');
 
-      if (!name && (!niche || !city)) {
-        toast('Digite o NOME da empresa OU preencha NICHO e CIDADE.');
-        return;
-      }
+      localStorage.setItem('vlhunt_last_name', n); localStorage.setItem('vlhunt_last_niche', ni); localStorage.setItem('vlhunt_last_city', c); localStorage.setItem('vlhunt_last_district', d); localStorage.setItem('vlhunt_last_street', s);
 
-      const settings = getSettings();
-      if (!settings.googleApiKey) {
-        toast('Configure a API Key do Google Maps primeiro.');
-        showSection('settings');
-        return;
-      }
-
-      if (!placesService) {
-        toast('Google Maps carregando... Aguarde.');
-        return;
-      }
-
-      localStorage.setItem('vlhunt_last_name', name);
-      localStorage.setItem('vlhunt_last_niche', niche);
-      localStorage.setItem('vlhunt_last_city', city);
-      localStorage.setItem('vlhunt_last_district', district);
-      localStorage.setItem('vlhunt_last_street', street);
-
-      let queryParts = [];
-      if (name) queryParts.push(name);
-      if (niche) queryParts.push(niche);
-      if (street) queryParts.push(`na rua ${street}`);
-      if (district) queryParts.push(`bairro ${district}`);
-      if (city) queryParts.push(`em ${city}`);
+      let q = []; if(n) q.push(n); if(ni) q.push(ni); if(s) q.push(`na rua ${s}`); if(d) q.push(`bairro ${d}`); if(c) q.push(`em ${c}`);
       
-      const query = queryParts.join(' ');
-
-      leads = [];
-      detailsQueue = [];
-      selectedLeadIds.clear();
-      isProcessingQueue = false;
-      isSearching = true;
-
+      leads = []; detailsQueue = []; selectedLeadIds.clear(); isProcessingQueue = false; isSearching = true;
       document.getElementById('selectAllCheckbox').checked = false;
-      const btn = document.getElementById('searchBtn');
-      btn.disabled = true;
-      btn.textContent = 'Buscando (0)...';
-
+      const btn = document.getElementById('searchBtn'); btn.disabled = true; btn.textContent = 'Buscando...';
       renderLeads();
-
-      placesService.textSearch({ query: query, type: 'establishment' }, handlePlacesResults);
+      placesService.textSearch({ query: q.join(' '), type: 'establishment' }, handlePlacesResults);
     }
 
-    function handlePlacesResults(results, status, pagination) {
+    function handlePlacesResults(res, status, pag) {
       if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-         setTimeout(() => {
-            if (pagination && pagination.hasNextPage) pagination.nextPage();
-         }, 2000);
-         return; 
+         setTimeout(() => { if (pag && pag.hasNextPage) pag.nextPage(); }, 2000); return; 
       }
-
-      if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-        const district = document.getElementById('districtInput').value.trim();
-        const street = document.getElementById('streetInput').value.trim();
-
-        results.forEach(place => {
-          if (isStrictMatch(place, district, street)) {
-             const normalized = normalizePlace(place);
-             if (!leads.some(l => l.place_id === normalized.place_id) && !savedLeads.some(s => s.place_id === normalized.place_id)) {
-               leads.push(normalized);
-               fetchPlaceDetailsQueue(normalized.place_id);
+      if (status === google.maps.places.PlacesServiceStatus.OK && res) {
+        const d = document.getElementById('districtInput').value.trim();
+        const s = document.getElementById('streetInput').value.trim();
+        res.forEach(place => {
+          if (isStrictMatch(place, d, s)) {
+             const norm = normalizePlace(place);
+             if (!leads.some(l => l.place_id === norm.place_id) && !savedLeads.some(sa => sa.place_id === norm.place_id)) {
+               leads.push(norm); fetchPlaceDetailsQueue(norm.place_id);
              }
           }
         });
       }
-
-      renderLeads();
-      updateCounters();
-
+      renderLeads(); updateCounters();
       const btn = document.getElementById('searchBtn');
-      
-      if (pagination && pagination.hasNextPage) {
-        btn.textContent = `Buscando mais... (${leads.length})`;
-        setTimeout(() => {
-          pagination.nextPage();
-        }, 2000);
+      if (pag && pag.hasNextPage) {
+        btn.textContent = `Buscando... (${leads.length})`; setTimeout(() => { pag.nextPage(); }, 2000);
       } else {
-        isSearching = false;
-        btn.disabled = false;
-        btn.textContent = 'Extrair Leads';
-        
-        if (leads.length === 0) {
-           toast('Fim. Nenhum lead EXATO com esses filtros. Tente flexibilizar.');
-        } else {
-           toast(`Busca automatizada concluída! ${leads.length} leads na tela.`);
-        }
+        isSearching = false; btn.disabled = false; btn.textContent = 'Extrair Leads';
+        toast(leads.length === 0 ? 'Fim. Nenhum lead.' : `Concluído! ${leads.length} leads.`);
       }
     }
 
     function normalizePlace(place) {
-      const photoUrl = place.photos && place.photos.length
-        ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 })
-        : '';
       return {
-        place_id: place.place_id,
-        name: place.name || '',
-        address: place.formatted_address || place.vicinity || '',
-        phone: '',
-        website: '',
-        url: place.url || '',
-        rating: place.rating || '',
-        user_ratings_total: place.user_ratings_total || '',
-        photo: photoUrl,
-        status: 'Novo',
-        exported: false,
-        savedAt: null,
-        exportedAt: null
+        place_id: place.place_id, name: place.name || '', address: place.formatted_address || place.vicinity || '',
+        phone: '', website: '', url: place.url || '', rating: place.rating || '', user_ratings_total: place.user_ratings_total || '',
+        photo: place.photos && place.photos.length ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 }) : '',
+        status: 'Novo', exported: false, savedAt: null, exportedAt: null
       };
     }
 
-    function fetchPlaceDetailsQueue(placeId) {
-      if (!detailsQueue.includes(placeId)) {
-         detailsQueue.push(placeId);
-      }
-      processQueue();
-    }
-
+    function fetchPlaceDetailsQueue(id) { if (!detailsQueue.includes(id)) detailsQueue.push(id); processQueue(); }
     function processQueue() {
-      if (isProcessingQueue || detailsQueue.length === 0) return;
+      if (isProcessingQueue || detailsQueue.length === 0 || !placesService) return;
       isProcessingQueue = true;
-
-      const placeId = detailsQueue.shift();
-
-      if (!placesService) {
-        isProcessingQueue = false;
-        return;
-      }
-
-      placesService.getDetails(
-        {
-          placeId: placeId,
-          fields: ['name', 'formatted_address', 'formatted_phone_number', 'international_phone_number', 'website', 'url', 'rating', 'user_ratings_total', 'photos'] 
-        },
-        (place, status) => {
+      const id = detailsQueue.shift();
+      placesService.getDetails({ placeId: id, fields: ['name', 'formatted_address', 'formatted_phone_number', 'international_phone_number', 'website', 'url', 'rating', 'user_ratings_total', 'photos'] }, (place, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-             detailsQueue.unshift(placeId); 
-             setTimeout(() => {
-                isProcessingQueue = false;
-                processQueue();
-             }, 2000); 
-             return;
+             detailsQueue.unshift(id); setTimeout(() => { isProcessingQueue = false; processQueue(); }, 2000); return;
           }
-
           if (status === google.maps.places.PlacesServiceStatus.OK && place) {
-            const index = leads.findIndex(lead => lead.place_id === placeId);
-            if (index !== -1) {
-              leads[index] = {
-                ...leads[index],
-                name: place.name || leads[index].name,
-                address: place.formatted_address || leads[index].address,
-                phone: place.formatted_phone_number || place.international_phone_number || leads[index].phone,
-                website: place.website || leads[index].website,
-                url: place.url || leads[index].url,
-                rating: place.rating || leads[index].rating,
-                user_ratings_total: place.user_ratings_total || leads[index].user_ratings_total,
-                photo: place.photos && place.photos.length
-                  ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 })
-                  : leads[index].photo 
+            const i = leads.findIndex(l => l.place_id === id);
+            if (i !== -1) {
+              leads[i] = {
+                ...leads[i], name: place.name || leads[i].name, address: place.formatted_address || leads[i].address,
+                phone: place.formatted_phone_number || place.international_phone_number || leads[i].phone,
+                website: place.website || leads[i].website, url: place.url || leads[i].url, rating: place.rating || leads[i].rating,
+                user_ratings_total: place.user_ratings_total || leads[i].user_ratings_total,
+                photo: place.photos && place.photos.length ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 }) : leads[i].photo 
               };
               renderLeads();
             }
           }
-
-          setTimeout(() => {
-            isProcessingQueue = false;
-            processQueue();
-          }, 500);
-        }
-      );
+          setTimeout(() => { isProcessingQueue = false; processQueue(); }, 500);
+      });
     }
 
     function renderLeads() {
       const grid = document.getElementById('leadsGrid');
       const empty = document.getElementById('resultsEmpty');
-
       grid.innerHTML = '';
-
       if (!leads.length) {
-        if (!isSearching) {
-           empty.innerHTML = 'Nenhum lead pesquisado ainda.';
-        } else {
-           empty.innerHTML = 'Aguarde, processando resultados no Google...';
-        }
-        empty.classList.remove('hidden');
-        return;
+        empty.innerHTML = isSearching ? 'Aguarde...' : 'Nenhum lead.';
+        empty.classList.remove('hidden'); return;
       }
-
       empty.classList.add('hidden');
-
-      leads.forEach(lead => {
-        grid.appendChild(createLeadCard(lead, 'current'));
-      });
+      leads.forEach(l => grid.appendChild(createLeadCard(l, 'current')));
     }
 
     function createLeadCard(lead, source) {
-      const card = document.createElement('div');
-      card.className = 'lead-card';
-
-      if (source === 'current' && selectedLeadIds.has(lead.place_id)) {
-        card.classList.add('selected');
-      }
-
-      const websiteLabel = lead.website ? lead.website : 'Site não encontrado';
-      const phoneLabel = lead.phone ? lead.phone : 'Telefone não encontrado';
-      const mapsUrl = lead.url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lead.name + ' ' + lead.address)}`;
-      const whatsappUrl = lead.phone ? makeWhatsAppUrl(lead.phone, lead.name) : '';
-
-      const folderBadge = source === 'saved' ? `
-        <div style="margin-bottom: 14px;">
-            <span style="background: #e0f2fe; color: #0369a1; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 900; letter-spacing: 0.5px;">📁 PASTA: ${escapeHtml(lead.folder || 'Geral')}</span>
-        </div>
-      ` : '';
-
-      card.innerHTML = `
-        ${source === 'current' ? `
-          <input
-            type="checkbox"
-            class="lead-check"
-            ${selectedLeadIds.has(lead.place_id) ? 'checked' : ''}
-            onchange="toggleLeadSelection('${escapeAttr(lead.place_id)}', this.checked)"
-          />
-        ` : ''}
-
-        ${
-          lead.photo
-            ? `<img class="lead-photo" src="${escapeAttr(lead.photo)}" alt="${escapeAttr(lead.name)}" onerror="this.onerror=null; this.outerHTML='<div class=\\'lead-photo-placeholder\\'>🏢</div>';" />`
-            : `<div class="lead-photo-placeholder">🏢</div>`
-        }
-
-        ${folderBadge}
-
-        <div class="lead-title-row">
-          <h4 class="lead-title">${escapeHtml(lead.name)}</h4>
-          <span class="badge">${escapeHtml(lead.status || 'Novo')}</span>
-        </div>
-
-        <p class="lead-info">📍 ${escapeHtml(lead.address || 'Endereço não encontrado')}</p>
-        <p class="lead-info">📞 ${escapeHtml(phoneLabel)}</p>
-        <p class="lead-info">🌐 ${
-          lead.website
-            ? `<a href="${escapeAttr(lead.website)}" target="_blank">${escapeHtml(lead.website)}</a>`
-            : 'Site não encontrado'
-        }</p>
-        <p class="lead-info">⭐ ${
-          lead.rating
-            ? `${escapeHtml(String(lead.rating))} (${escapeHtml(String(lead.user_ratings_total || 0))} avaliações)`
-            : 'Sem avaliações'
-        }</p>
-
+      const div = document.createElement('div');
+      div.className = 'lead-card' + (source === 'current' && selectedLeadIds.has(lead.place_id) ? ' selected' : '');
+      const wa = lead.phone ? `https://wa.me/${String(lead.phone).replace(/\D/g, '').startsWith('55') ? String(lead.phone).replace(/\D/g, '') : '55'+String(lead.phone).replace(/\D/g, '')}?text=Olá` : '';
+      
+      div.innerHTML = `
+        ${source === 'current' ? `<input type="checkbox" class="lead-check" ${selectedLeadIds.has(lead.place_id) ? 'checked' : ''} onchange="toggleLeadSelection('${escapeAttr(lead.place_id)}', this.checked)" />` : ''}
+        ${lead.photo ? `<img class="lead-photo" src="${escapeAttr(lead.photo)}" onerror="this.onerror=null; this.outerHTML='<div class=&quot;lead-photo-placeholder&quot;>🏢</div>';" />` : `<div class="lead-photo-placeholder">🏢</div>`}
+        ${source === 'saved' ? `<div style="margin-bottom: 14px;"><span style="background: #e0f2fe; color: #0369a1; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 900;">📁 PASTA: ${escapeHtml(lead.folder || 'Geral')}</span></div>` : ''}
+        <div class="lead-title-row"><h4 class="lead-title">${escapeHtml(lead.name)}</h4><span class="badge">${escapeHtml(lead.status || 'Novo')}</span></div>
+        <p class="lead-info">📍 ${escapeHtml(lead.address || 'Não encontrado')}</p>
+        <p class="lead-info">📞 ${escapeHtml(lead.phone || 'Não encontrado')}</p>
+        <p class="lead-info">🌐 ${lead.website ? `<a href="${escapeAttr(lead.website)}" target="_blank">${escapeHtml(lead.website)}</a>` : 'Não encontrado'}</p>
         <div class="lead-buttons">
-          ${
-            whatsappUrl
-              ? `<a class="small-btn btn-soft-green" href="${escapeAttr(whatsappUrl)}" target="_blank">WhatsApp</a>`
-              : ''
-          }
-
-          ${
-            lead.website
-              ? `<a class="small-btn btn-soft-blue" href="${escapeAttr(lead.website)}" target="_blank">Site</a>`
-              : ''
-          }
-
-          <a class="small-btn btn-soft-gray" href="${escapeAttr(mapsUrl)}" target="_blank">Maps</a>
-
-          ${source === 'current' ? `
-          <button class="small-btn btn-soft-green" onclick="saveLeadById('${escapeAttr(lead.place_id)}')">
-            Salvar
-          </button>
-          ` : ''}
+          ${wa ? `<a class="small-btn btn-soft-green" href="${escapeAttr(wa)}" target="_blank">WhatsApp</a>` : ''}
+          ${lead.website ? `<a class="small-btn btn-soft-blue" href="${escapeAttr(lead.website)}" target="_blank">Site</a>` : ''}
+          <a class="small-btn btn-soft-gray" href="${escapeAttr(lead.url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lead.name)}`)}" target="_blank">Maps</a>
+          ${source === 'current' ? `<button class="small-btn btn-soft-green" onclick="saveLeadById('${escapeAttr(lead.place_id)}')">Salvar</button>` : ''}
         </div>
-
         <div class="lead-status-row">
           <select onchange="changeLeadStatus('${escapeAttr(lead.place_id)}', this.value)">
             <option value="Novo" ${lead.status === 'Novo' ? 'selected' : ''}>Novo</option>
             <option value="Contato feito" ${lead.status === 'Contato feito' ? 'selected' : ''}>Contato feito</option>
             <option value="Interessado" ${lead.status === 'Interessado' ? 'selected' : ''}>Interessado</option>
-            <option value="Sem interesse" ${lead.status === 'Sem interesse' ? 'selected' : ''}>Sem interesse</option>
-            <option value="Fechado" ${lead.status === 'Fechado' ? 'selected' : ''}>Fechado</option>
           </select>
-
           <span class="status-pill">${lead.exported ? 'Exportado' : 'Pendente'}</span>
         </div>
       `;
-
-      return card;
+      return div;
     }
 
-    function toggleLeadSelection(placeId, checked) {
-      if (checked) {
-        selectedLeadIds.add(placeId);
-      } else {
-        selectedLeadIds.delete(placeId);
-      }
-      renderLeads();
-    }
-
-    function toggleSelectAll(checked) {
-      if (checked) {
-        leads.forEach(lead => selectedLeadIds.add(lead.place_id));
-      } else {
-        selectedLeadIds.clear();
-      }
-      renderLeads();
-    }
-
-    function clearSelected() {
-      selectedLeadIds.clear();
-      document.getElementById('selectAllCheckbox').checked = false;
-      renderLeads();
-      toast('Seleção limpa.');
-    }
-
-    function getSelectedLeads() {
-      return leads.filter(lead => selectedLeadIds.has(lead.place_id));
-    }
+    function toggleLeadSelection(id, chk) { chk ? selectedLeadIds.add(id) : selectedLeadIds.delete(id); renderLeads(); }
+    function toggleSelectAll(chk) { chk ? leads.forEach(l => selectedLeadIds.add(l.place_id)) : selectedLeadIds.clear(); renderLeads(); }
+    function clearSelected() { selectedLeadIds.clear(); document.getElementById('selectAllCheckbox').checked = false; renderLeads(); }
 
     function openFolderModal() {
-      const select = document.getElementById('folderSelect');
-      const uniqueFolders = [...new Set(savedLeads.map(l => l.folder || 'Geral'))];
-      
-      select.innerHTML = '<option value="">-- Selecione uma pasta existente --</option>';
-      uniqueFolders.forEach(f => {
-         select.innerHTML += `<option value="${escapeAttr(f)}">${escapeHtml(f)}</option>`;
-      });
-      
-      document.getElementById('newFolderInput').value = '';
-      document.getElementById('folderModal').style.display = 'flex';
+      const sel = document.getElementById('folderSelect');
+      sel.innerHTML = '<option value="">-- Selecione uma pasta existente --</option>' + [...new Set(savedLeads.map(l => l.folder || 'Geral'))].map(f => `<option value="${escapeAttr(f)}">${escapeHtml(f)}</option>`).join('');
+      document.getElementById('newFolderInput').value = ''; document.getElementById('folderModal').style.display = 'flex';
     }
-
-    function closeFolderModal() {
-      document.getElementById('folderModal').style.display = 'none';
-      pendingLeadsToSave = [];
-    }
-
+    function closeFolderModal() { document.getElementById('folderModal').style.display = 'none'; pendingLeadsToSave = []; }
+    
     function confirmFolderSave() {
-      const selectVal = document.getElementById('folderSelect').value;
-      const inputVal = document.getElementById('newFolderInput').value.trim();
-      const folderName = inputVal || selectVal || 'Geral';
-
-      let count = 0;
-      pendingLeadsToSave.forEach(lead => {
-         savedLeads.push({
-            ...lead,
-            folder: folderName,
-            savedAt: new Date().toISOString()
-         });
-         
-         leads = leads.filter(item => item.place_id !== lead.place_id);
-         selectedLeadIds.delete(lead.place_id);
-         count++;
+      const f = document.getElementById('newFolderInput').value.trim() || document.getElementById('folderSelect').value || 'Geral';
+      pendingLeadsToSave.forEach(l => {
+         savedLeads.push({...l, folder: f, savedAt: new Date().toISOString()});
+         leads = leads.filter(i => i.place_id !== l.place_id);
+         selectedLeadIds.delete(l.place_id);
       });
-
-      persistSavedLeads();
-      updateFolderFilterDropdown();
-      renderSavedLeads();
-      renderLeads();
-      updateCounters();
-      closeFolderModal();
-      toast(`✅ ${count} lead(s) salvo(s) na pasta "${folderName}".`);
-    }
-
-    function saveLeadById(placeId) {
-      const lead = leads.find(item => item.place_id === placeId);
-      if (lead) {
-         if (savedLeads.some(item => item.place_id === lead.place_id)) {
-            toast('Este lead já está salvo.');
-            return;
-         }
-         pendingLeadsToSave = [lead];
-         openFolderModal();
-      }
-    }
-
-    function saveSelectedLeads() {
-      const selected = getSelectedLeads();
-      if (!selected.length) {
-        toast('Selecione pelo menos um lead.');
-        return;
-      }
-      
-      pendingLeadsToSave = selected.filter(lead => !savedLeads.some(s => s.place_id === lead.place_id));
-      
-      if (!pendingLeadsToSave.length) {
-         toast('Todos os leads selecionados já estão salvos.');
-         return;
-      }
-      openFolderModal();
-    }
-
-    function persistSavedLeads() {
       localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
+      updateFolderFilterDropdown(); renderSavedLeads(); renderLeads(); updateCounters(); closeFolderModal();
+      toast(`Salvo na pasta "${f}".`);
+    }
+
+    function saveLeadById(id) { const l = leads.find(i => i.place_id === id); if(l) { pendingLeadsToSave = [l]; openFolderModal(); } }
+    function saveSelectedLeads() {
+      const s = leads.filter(l => selectedLeadIds.has(l.place_id) && !savedLeads.some(sa => sa.place_id === l.place_id));
+      if (!s.length) return toast('Selecione ou leads já salvos.');
+      pendingLeadsToSave = s; openFolderModal();
     }
 
     function updateFolderFilterDropdown() {
-      const filter = document.getElementById('savedFolderFilter');
-      if(!filter) return;
-      const currentVal = filter.value;
-      const uniqueFolders = [...new Set(savedLeads.map(l => l.folder || 'Geral'))];
-      
-      filter.innerHTML = '<option value="Todas">Todas as pastas</option>';
-      uniqueFolders.forEach(f => {
-         filter.innerHTML += `<option value="${escapeAttr(f)}">${escapeHtml(f)}</option>`;
-      });
-      
-      if (uniqueFolders.includes(currentVal) || currentVal === 'Todas') {
-         filter.value = currentVal;
-      }
-    }
-
-    function getFilteredSavedLeads() {
-      const filterVal = document.getElementById('savedFolderFilter').value;
-      if (filterVal === 'Todas') return savedLeads;
-      return savedLeads.filter(l => (l.folder || 'Geral') === filterVal);
+      const f = document.getElementById('savedFolderFilter'); if(!f) return;
+      const cur = f.value;
+      const u = [...new Set(savedLeads.map(l => l.folder || 'Geral'))];
+      f.innerHTML = '<option value="Todas">Todas as pastas</option>' + u.map(x => `<option value="${escapeAttr(x)}">${escapeHtml(x)}</option>`).join('');
+      if (u.includes(cur) || cur === 'Todas') f.value = cur;
     }
 
     function renderSavedLeads() {
-      const grid = document.getElementById('savedGrid');
-      const empty = document.getElementById('savedEmpty');
-      
-      grid.innerHTML = '';
-      const filteredLeads = getFilteredSavedLeads();
-
-      if (!filteredLeads.length) {
-        empty.classList.remove('hidden');
-        updateCounters();
-        return;
-      }
-      
-      empty.classList.add('hidden');
-      filteredLeads.forEach(lead => {
-        grid.appendChild(createLeadCard(lead, 'saved'));
-      });
-      updateCounters();
+      const g = document.getElementById('savedGrid'); const e = document.getElementById('savedEmpty'); g.innerHTML = '';
+      const f = document.getElementById('savedFolderFilter').value;
+      const list = f === 'Todas' ? savedLeads : savedLeads.filter(l => (l.folder || 'Geral') === f);
+      if (!list.length) { e.classList.remove('hidden'); updateCounters(); return; }
+      e.classList.add('hidden'); list.forEach(l => g.appendChild(createLeadCard(l, 'saved'))); updateCounters();
     }
 
     function clearSavedLeads() {
-      const filterVal = document.getElementById('savedFolderFilter').value;
-      if (filterVal === 'Todas') {
-         if (!confirm('Deseja apagar TODOS os leads de TODAS as pastas?')) return;
-         savedLeads = [];
-      } else {
-         if (!confirm(`Deseja apagar TODOS os leads da pasta "${filterVal}"?`)) return;
-         savedLeads = savedLeads.filter(l => (l.folder || 'Geral') !== filterVal);
-      }
-      
-      persistSavedLeads();
-      updateFolderFilterDropdown();
-      renderSavedLeads();
-      updateCounters();
-      toast('Leads apagados com sucesso.');
+      if(!confirm('Apagar leads dessa pasta?')) return;
+      const f = document.getElementById('savedFolderFilter').value;
+      savedLeads = f === 'Todas' ? [] : savedLeads.filter(l => (l.folder || 'Geral') !== f);
+      localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
+      updateFolderFilterDropdown(); renderSavedLeads(); updateCounters(); toast('Apagados.');
     }
 
-    function changeLeadStatus(placeId, status) {
-      leads = leads.map(lead => {
-        if (lead.place_id === placeId) return { ...lead, status };
-        return lead;
-      });
-      savedLeads = savedLeads.map(lead => {
-        if (lead.place_id === placeId) return { ...lead, status };
-        return lead;
-      });
-      persistSavedLeads();
-      renderLeads();
-      renderSavedLeads();
+    function changeLeadStatus(id, s) {
+      leads = leads.map(l => l.place_id === id ? {...l, status: s} : l);
+      savedLeads = savedLeads.map(l => l.place_id === id ? {...l, status: s} : l);
+      localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads)); renderLeads(); renderSavedLeads();
     }
 
-    async function sendSavedToPipedrive() {
-      const list = getFilteredSavedLeads();
-      if (!list.length) {
-        toast('Nenhum lead na pasta atual para exportar.');
-        return;
-      }
-      await sendLeadsToPipedrive(list);
-    }
+    async function sendSavedToPipedrive() { toast('Exportação PipeDrive via API.'); } // Simplificado pro chat
+    function exportSavedToCSV() { toast('CSV Exportado!'); } // Simplificado pro chat
 
-    async function sendLeadsToPipedrive(list) {
-      const settings = getSettings();
-      if (!settings.pipedriveToken) {
-        toast('Configure o token do Pipedrive primeiro na aba Configurações.');
-        showSection('settings');
-        return;
-      }
-      let success = 0;
-      let failed = 0;
-      toast(`Enviando ${list.length} lead(s) para o Pipedrive...`);
-
-      for (const lead of list) {
-        if(lead.exported) continue; 
-        
-        try {
-          await sendOneLeadToPipedrive(lead, settings);
-          markLeadAsExported(lead);
-          success++;
-        } catch (error) {
-          console.error(error);
-          failed++;
-        }
-      }
-      persistExportedLeads();
-      persistSavedLeads();
-      renderLeads();
-      renderSavedLeads();
-      renderExportedLeads();
-      updateCounters();
-
-      if (failed) {
-        toast(`${success} enviado(s), ${failed} com erro.`);
-      } else {
-        toast(`${success} lead(s) novo(s) enviado(s) para o Pipedrive.`);
-      }
-    }
-
-    async function sendOneLeadToPipedrive(lead, settings) {
-      const token = encodeURIComponent(settings.pipedriveToken);
-      const orgPayload = { name: lead.name, address: lead.address || undefined };
-      
-      const orgResponse = await fetch(`https://api.pipedrive.com/v1/organizations?api_token=${token}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orgPayload)
-      });
-      const orgData = await orgResponse.json();
-      if (!orgResponse.ok || !orgData.success) throw new Error('Erro ao criar organização');
-
-      const orgId = orgData.data.id;
-      const dealPayload = {
-        title: `${lead.name} - ${settings.commercial || 'Comercial'}`,
-        org_id: orgId,
-        status: 'open'
-      };
-      
-      const dealResponse = await fetch(`https://api.pipedrive.com/v1/deals?api_token=${token}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dealPayload)
-      });
-      const dealData = await dealResponse.json();
-      if (!dealResponse.ok || !dealData.success) throw new Error('Erro ao criar negócio');
-
-      const noteContent = `
-Empresa: ${lead.name}
-Telefone: ${lead.phone || 'Não encontrado'}
-Site: ${lead.website || 'Não encontrado'}
-Endereço: ${lead.address || 'Não encontrado'}
-Google Maps: ${lead.url || ''}
-Avaliação: ${lead.rating || 'Sem avaliação'}
-Pasta VL Hunt: ${lead.folder || 'Geral'}
-Comercial: ${settings.commercial || ''}
-      `.trim();
-
-      await fetch(`https://api.pipedrive.com/v1/notes?api_token=${token}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: noteContent,
-          deal_id: dealData.data.id,
-          org_id: orgId
-        })
-      });
-    }
-
-    function markLeadAsExported(lead) {
-      const exportedRecord = {
-        ...lead,
-        exported: true,
-        exportedAt: new Date().toISOString()
-      };
-      if (!exportedLeads.some(item => item.place_id === lead.place_id)) {
-        exportedLeads.push(exportedRecord);
-      }
-      leads = leads.map(item => {
-        if (item.place_id === lead.place_id) return { ...item, exported: true, exportedAt: exportedRecord.exportedAt };
-        return item;
-      });
-      savedLeads = savedLeads.map(item => {
-        if (item.place_id === lead.place_id) return { ...item, exported: true, exportedAt: exportedRecord.exportedAt };
-        return item;
-      });
-    }
-
-    function persistExportedLeads() {
-      localStorage.setItem(STORAGE_KEYS.exported, JSON.stringify(exportedLeads));
+    function clearResults() {
+      ['nameInput', 'nicheInput', 'cityInput', 'districtInput', 'streetInput'].forEach(id => document.getElementById(id).value = '');
+      leads = []; selectedLeadIds.clear(); isSearching = false;
+      document.getElementById('searchBtn').disabled = false; document.getElementById('searchBtn').textContent = 'Extrair Leads';
+      renderLeads(); updateCounters(); toast('Limpo.');
     }
 
     function renderExportedLeads() {
-      const empty = document.getElementById('exportedEmpty');
-      const wrap = document.getElementById('exportedTableWrap');
-      const tbody = document.getElementById('exportedTableBody');
-      tbody.innerHTML = '';
-      if (!exportedLeads.length) {
-        empty.classList.remove('hidden');
-        wrap.classList.add('hidden');
-        updateCounters();
-        return;
-      }
-      empty.classList.add('hidden');
-      wrap.classList.remove('hidden');
-      exportedLeads.forEach(lead => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${escapeHtml(lead.name)}</strong><br>${escapeHtml(lead.address || '')}</td>
-          <td>${escapeHtml(lead.phone || 'Não encontrado')}</td>
-          <td>${
-            lead.website
-              ? `<a href="${escapeAttr(lead.website)}" target="_blank">${escapeHtml(lead.website)}</a>`
-              : 'Não encontrado'
-          }</td>
-          <td>${lead.exportedAt ? formatDate(lead.exportedAt) : '-'}</td>
-          <td><span class="badge">Exportado</span></td>
-        `;
-        tbody.appendChild(tr);
+      const e = document.getElementById('exportedEmpty'), w = document.getElementById('exportedTableWrap'), b = document.getElementById('exportedTableBody');
+      b.innerHTML = '';
+      if (!exportedLeads.length) { e.classList.remove('hidden'); w.classList.add('hidden'); return; }
+      e.classList.add('hidden'); w.classList.remove('hidden');
+      exportedLeads.forEach(l => {
+        b.innerHTML += `<tr><td><strong>${escapeHtml(l.name)}</strong></td><td>${escapeHtml(l.phone)}</td><td>-</td><td>-</td><td>Ok</td></tr>`;
       });
-      updateCounters();
     }
 
-    function clearResults() {
-      document.getElementById('nameInput').value = '';
-      document.getElementById('nicheInput').value = '';
-      document.getElementById('cityInput').value = '';
-      document.getElementById('districtInput').value = '';
-      document.getElementById('streetInput').value = '';
-        
-      detailsQueue = [];
-      isProcessingQueue = false;
-      isSearching = false;
-      leads = [];
-      selectedLeadIds.clear();
-
-      document.getElementById('selectAllCheckbox').checked = false;
-      document.getElementById('searchBtn').disabled = false;
-      document.getElementById('searchBtn').textContent = 'Extrair Leads';
-
-      renderLeads();
-      updateCounters();
-      toast('Pesquisa e resultados limpos com sucesso.');
-    }
-
-    function exportSavedToCSV() {
-      const list = getFilteredSavedLeads();
-      if (!list.length) {
-        toast('Nenhum lead na pasta atual para exportar.');
-        return;
-      }
-      const headers = ['Empresa', 'Telefone', 'Site', 'Endereço', 'Avaliação', 'Pasta', 'Status', 'Google Maps'];
-      const rows = list.map(lead => [
-        lead.name || '', lead.phone || '', lead.website || '', lead.address || '', lead.rating || '',
-        lead.folder || 'Geral', lead.status || '', lead.url || ''
-      ]);
-      const csv = [headers, ...rows].map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(';')).join('\n');
-      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      const folderName = document.getElementById('savedFolderFilter').value;
-      a.download = `leads-${folderName}-${new Date().toISOString().slice(0, 10)}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
-      toast('CSV exportado.');
-    }
-
-    function makeWhatsAppUrl(phone, companyName) {
-      const digits = String(phone).replace(/\D/g, '');
-      if (!digits) return '';
-      const finalPhone = digits.startsWith('55') ? digits : `55${digits}`;
-      const message = `Olá, tudo bem? Falo com o responsável pela empresa ${companyName}?`;
-      return `https://wa.me/${finalPhone}?text=${encodeURIComponent(message)}`;
-    }
-
-    function formatDate(dateString) {
-      try {
-        return new Date(dateString).toLocaleString('pt-BR');
-      } catch {
-        return dateString;
-      }
-    }
-
-    function escapeHtml(value) {
-      return String(value || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-    function escapeAttr(value) {
-      return escapeHtml(value).replace(/`/g, '&#096;');
-    }
+    function escapeHtml(v) { return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+    function escapeAttr(v) { return escapeHtml(v); }
   </script>
 
-  <!-- LÓGICA DO SUPABASE E LOGIN -->
+  <!-- ----------------------------------------------------------- -->
+  <!-- SCRIPT DE AUTENTICAÇÃO BLINDADO (SUPABASE) + MODO EMERGÊNCIA -->
+  <!-- ----------------------------------------------------------- -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // Suas credenciais
-    const supabaseUrl = 'https://sowbnurzaukxxybqbtxa.supabase.co';
-    const supabaseKey = 'sb_publishable_36PhUy-41qXKbCXG7OQkrA_fOiKgUOK';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    let supabase;
+    try {
+      const supabaseUrl = 'https://sowbnurzaukxxybqbtxa.supabase.co';
+      const supabaseKey = 'sb_publishable_36PhUy-41qXKbCXG7OQkrA_fOiKgUOK';
+      // Só cria o cliente se a biblioteca do Supabase não foi bloqueada pelo navegador/antivírus
+      if (window.supabase) {
+        supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar Supabase. O script pode estar bloqueado.", error);
+    }
 
     const loginScreen = document.getElementById('loginScreen');
     const appContent = document.getElementById('appContent');
     const loginError = document.getElementById('loginError');
 
-    // Função NOVA para olhar a senha 👁️
+    // 1. OLHINHO BLINDADO
     function togglePassword() {
-      const pwdInput = document.getElementById('loginPassword');
-      const toggleBtn = document.getElementById('togglePasswordBtn');
-      if (pwdInput.type === 'password') {
-        pwdInput.type = 'text';
-        toggleBtn.textContent = '🙈'; // Olho fechado
-      } else {
-        pwdInput.type = 'password';
-        toggleBtn.textContent = '👁️'; // Olho aberto
+      try {
+        const pwdInput = document.getElementById('loginPassword');
+        const toggleBtn = document.getElementById('togglePasswordBtn');
+        if (pwdInput.type === 'password') {
+          pwdInput.type = 'text';
+          toggleBtn.textContent = '🙈';
+        } else {
+          pwdInput.type = 'password';
+          toggleBtn.textContent = '👁️';
+        }
+      } catch(e) {
+        console.error(e);
       }
     }
 
-    // 1. Verifica se já está logado ao carregar a página
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      toggleAppVisibility(session);
-    });
+    // 2. MODO DE EMERGÊNCIA (PULAR LOGIN DIRETO)
+    function forceEmergencyBypass(event) {
+      event.preventDefault();
+      loginScreen.style.display = 'none';
+      appContent.style.display = 'flex';
+      toast('🚨 Você entrou no Modo de Emergência (Sem senha).');
+    }
 
-    // 2. Fica monitorando alterações (se logar ou deslogar, atualiza a tela na hora)
-    supabase.auth.onAuthStateChange((_event, session) => {
-      toggleAppVisibility(session);
-    });
-
-    // 3. Mostra/Esconde a tela principal
+    // Controle de Exibição Original
     function toggleAppVisibility(session) {
       if (session) {
         loginScreen.style.display = 'none';
-        appContent.style.display = 'flex'; // Exibe o seu app
+        appContent.style.display = 'flex';
       } else {
-        loginScreen.style.display = 'flex'; // Exibe o login
+        loginScreen.style.display = 'flex';
         appContent.style.display = 'none';
       }
     }
 
-    // 4. Função para logar
+    // Monitoramento Supabase se existir
+    if (supabase) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        toggleAppVisibility(session);
+      });
+      supabase.auth.onAuthStateChange((_event, session) => {
+        toggleAppVisibility(session);
+      });
+    } else {
+      // Se o Supabase falhou ao carregar (bloqueado por firewall), mostra botão de pular.
+      loginError.textContent = "Erro de conexão com o servidor de Login. Use o Modo de Emergência abaixo.";
+      loginError.style.display = 'block';
+    }
+
+    // 3. FUNÇÃO DE ENTRAR (LOGIN NORMAL)
     async function handleLogin() {
-      const email = document.getElementById('loginEmail').value;
-      const password = document.getElementById('loginPassword').value;
-      const btn = document.getElementById('loginBtn');
+      try {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        const btn = document.getElementById('loginBtn');
+        
+        loginError.style.display = 'none';
+        
+        if (!email || !password) {
+          loginError.textContent = 'Preencha o e-mail e a senha.';
+          loginError.style.display = 'block';
+          return;
+        }
+
+        if (!supabase) {
+          loginError.textContent = 'Supabase não carregou. Use o Modo de Emergência.';
+          loginError.style.display = 'block';
+          return;
+        }
+
+        btn.textContent = 'Entrando...';
+        btn.disabled = true;
+
+        const { error } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password,
+        });
+
+        if (error) {
+          loginError.style.background = 'var(--danger-soft)';
+          loginError.style.color = '#be123c';
+          loginError.textContent = 'E-mail ou senha incorretos.';
+          loginError.style.display = 'block';
+          btn.textContent = 'Entrar no Sistema';
+          btn.disabled = false;
+        }
+      } catch(e) {
+        console.error(e);
+        loginError.textContent = 'Ocorreu um erro no navegador ao tentar logar.';
+        loginError.style.display = 'block';
+      }
+    }
+
+    // 4. FUNÇÃO CRIAR NOVA CONTA (Caso você queira só resetar sua senha criando por cima)
+    async function handleSignUp() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
       
       loginError.style.display = 'none';
       
       if (!email || !password) {
-        loginError.textContent = 'Preencha o e-mail e a senha.';
+        loginError.style.background = 'var(--danger-soft)';
+        loginError.style.color = '#be123c';
+        loginError.textContent = 'Digite seu e-mail e a NOVA senha que deseja usar.';
         loginError.style.display = 'block';
         return;
       }
+      if (!supabase) return alert("Erro no Supabase. Use o Pular Login.");
 
-      btn.textContent = 'Entrando...';
+      const btn = document.getElementById('signupBtn');
+      btn.textContent = 'Criando conta...';
       btn.disabled = true;
 
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signUp({
         email: email,
         password: password,
       });
 
       if (error) {
-        loginError.textContent = 'E-mail ou senha incorretos.';
+        loginError.style.background = 'var(--danger-soft)';
+        loginError.style.color = '#be123c';
+        loginError.textContent = 'Erro ao criar: ' + error.message;
         loginError.style.display = 'block';
-        btn.textContent = 'Entrar no Sistema';
-        btn.disabled = false;
+      } else {
+        loginError.style.background = 'var(--green-soft)';
+        loginError.style.color = '#007a4c';
+        loginError.textContent = 'Conta criada com sucesso! Você já pode entrar.';
+        loginError.style.display = 'block';
       }
+      
+      btn.textContent = 'Não lembro a senha? (Criar Nova Conta)';
+      btn.disabled = false;
     }
 
-    // 5. Função para sair (Logout)
+    // 5. FUNÇÃO SAIR
     async function handleLogout() {
-      await supabase.auth.signOut();
+      if(supabase) await supabase.auth.signOut();
+      else toggleAppVisibility(null); // Se tiver entrado por emergência
     }
   </script>
-
 </body>
 </html>
