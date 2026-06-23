@@ -57,6 +57,8 @@
       bottom: 0;
       overflow-y: auto;
       z-index: 10;
+      display: flex;
+      flex-direction: column;
     }
 
     .brand {
@@ -125,6 +127,16 @@
     .menu-item.active {
       background: var(--green);
       color: #061827;
+    }
+
+    /* Botão de sair no final da sidebar */
+    .logout-btn {
+      margin-top: auto;
+      background: rgba(220, 38, 38, 0.2);
+      color: #fca5a5;
+    }
+    .logout-btn:hover {
+      background: rgba(220, 38, 38, 0.4);
     }
 
     .main {
@@ -668,7 +680,7 @@
       }
     }
 
-    /* ====== CSS DA TELA DE LOGIN ADICIONADO AQUI ====== */
+    /* ====== CSS DA TELA DE LOGIN ====== */
     #loginOverlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #071833;
       display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px;
@@ -683,7 +695,10 @@
       width: 100%; height: 52px; padding: 0 15px; border-radius: 14px; border: 1px solid #c8d4e6; margin-bottom: 16px; font-size: 14px; box-sizing: border-box;
     }
     .login-box button {
-      width: 100%; height: 52px; border: none; border-radius: 14px; background: #22c55e; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer;
+      width: 100%; height: 52px; border: none; border-radius: 14px; background: #22c55e; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s;
+    }
+    .login-box button:disabled {
+      opacity: 0.7; cursor: not-allowed;
     }
   </style>
 </head>
@@ -696,9 +711,9 @@
       <div class="login-brand">V</div>
       <h2>VL Hunt</h2>
       <p>Acesso restrito. Faça login para continuar.</p>
-      <form onsubmit="handleLogin(event)">
-        <input type="email" id="loginEmail" placeholder="Seu e-mail (victor@vlhunt.com)" required />
-        <input type="password" id="loginPassword" placeholder="Sua senha (admin123)" required />
+      <form onsubmit="handleSupabaseLogin(event)">
+        <input type="email" id="loginEmail" placeholder="Seu e-mail cadastrado" required />
+        <input type="password" id="loginPassword" placeholder="Sua senha" required />
         <button type="submit" id="loginBtn">Entrar no Sistema</button>
       </form>
     </div>
@@ -731,8 +746,14 @@
           📥 Pipedrive
         </button>
 
-        <button class="menu-item" data-section="settings" onclick="showSection('settings')">
+        <!-- Este botão será escondido se o usuário não for Admin -->
+        <button class="menu-item" id="navSettingsBtn" data-section="settings" onclick="showSection('settings')">
           ⚙️ Configurações
+        </button>
+
+        <!-- Botão de Sair -->
+        <button class="menu-item logout-btn" onclick="handleSupabaseLogout()">
+          🚪 Sair do Sistema
         </button>
       </aside>
 
@@ -743,9 +764,9 @@
           </div>
 
           <div class="user-card">
-            <div class="user-avatar">VL</div>
+            <div class="user-avatar" id="topUserInitials">VL</div>
             <div>
-              <strong id="topUserName">Victor</strong><br />
+              <strong id="topUserName">Carregando...</strong><br />
               <span>Comercial</span>
             </div>
           </div>
@@ -1046,6 +1067,9 @@
       let selectedLeadIds = new Set();
       let isSearching = false;
       let pendingLeadsToSave = []; 
+      
+      let currentUserEmail = ''; // Guarda o email de quem logou
+      let isUserAdmin = false; // Guarda se o cara é o chefe
 
       const STORAGE_KEYS = {
         settings: 'vlhunt_settings_v2',
@@ -1090,6 +1114,12 @@
       });
 
       function showSection(section) {
+        // Trava de Segurança extra: se tentar acessar settings via código sem ser admin, é bloqueado.
+        if (section === 'settings' && !isUserAdmin) {
+            toast('Acesso negado. Apenas o administrador tem acesso às configurações.');
+            return;
+        }
+
         const sections = {
           extract: document.getElementById('extractSection'),
           saved: document.getElementById('savedSection'),
@@ -1135,19 +1165,17 @@
         const settings = getSettings();
         document.getElementById('googleApiKeyInput').value = settings.googleApiKey || '';
         document.getElementById('pipedriveTokenInput').value = settings.pipedriveToken || '';
-        document.getElementById('commercialInput').value = settings.commercial || 'Victor';
-        document.getElementById('topUserName').textContent = settings.commercial || 'Victor';
+        document.getElementById('commercialInput').value = settings.commercial || '';
       }
 
       function saveSettings() {
         const settings = {
           googleApiKey: document.getElementById('googleApiKeyInput').value.trim(),
           pipedriveToken: document.getElementById('pipedriveTokenInput').value.trim(),
-          commercial: document.getElementById('commercialInput').value.trim() || 'Victor'
+          commercial: document.getElementById('commercialInput').value.trim()
         };
 
         localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(settings));
-        document.getElementById('topUserName').textContent = settings.commercial;
         toast('Configurações salvas.');
 
         if (settings.googleApiKey) loadGoogleMapsScript(settings.googleApiKey);
@@ -1243,7 +1271,8 @@
         const settings = getSettings();
         if (!settings.googleApiKey) {
           toast('Configure a API Key do Google Maps primeiro.');
-          showSection('settings');
+          // Só redireciona se for Admin
+          if (isUserAdmin) showSection('settings');
           return;
         }
 
@@ -1719,7 +1748,7 @@
         const settings = getSettings();
         if (!settings.pipedriveToken) {
           toast('Configure o token do Pipedrive primeiro na aba Configurações.');
-          showSection('settings');
+          if (isUserAdmin) showSection('settings');
           return;
         }
         let success = 0;
@@ -1935,37 +1964,95 @@
     <script>
       const supabaseUrl = 'https://sowbnurzaukkxybqbtxa.supabase.co';
       const supabaseKey = 'sb_publishable_36PhUy-41qXKbCXG7OQkrA_fOiKgUOK';
-      
       const supabase = supabase.createClient(supabaseUrl, supabaseKey);
       console.log("Supabase conectado com sucesso!");
-    </script>
-    <!-- FIM DA CONEXÃO COM O SUPABASE -->
 
-  </div> <!-- FIM DA DIV mainApp -->
+      // =============== SUAS REGRAS DE NEGÓCIO NOVAS AQUI ===============
 
-  <!-- SCRIPT DO LOGIN INJETADO NO FINAL -->
-  <script>
-    function handleLogin(e) {
-      e.preventDefault();
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value.trim();
-      
-      if (email === 'victor@vlhunt.com' && password === 'admin123') {
-        localStorage.setItem('vlhunt_auth_token', 'true');
-        document.getElementById('loginOverlay').style.display = 'none';
-        document.getElementById('mainApp').style.display = 'block'; 
-      } else {
-        alert('E-mail ou senha incorretos!');
+      // 1. Seu e-mail configurado aqui como Administrador!
+      const ADMIN_EMAILS = ['leonvquadros@gmail.com'];
+
+      // Função que extrai o nome e iniciais a partir do e-mail
+      function formatUserNameFromEmail(email) {
+        let namePart = email.split('@')[0];
+        namePart = namePart.replace(/[._-]/g, ' '); // Tira pontos e traços
+        
+        // Coloca a primeira letra de cada palavra em maiúsculo
+        let words = namePart.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1));
+        
+        let fullName = words.join(' ');
+        let initials = words.length > 1 
+            ? words[0].charAt(0) + words[1].charAt(0) 
+            : words[0].charAt(0);
+
+        return { fullName, initials };
       }
-    }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      if (localStorage.getItem('vlhunt_auth_token') === 'true') {
+      // Função que libera o sistema e aplica as travas de segurança
+      function iniciarSistemaApp(email) {
+        currentUserEmail = email;
+        isUserAdmin = ADMIN_EMAILS.includes(email.toLowerCase());
+
+        // Esconde o Login e Mostra o App
         document.getElementById('loginOverlay').style.display = 'none';
         document.getElementById('mainApp').style.display = 'block';
-      }
-    });
-  </script>
 
+        // Atualiza Nome e Iniciais no topo da tela
+        const userInfo = formatUserNameFromEmail(email);
+        document.getElementById('topUserName').textContent = userInfo.fullName;
+        document.getElementById('topUserInitials').textContent = userInfo.initials;
+
+        // Trava do Admin
+        const navSettingsBtn = document.getElementById('navSettingsBtn');
+        if (isUserAdmin) {
+            navSettingsBtn.style.display = 'flex'; // Mostra botão para você
+        } else {
+            navSettingsBtn.style.display = 'none'; // Esconde botão para clientes
+            // Se ele logar e por acaso estava na tela de config, joga ele pra extrair
+            showSection('extract'); 
+        }
+      }
+
+      // Função de Login Real com o Supabase
+      async function handleSupabaseLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        const btn = document.getElementById('loginBtn');
+        
+        btn.textContent = "Validando acesso...";
+        btn.disabled = true;
+
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password,
+        });
+
+        if (error) {
+          alert('Erro no login: ' + error.message);
+          btn.textContent = "Entrar no Sistema";
+          btn.disabled = false;
+        } else {
+          iniciarSistemaApp(data.user.email);
+        }
+      }
+
+      // Função para Sair do Sistema
+      async function handleSupabaseLogout() {
+        if(confirm('Tem certeza que deseja sair?')) {
+            await supabase.auth.signOut();
+            window.location.reload(); // Recarrega a página para voltar pra tela de login limpa
+        }
+      }
+
+      // Verifica se o cara já estava logado quando abre o site
+      document.addEventListener('DOMContentLoaded', async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+           iniciarSistemaApp(session.user.email);
+        }
+      });
+    </script>
+  </div>
 </body>
 </html>
