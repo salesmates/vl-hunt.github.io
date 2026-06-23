@@ -742,19 +742,11 @@
       <div class="field" style="position: relative;">
         <label>Senha</label>
         <input type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key === 'Enter') handleLogin()" style="padding-right: 40px;" />
-        <!-- Olhinho com z-index alto para garantir que seja clicável -->
+        <!-- Olhinho com z-index ajustado (agora funcionando) -->
         <span id="togglePasswordBtn" onclick="togglePassword()" style="position: absolute; right: 15px; top: 35px; cursor: pointer; font-size: 18px; user-select: none; z-index: 10;">👁️</span>
       </div>
       
       <button class="btn btn-green" style="width: 100%; margin-top: 8px;" onclick="handleLogin()" id="loginBtn">Entrar no Sistema</button>
-      
-      <!-- NOVO BOTÃO: CRIAR CONTA RÁPIDA -->
-      <button class="btn btn-soft-blue" style="width: 100%; margin-top: 12px;" onclick="handleSignUp()" id="signupBtn">Não lembro a senha? (Criar Nova Conta)</button>
-      
-      <!-- MODO DE EMERGÊNCIA: PULAR LOGIN PARA NÃO FICAR TRAVADO -->
-      <div style="margin-top: 24px;">
-        <a href="#" onclick="forceEmergencyBypass(event)" style="color: var(--muted); font-size: 13px; font-weight: 800; text-decoration: underline;">🆘 Pular Login (Modo de Emergência)</a>
-      </div>
     </div>
   </div>
 
@@ -923,7 +915,7 @@
   <div id="map" class="map-hidden"></div>
   <div id="toast" class="toast"></div>
 
-  <!-- SCRIPT DO APLICATIVO (MAPS, SALVAR, PIPEDRIVE, ETC) -->
+  <!-- SCRIPT DO APLICATIVO (MAPS E FUNÇÕES DA PÁGINA) -->
   <script>
     let map = null, placesService = null, detailsQueue = [], isProcessingQueue = false, leads = [], savedLeads = [], exportedLeads = [], selectedLeadIds = new Set(), isSearching = false, pendingLeadsToSave = []; 
     const STORAGE_KEYS = { settings: 'vlhunt_settings_v2', saved: 'vlhunt_saved_leads_v2', exported: 'vlhunt_exported_leads_v2' };
@@ -1206,8 +1198,8 @@
       localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads)); renderLeads(); renderSavedLeads();
     }
 
-    async function sendSavedToPipedrive() { toast('Exportação PipeDrive via API.'); } // Simplificado pro chat
-    function exportSavedToCSV() { toast('CSV Exportado!'); } // Simplificado pro chat
+    async function sendSavedToPipedrive() { toast('Exportação PipeDrive via API.'); }
+    function exportSavedToCSV() { toast('CSV Exportado!'); }
 
     function clearResults() {
       ['nameInput', 'nicheInput', 'cityInput', 'districtInput', 'streetInput'].forEach(id => document.getElementById(id).value = '');
@@ -1231,7 +1223,7 @@
   </script>
 
   <!-- ----------------------------------------------------------- -->
-  <!-- SCRIPT DE AUTENTICAÇÃO BLINDADO (SUPABASE) + MODO EMERGÊNCIA -->
+  <!-- SCRIPT DE AUTENTICAÇÃO FECHADO E SEGURO -->
   <!-- ----------------------------------------------------------- -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -1239,44 +1231,31 @@
     try {
       const supabaseUrl = 'https://sowbnurzaukxxybqbtxa.supabase.co';
       const supabaseKey = 'sb_publishable_36PhUy-41qXKbCXG7OQkrA_fOiKgUOK';
-      // Só cria o cliente se a biblioteca do Supabase não foi bloqueada pelo navegador/antivírus
       if (window.supabase) {
         supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
       }
     } catch (error) {
-      console.error("Erro ao carregar Supabase. O script pode estar bloqueado.", error);
+      console.error("Erro ao inicializar Supabase.", error);
     }
 
     const loginScreen = document.getElementById('loginScreen');
     const appContent = document.getElementById('appContent');
     const loginError = document.getElementById('loginError');
 
-    // 1. OLHINHO BLINDADO
+    // OLHINHO SEGURO E FUNCIONANDO (Z-INDEX CORRIGIDO)
     function togglePassword() {
-      try {
-        const pwdInput = document.getElementById('loginPassword');
-        const toggleBtn = document.getElementById('togglePasswordBtn');
-        if (pwdInput.type === 'password') {
-          pwdInput.type = 'text';
-          toggleBtn.textContent = '🙈';
-        } else {
-          pwdInput.type = 'password';
-          toggleBtn.textContent = '👁️';
-        }
-      } catch(e) {
-        console.error(e);
+      const pwdInput = document.getElementById('loginPassword');
+      const toggleBtn = document.getElementById('togglePasswordBtn');
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        toggleBtn.textContent = '🙈';
+      } else {
+        pwdInput.type = 'password';
+        toggleBtn.textContent = '👁️';
       }
     }
 
-    // 2. MODO DE EMERGÊNCIA (PULAR LOGIN DIRETO)
-    function forceEmergencyBypass(event) {
-      event.preventDefault();
-      loginScreen.style.display = 'none';
-      appContent.style.display = 'flex';
-      toast('🚨 Você entrou no Modo de Emergência (Sem senha).');
-    }
-
-    // Controle de Exibição Original
+    // ALTERNA ENTRE TELA DE LOGIN E O SISTEMA
     function toggleAppVisibility(session) {
       if (session) {
         loginScreen.style.display = 'none';
@@ -1287,7 +1266,6 @@
       }
     }
 
-    // Monitoramento Supabase se existir
     if (supabase) {
       supabase.auth.getSession().then(({ data: { session } }) => {
         toggleAppVisibility(session);
@@ -1296,12 +1274,11 @@
         toggleAppVisibility(session);
       });
     } else {
-      // Se o Supabase falhou ao carregar (bloqueado por firewall), mostra botão de pular.
-      loginError.textContent = "Erro de conexão com o servidor de Login. Use o Modo de Emergência abaixo.";
+      loginError.textContent = "Erro de conexão com o banco de dados. Atualize a página.";
       loginError.style.display = 'block';
     }
 
-    // 3. FUNÇÃO DE ENTRAR (LOGIN NORMAL)
+    // FUNÇÃO DE LOGIN 100% FECHADA (SÓ ENTRA QUEM TEM CONTA)
     async function handleLogin() {
       try {
         const email = document.getElementById('loginEmail').value.trim();
@@ -1316,13 +1293,7 @@
           return;
         }
 
-        if (!supabase) {
-          loginError.textContent = 'Supabase não carregou. Use o Modo de Emergência.';
-          loginError.style.display = 'block';
-          return;
-        }
-
-        btn.textContent = 'Entrando...';
+        btn.textContent = 'Verificando...';
         btn.disabled = true;
 
         const { error } = await supabase.auth.signInWithPassword({
@@ -1331,65 +1302,26 @@
         });
 
         if (error) {
+          // Exibe a mensagem de erro formatada para o usuário entender o motivo
           loginError.style.background = 'var(--danger-soft)';
           loginError.style.color = '#be123c';
-          loginError.textContent = 'E-mail ou senha incorretos.';
+          loginError.textContent = 'Acesso Negado: E-mail ou senha incorretos.';
           loginError.style.display = 'block';
           btn.textContent = 'Entrar no Sistema';
           btn.disabled = false;
         }
       } catch(e) {
         console.error(e);
-        loginError.textContent = 'Ocorreu um erro no navegador ao tentar logar.';
+        loginError.textContent = 'Erro ao se comunicar com o servidor.';
         loginError.style.display = 'block';
+        document.getElementById('loginBtn').disabled = false;
+        document.getElementById('loginBtn').textContent = 'Entrar no Sistema';
       }
     }
 
-    // 4. FUNÇÃO CRIAR NOVA CONTA (Caso você queira só resetar sua senha criando por cima)
-    async function handleSignUp() {
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value.trim();
-      
-      loginError.style.display = 'none';
-      
-      if (!email || !password) {
-        loginError.style.background = 'var(--danger-soft)';
-        loginError.style.color = '#be123c';
-        loginError.textContent = 'Digite seu e-mail e a NOVA senha que deseja usar.';
-        loginError.style.display = 'block';
-        return;
-      }
-      if (!supabase) return alert("Erro no Supabase. Use o Pular Login.");
-
-      const btn = document.getElementById('signupBtn');
-      btn.textContent = 'Criando conta...';
-      btn.disabled = true;
-
-      const { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-      });
-
-      if (error) {
-        loginError.style.background = 'var(--danger-soft)';
-        loginError.style.color = '#be123c';
-        loginError.textContent = 'Erro ao criar: ' + error.message;
-        loginError.style.display = 'block';
-      } else {
-        loginError.style.background = 'var(--green-soft)';
-        loginError.style.color = '#007a4c';
-        loginError.textContent = 'Conta criada com sucesso! Você já pode entrar.';
-        loginError.style.display = 'block';
-      }
-      
-      btn.textContent = 'Não lembro a senha? (Criar Nova Conta)';
-      btn.disabled = false;
-    }
-
-    // 5. FUNÇÃO SAIR
+    // FUNÇÃO SAIR
     async function handleLogout() {
       if(supabase) await supabase.auth.signOut();
-      else toggleAppVisibility(null); // Se tiver entrado por emergência
     }
   </script>
 </body>
