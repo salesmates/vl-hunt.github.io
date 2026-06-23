@@ -7,629 +7,101 @@
 
   <style>
     :root {
-      --bg: #f3f6fb;
-      --card: #ffffff;
-      --dark: #071833;
-      --muted: #48607f;
-      --border: #d8e0ed;
-      --green: #22c55e;
-      --green-dark: #16a34a;
-      --green-soft: #dcfce7;
-      --blue-soft: #eaf2ff;
-      --yellow-soft: #fff3cd;
-      --danger-soft: #ffe4e6;
-      --sidebar: #064b38;
-      --sidebar-dark: #033629;
-      --nav: #125a45;
-      --shadow: 0 16px 40px rgba(7, 24, 51, 0.08);
-      --radius: 18px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Inter, Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--dark);
-    }
-
-    button, input, select {
-      font-family: inherit;
-    }
-
-    .app {
-      display: flex;
-      min-height: 100vh;
-      width: 100%;
-    }
-
-    .sidebar {
-      width: 267px;
-      background: linear-gradient(180deg, var(--sidebar), var(--sidebar-dark));
-      color: #fff;
-      padding: 32px 18px;
-      position: fixed;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      overflow-y: auto;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 34px;
-    }
-
-    .brand-icon {
-      width: 43px;
-      height: 43px;
-      border-radius: 14px;
-      background: var(--green);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 24px;
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.1;
-    }
-
-    .brand p {
-      margin: 5px 0 0;
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.78);
-    }
-
-    .menu-title {
-      font-size: 12px;
-      font-weight: 900;
-      color: rgba(255, 255, 255, 0.55);
-      letter-spacing: 1.4px;
-      margin-bottom: 12px;
-    }
-
-    .menu-item {
-      border: 0;
-      width: 100%;
-      height: 46px;
-      border-radius: 13px;
-      background: var(--nav);
-      color: #fff;
-      font-weight: 900;
-      font-size: 15px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 0 18px;
-      cursor: pointer;
-      text-align: left;
-      transition: 0.2s ease;
-    }
-
-    .menu-item:hover {
-      filter: brightness(1.08);
-      transform: translateY(-1px);
-    }
-
-    .menu-item.active {
-      background: var(--green);
-      color: #061827;
-    }
-
-    /* Botão de sair no final da sidebar */
-    .logout-btn {
-      margin-top: auto;
-      background: rgba(220, 38, 38, 0.2);
-      color: #fca5a5;
-    }
-    .logout-btn:hover {
-      background: rgba(220, 38, 38, 0.4);
-    }
-
-    .main {
-      margin-left: 267px;
-      width: calc(100% - 267px);
-      padding: 36px 32px 60px;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 24px;
-      margin-bottom: 24px;
-    }
-
-    .topbar h2 {
-      margin: 8px 0 0;
-      font-size: 30px;
-      font-weight: 950;
-      letter-spacing: -0.8px;
-    }
-
-    .user-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 142px;
-      box-shadow: var(--shadow);
-    }
-
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      background: var(--green-soft);
-      color: #059669;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 950;
-      font-size: 17px;
-    }
-
-    .user-card strong {
-      font-size: 14px;
-    }
-
-    .user-card span {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 22px;
-    }
-
-    .stat-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      min-height: 102px;
-      box-shadow: var(--shadow);
-    }
-
-    .stat-card span {
-      display: block;
-      color: var(--muted);
-      font-weight: 950;
-      font-size: 13px;
-      letter-spacing: 0.6px;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-    }
-
-    .stat-card strong {
-      display: block;
-      font-size: 30px;
-      font-weight: 950;
-    }
-
-    .section {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: var(--shadow);
-      margin-bottom: 22px;
-    }
-
-    .section-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 22px;
-    }
-
-    .section-title {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .section-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      background: var(--green-soft);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-    }
-
-    .section-title h3 {
-      margin: 0;
-      font-size: 21px;
-      font-weight: 950;
-    }
-
-    .section-title p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .grid-search {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      align-items: end;
-    }
-
-    .field label {
-      display: block;
-      font-size: 13px;
-      font-weight: 950;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-
-    .field input,
-    .field select {
-      width: 100%;
-      height: 48px;
-      border: 1px solid #c8d4e6;
-      border-radius: 14px;
-      padding: 0 15px;
-      font-weight: 800;
-      font-size: 14px;
-      outline: none;
-      background: #fff;
-      color: var(--dark);
-    }
-
-    .field input:focus,
-    .field select:focus {
-      border-color: #22c55e;
-      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
-    }
-
-    .actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 18px;
-    }
-
-    .btn {
-      border: 0;
-      min-height: 48px;
-      border-radius: 12px;
-      padding: 0 18px;
-      font-weight: 950;
-      font-size: 14px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: 0.2s ease;
-      text-decoration: none;
-      color: inherit;
-      white-space: nowrap;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-      filter: brightness(0.98);
-    }
-
-    .btn:disabled {
-      opacity: 0.65;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-green {
-      background: var(--green-dark);
-      color: #fff;
-    }
-
-    .btn-dark {
-      background: #071226;
-      color: #fff;
-    }
-
-    .btn-soft-green {
-      background: var(--green-soft);
-      color: #007a4c;
-    }
-
-    .btn-soft-blue {
-      background: var(--blue-soft);
-      color: #0648c9;
-    }
-
-    .btn-soft-gray {
-      background: #f1f5f9;
-      color: #071833;
-    }
-
-    .btn-soft-yellow {
-      background: var(--yellow-soft);
-      color: #92400e;
-    }
-
-    .btn-danger {
-      background: var(--danger-soft);
-      color: #be123c;
-    }
-
-    .results-toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 22px;
-    }
-
-    .bulk-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .select-all {
-      height: 42px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 0 14px;
-      font-weight: 950;
-      cursor: pointer;
-    }
-
-    .select-all input {
-      width: 17px;
-      height: 17px;
-      accent-color: var(--green-dark);
-    }
-
-    .leads-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .lead-card {
-      position: relative;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
-      background: #fff;
-      overflow: hidden;
-      min-height: 390px;
-    }
-
-    .lead-card.selected {
-      border-color: var(--green-dark);
-      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
-    }
-
-    .lead-check {
-      position: absolute;
-      top: 18px;
-      left: 18px;
-      z-index: 2;
-      width: 20px;
-      height: 20px;
-      accent-color: var(--green-dark);
-      cursor: pointer;
-    }
-
-    .lead-photo {
-      width: 100%;
-      height: 145px;
-      border-radius: 14px;
-      object-fit: cover;
-      background: #edf2f7;
-      display: block;
-      margin-bottom: 14px;
-    }
-
-    .lead-photo-placeholder {
-      width: 100%;
-      height: 145px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #e2e8f0, #f8fafc);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 34px;
-      margin-bottom: 14px;
-      color: #94a3b8;
-    }
-
-    .lead-title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .lead-title {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 950;
-      line-height: 1.2;
-    }
-
-    .badge {
-      background: var(--green-soft);
-      color: #00985f;
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 11px;
-      font-weight: 950;
-      white-space: nowrap;
-    }
-
-    .lead-info {
-      font-size: 13px;
-      color: #18304f;
-      line-height: 1.45;
-      margin: 7px 0;
-      font-weight: 650;
-      word-break: break-word;
-    }
-
-    .lead-info a {
-      color: #0749bd;
-      text-decoration: none;
-      font-weight: 850;
-    }
-
-    .lead-buttons {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
-
-    .small-btn {
-      border: 0;
-      min-height: 34px;
-      border-radius: 10px;
-      padding: 0 12px;
-      font-size: 13px;
-      font-weight: 950;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .lead-status-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 14px;
-      flex-wrap: wrap;
-    }
-
-    .lead-status-row select {
-      height: 35px;
-      min-width: 136px;
-      border: 1px solid #cbd5e1;
-      border-radius: 10px;
-      padding: 0 10px;
-      font-weight: 850;
-      background: #fff;
-    }
-
-    .status-pill {
-      height: 35px;
-      border-radius: 10px;
-      padding: 0 12px;
-      background: #f1f5f9;
-      display: inline-flex;
-      align-items: center;
-      font-size: 13px;
-      font-weight: 950;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .empty {
-      padding: 36px;
-      text-align: center;
-      color: var(--muted);
-      font-weight: 800;
-      background: #f8fafc;
-      border: 1px dashed var(--border);
-      border-radius: 16px;
-    }
-
-    .toast {
-      position: fixed;
-      right: 24px;
-      bottom: 24px;
-      background: #071226;
-      color: #fff;
-      padding: 14px 18px;
-      border-radius: 14px;
-      font-weight: 850;
-      box-shadow: 0 16px 40px rgba(0,0,0,.2);
-      z-index: 9999;
-      max-width: 360px;
-      display: none;
-    }
-
-    .map-hidden {
-      width: 1px;
-      height: 1px;
-      opacity: 0;
-      position: fixed;
-      left: -9999px;
-      bottom: -9999px;
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      border-radius: 16px;
-      overflow: hidden;
-    }
-
-    th, td {
-      text-align: left;
-      padding: 14px;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-      vertical-align: top;
-    }
-
-    th {
-      font-weight: 950;
-      text-transform: uppercase;
-      color: var(--muted);
-      background: #f8fafc;
-    }
-
+      --bg: #f3f6fb; --card: #ffffff; --dark: #071833; --muted: #48607f; --border: #d8e0ed;
+      --green: #22c55e; --green-dark: #16a34a; --green-soft: #dcfce7; --blue-soft: #eaf2ff;
+      --yellow-soft: #fff3cd; --danger-soft: #ffe4e6; --sidebar: #064b38; --sidebar-dark: #033629;
+      --nav: #125a45; --shadow: 0 16px 40px rgba(7, 24, 51, 0.08); --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, Arial, Helvetica, sans-serif; background: var(--bg); color: var(--dark); }
+    button, input, select { font-family: inherit; }
+    .app { display: flex; min-height: 100vh; width: 100%; }
+    
+    /* SIDEBAR */
+    .sidebar { width: 267px; background: linear-gradient(180deg, var(--sidebar), var(--sidebar-dark)); color: #fff; padding: 32px 18px; position: fixed; left: 0; top: 0; bottom: 0; overflow-y: auto; z-index: 10; display: flex; flex-direction: column; }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 34px; }
+    .brand-icon { width: 43px; height: 43px; border-radius: 14px; background: var(--green); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 24px; }
+    .brand h1 { margin: 0; font-size: 18px; line-height: 1.1; }
+    .brand p { margin: 5px 0 0; font-size: 12px; color: rgba(255, 255, 255, 0.78); }
+    .menu-title { font-size: 12px; font-weight: 900; color: rgba(255, 255, 255, 0.55); letter-spacing: 1.4px; margin-bottom: 12px; }
+    .menu-item { border: 0; width: 100%; height: 46px; border-radius: 13px; background: var(--nav); color: #fff; font-weight: 900; font-size: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 0 18px; cursor: pointer; text-align: left; transition: 0.2s ease; }
+    .menu-item:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    .menu-item.active { background: var(--green); color: #061827; }
+    .logout-btn { margin-top: auto; background: rgba(220, 38, 38, 0.2); color: #fca5a5; }
+    .logout-btn:hover { background: rgba(220, 38, 38, 0.4); }
+
+    /* MAIN CONTENT */
+    .main { margin-left: 267px; width: calc(100% - 267px); padding: 36px 32px 60px; }
+    .topbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 24px; }
+    .topbar h2 { margin: 8px 0 0; font-size: 30px; font-weight: 950; letter-spacing: -0.8px; }
+    .user-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; min-width: 142px; box-shadow: var(--shadow); }
+    .user-avatar { width: 40px; height: 40px; border-radius: 14px; background: var(--green-soft); color: #059669; display: flex; align-items: center; justify-content: center; font-weight: 950; font-size: 17px; }
+    .user-card strong { font-size: 14px; }
+    .user-card span { font-size: 12px; color: var(--muted); }
+
+    /* STATS & SECTIONS */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 22px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; min-height: 102px; box-shadow: var(--shadow); }
+    .stat-card span { display: block; color: var(--muted); font-weight: 950; font-size: 13px; letter-spacing: 0.6px; margin-bottom: 12px; text-transform: uppercase; }
+    .stat-card strong { display: block; font-size: 30px; font-weight: 950; }
+    .section { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 24px; box-shadow: var(--shadow); margin-bottom: 22px; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+    .section-title { display: flex; align-items: center; gap: 12px; }
+    .section-icon { width: 42px; height: 42px; border-radius: 14px; background: var(--green-soft); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+    .section-title h3 { margin: 0; font-size: 21px; font-weight: 950; }
+    .section-title p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+    
+    /* GRIDS & FORMS */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .grid-search { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: end; }
+    .field label { display: block; font-size: 13px; font-weight: 950; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .field input, .field select { width: 100%; height: 48px; border: 1px solid #c8d4e6; border-radius: 14px; padding: 0 15px; font-weight: 800; font-size: 14px; outline: none; background: #fff; color: var(--dark); }
+    .field input:focus, .field select:focus { border-color: #22c55e; box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15); }
+    
+    /* BUTTONS */
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+    .btn { border: 0; min-height: 48px; border-radius: 12px; padding: 0 18px; font-weight: 950; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s ease; text-decoration: none; color: inherit; white-space: nowrap; }
+    .btn:hover { transform: translateY(-1px); filter: brightness(0.98); }
+    .btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+    .btn-green { background: var(--green-dark); color: #fff; }
+    .btn-dark { background: #071226; color: #fff; }
+    .btn-soft-green { background: var(--green-soft); color: #007a4c; }
+    .btn-soft-blue { background: var(--blue-soft); color: #0648c9; }
+    .btn-soft-gray { background: #f1f5f9; color: #071833; }
+    .btn-soft-yellow { background: var(--yellow-soft); color: #92400e; }
+    .btn-danger { background: var(--danger-soft); color: #be123c; }
+
+    /* RESULTS */
+    .results-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+    .bulk-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .select-all { height: 42px; display: inline-flex; align-items: center; gap: 8px; background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 0 14px; font-weight: 950; cursor: pointer; }
+    .select-all input { width: 17px; height: 17px; accent-color: var(--green-dark); }
+    .leads-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .lead-card { position: relative; border: 1px solid var(--border); border-radius: 18px; padding: 16px; background: #fff; overflow: hidden; min-height: 390px; }
+    .lead-card.selected { border-color: var(--green-dark); box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15); }
+    .lead-check { position: absolute; top: 18px; left: 18px; z-index: 2; width: 20px; height: 20px; accent-color: var(--green-dark); cursor: pointer; }
+    .lead-photo { width: 100%; height: 145px; border-radius: 14px; object-fit: cover; background: #edf2f7; display: block; margin-bottom: 14px; }
+    .lead-photo-placeholder { width: 100%; height: 145px; border-radius: 14px; background: linear-gradient(135deg, #e2e8f0, #f8fafc); display: flex; align-items: center; justify-content: center; font-size: 34px; margin-bottom: 14px; color: #94a3b8; }
+    .lead-title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+    .lead-title { margin: 0; font-size: 18px; font-weight: 950; line-height: 1.2; }
+    .badge { background: var(--green-soft); color: #00985f; border-radius: 999px; padding: 6px 10px; font-size: 11px; font-weight: 950; white-space: nowrap; }
+    .lead-info { font-size: 13px; color: #18304f; line-height: 1.45; margin: 7px 0; font-weight: 650; word-break: break-word; }
+    .lead-info a { color: #0749bd; text-decoration: none; font-weight: 850; }
+    .lead-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+    .small-btn { border: 0; min-height: 34px; border-radius: 10px; padding: 0 12px; font-size: 13px; font-weight: 950; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+    .lead-status-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    .lead-status-row select { height: 35px; min-width: 136px; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0 10px; font-weight: 850; background: #fff; }
+    .status-pill { height: 35px; border-radius: 10px; padding: 0 12px; background: #f1f5f9; display: inline-flex; align-items: center; font-size: 13px; font-weight: 950; }
+    
+    /* UTILS & MODALS */
+    .hidden { display: none !important; }
+    .empty { padding: 36px; text-align: center; color: var(--muted); font-weight: 800; background: #f8fafc; border: 1px dashed var(--border); border-radius: 16px; }
+    .toast { position: fixed; right: 24px; bottom: 24px; background: #071226; color: #fff; padding: 14px 18px; border-radius: 14px; font-weight: 850; box-shadow: 0 16px 40px rgba(0,0,0,.2); z-index: 9999; max-width: 360px; display: none; }
+    .map-hidden { width: 1px; height: 1px; opacity: 0; position: fixed; left: -9999px; bottom: -9999px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 16px; overflow: hidden; }
+    th, td { text-align: left; padding: 14px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+    th { font-weight: 950; text-transform: uppercase; color: var(--muted); background: #f8fafc; }
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 10000; }
     .modal { background: #fff; padding: 24px; border-radius: 18px; width: 400px; max-width: 90%; box-shadow: var(--shadow); }
     .modal h3 { margin-top: 0; font-size: 20px; font-weight: 950; margin-bottom: 8px; color: var(--dark); }
@@ -638,68 +110,21 @@
     .modal select, .modal input { width: 100%; height: 48px; border: 1px solid #c8d4e6; border-radius: 14px; padding: 0 15px; margin-bottom: 15px; font-family: inherit; font-size: 14px; font-weight: 700;}
     .modal-divider { text-align: center; margin: 10px 0 20px; color: #94a3b8; font-size: 11px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;}
     .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
-    
     .folder-filter-wrap { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 14px; }
     .folder-filter-wrap select { height: 48px; border: 1px solid var(--border); border-radius: 12px; padding: 0 16px; font-weight: 800; font-size: 14px; min-width: 200px; outline: none;}
 
-    @media (max-width: 1400px) {
-      .grid-search {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
+    /* MEDIA QUERIES */
+    @media (max-width: 1400px) { .grid-search { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 1200px) { .leads-grid { grid-template-columns: repeat(2, 1fr); } .stats, .grid-2 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 800px) { .sidebar { position: relative; width: 100%; bottom: auto; } .app { display: block; } .main { margin-left: 0; width: 100%; padding: 22px 16px; } .topbar, .section-head { align-items: flex-start; flex-direction: column; } .stats, .grid-2, .grid-search, .leads-grid { grid-template-columns: 1fr; } }
 
-    @media (max-width: 1200px) {
-      .leads-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .stats, .grid-3 {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 800px) {
-      .sidebar {
-        position: relative;
-        width: 100%;
-        bottom: auto;
-      }
-      .app {
-        display: block;
-      }
-      .main {
-        margin-left: 0;
-        width: 100%;
-        padding: 22px 16px;
-      }
-      .topbar, .section-head {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-      .stats, .grid-3, .grid-search, .leads-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* ====== CSS DA TELA DE LOGIN ====== */
-    #loginOverlay {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #071833;
-      display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px;
-    }
-    .login-box {
-      background: #fff; max-width: 400px; width: 100%; padding: 40px; border-radius: 24px; box-shadow: 0 24px 48px rgba(0,0,0,0.2); text-align: center;
-    }
-    .login-brand {
-      width: 60px; height: 60px; background: #22c55e; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 32px; color: #fff; margin-bottom: 16px; margin: 0 auto 16px auto;
-    }
-    .login-box input {
-      width: 100%; height: 52px; padding: 0 15px; border-radius: 14px; border: 1px solid #c8d4e6; margin-bottom: 16px; font-size: 14px; box-sizing: border-box;
-    }
-    .login-box button {
-      width: 100%; height: 52px; border: none; border-radius: 14px; background: #22c55e; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s;
-    }
-    .login-box button:disabled {
-      opacity: 0.7; cursor: not-allowed;
-    }
+    /* ====== LOGIN ====== */
+    #loginOverlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #071833; display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; }
+    .login-box { background: #fff; max-width: 400px; width: 100%; padding: 40px; border-radius: 24px; box-shadow: 0 24px 48px rgba(0,0,0,0.2); text-align: center; }
+    .login-brand { width: 60px; height: 60px; background: #22c55e; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 32px; color: #fff; margin-bottom: 16px; margin: 0 auto 16px auto; }
+    .login-box input { width: 100%; height: 52px; padding: 0 15px; border-radius: 14px; border: 1px solid #c8d4e6; margin-bottom: 16px; font-size: 14px; box-sizing: border-box; }
+    .login-box button { width: 100%; height: 52px; border: none; border-radius: 14px; background: #22c55e; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .login-box button:disabled { opacity: 0.7; cursor: not-allowed; }
   </style>
 </head>
 
@@ -712,14 +137,14 @@
       <h2>VL Hunt</h2>
       <p>Acesso restrito. Faça login para continuar.</p>
       <form onsubmit="handleSupabaseLogin(event)">
-        <input type="email" id="loginEmail" placeholder="Seu e-mail cadastrado" required />
-        <input type="password" id="loginPassword" placeholder="Sua senha" required />
+        <input type="email" id="loginEmail" placeholder="Seu e-mail cadastrado" required autocomplete="email" />
+        <input type="password" id="loginPassword" placeholder="Sua senha" required autocomplete="current-password" />
         <button type="submit" id="loginBtn">Entrar no Sistema</button>
       </form>
     </div>
   </div>
 
-  <!-- CONTAINER QUE ENVOLVE E ESCONDE O SISTEMA ATÉ O LOGIN SER FEITO -->
+  <!-- CONTAINER QUE ENVOLVE O SISTEMA -->
   <div id="mainApp" style="display:none;">
 
     <div class="app">
@@ -764,10 +189,10 @@
           </div>
 
           <div class="user-card">
-            <div class="user-avatar" id="topUserInitials">VL</div>
+            <div class="user-avatar" id="topUserInitials">...</div>
             <div>
               <strong id="topUserName">Carregando...</strong><br />
-              <span>Comercial</span>
+              <span>Usuário logado</span>
             </div>
           </div>
         </div>
@@ -777,17 +202,14 @@
             <span>Na Tela</span>
             <strong id="foundCount">0</strong>
           </div>
-
           <div class="stat-card">
             <span>Salvos</span>
             <strong id="savedCount">0</strong>
           </div>
-
           <div class="stat-card">
             <span>Exportados</span>
             <strong id="exportedCount">0</strong>
           </div>
-
           <div class="stat-card">
             <span>Pendentes</span>
             <strong id="pendingCount">0</strong>
@@ -819,22 +241,13 @@
                 <datalist id="nicheList">
                   <option value="Advogados"></option>
                   <option value="Agências de Marketing"></option>
-                  <option value="Bares e Pubs"></option>
                   <option value="Clínicas Médicas"></option>
                   <option value="Clínicas Odontológicas"></option>
                   <option value="Contabilidades"></option>
                   <option value="Corretoras de Seguros"></option>
-                  <option value="Estúdios de Tatuagem"></option>
-                  <option value="Farmácias"></option>
                   <option value="Imobiliárias"></option>
-                  <option value="Lojas de Roupas"></option>
                   <option value="Lojas de Veículos"></option>
-                  <option value="Oficinas Mecânicas"></option>
-                  <option value="Padarias"></option>
-                  <option value="Pet Shops"></option>
                   <option value="Restaurantes"></option>
-                  <option value="Salões e Barbearias"></option>
-                  <option value="Supermercados"></option>
                   <option value="Tecnologia e TI"></option>
                 </datalist>
               </div>
@@ -878,7 +291,7 @@
                 <div class="section-icon">📍</div>
                 <div>
                   <h3>Resultados</h3>
-                  <p>Lista carregada (sem paginação, rola tudo de uma vez).</p>
+                  <p>Lista carregada do Google Maps.</p>
                 </div>
               </div>
             </div>
@@ -988,25 +401,22 @@
             <div class="section-title" style="margin-bottom: 22px;">
               <div class="section-icon">⚙️</div>
               <div>
-                <h3>Configurações</h3>
-                <p>Configure suas chaves e o comercial responsável.</p>
+                <h3>Configurações do Administrador</h3>
+                <p>Configure as chaves de API do sistema.</p>
               </div>
             </div>
 
-            <div class="grid-3">
+            <div class="grid-2">
               <div class="field">
                 <label for="googleApiKeyInput">API Key Google Maps</label>
-                <input id="googleApiKeyInput" type="password" placeholder="Cole sua API Key do Google Maps" />
+                <!-- autocomplete off evita sugestões do navegador -->
+                <input id="googleApiKeyInput" type="password" autocomplete="new-password" placeholder="Cole sua API Key do Google Maps" />
               </div>
 
               <div class="field">
                 <label for="pipedriveTokenInput">Token Pipedrive</label>
-                <input id="pipedriveTokenInput" type="password" placeholder="Cole seu token do Pipedrive" />
-              </div>
-
-              <div class="field">
-                <label for="commercialInput">Comercial</label>
-                <input id="commercialInput" type="text" placeholder="Ex: Victor" />
+                <!-- autocomplete off evita preenchimento de email pelo navegador -->
+                <input id="pipedriveTokenInput" type="password" autocomplete="new-password" placeholder="Cole seu token do Pipedrive" />
               </div>
             </div>
 
@@ -1042,7 +452,7 @@
         <div class="modal-divider">OU CRIAR NOVA</div>
         
         <label>Nova pasta</label>
-        <input type="text" id="newFolderInput" placeholder="Ex: Victor - Março">
+        <input type="text" id="newFolderInput" placeholder="Ex: Contatos - Março">
         
         <div class="modal-buttons">
           <button class="btn btn-soft-gray" onclick="closeFolderModal()">Cancelar</button>
@@ -1054,13 +464,12 @@
     <div id="map" class="map-hidden"></div>
     <div id="toast" class="toast"></div>
 
+    <!-- SCRIPTS CORE DO SISTEMA -->
     <script>
       let map = null;
       let placesService = null;
-
       let detailsQueue = [];
       let isProcessingQueue = false;
-
       let leads = [];
       let savedLeads = [];
       let exportedLeads = [];
@@ -1068,11 +477,12 @@
       let isSearching = false;
       let pendingLeadsToSave = []; 
       
-      let currentUserEmail = ''; // Guarda o email de quem logou
-      let isUserAdmin = false; // Guarda se o cara é o chefe
+      let currentUserEmail = ''; 
+      let currentUserFullName = ''; // Para enviar pro Pipedrive
+      let isUserAdmin = false; 
 
       const STORAGE_KEYS = {
-        settings: 'vlhunt_settings_v2',
+        settings: 'vlhunt_settings_v3', // Alterado para limpar cache antigo
         saved: 'vlhunt_saved_leads_v2',
         exported: 'vlhunt_exported_leads_v2'
       };
@@ -1114,9 +524,8 @@
       });
 
       function showSection(section) {
-        // Trava de Segurança extra: se tentar acessar settings via código sem ser admin, é bloqueado.
         if (section === 'settings' && !isUserAdmin) {
-            toast('Acesso negado. Apenas o administrador tem acesso às configurações.');
+            toast('Acesso negado. Apenas o administrador tem acesso.');
             return;
         }
 
@@ -1165,14 +574,12 @@
         const settings = getSettings();
         document.getElementById('googleApiKeyInput').value = settings.googleApiKey || '';
         document.getElementById('pipedriveTokenInput').value = settings.pipedriveToken || '';
-        document.getElementById('commercialInput').value = settings.commercial || '';
       }
 
       function saveSettings() {
         const settings = {
           googleApiKey: document.getElementById('googleApiKeyInput').value.trim(),
-          pipedriveToken: document.getElementById('pipedriveTokenInput').value.trim(),
-          commercial: document.getElementById('commercialInput').value.trim()
+          pipedriveToken: document.getElementById('pipedriveTokenInput').value.trim()
         };
 
         localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(settings));
@@ -1220,7 +627,7 @@
         const mapEl = document.getElementById('map');
         map = new google.maps.Map(mapEl, { center: { lat: -23.4205, lng: -51.9333 }, zoom: 13 });
         placesService = new google.maps.places.PlacesService(map);
-        toast('Google Maps carregado e pronto.');
+        toast('Google Maps conectado!');
       }
 
       function updateCounters() {
@@ -1236,50 +643,30 @@
 
       function isStrictMatch(place, district, street) {
         if (!district && !street) return true; 
-        
         const addr = normalizeString(place.formatted_address || place.vicinity || place.name || '');
         let matchDistrict = true;
         let matchStreet = true;
-
-        if (district) {
-           const dStr = normalizeString(district);
-           matchDistrict = addr.includes(dStr);
-        }
-
-        if (street) {
-           let sStr = normalizeString(street).replace(/^(rua|av|avenida|trav|travessa|alameda|rodovia|rod)\.?\s+/g, '');
-           matchStreet = addr.includes(sStr);
-        }
-
+        if (district) matchDistrict = addr.includes(normalizeString(district));
+        if (street) matchStreet = addr.includes(normalizeString(street).replace(/^(rua|av|avenida|trav|travessa|alameda|rodovia|rod)\.?\s+/g, ''));
         return matchDistrict && matchStreet;
       }
 
       function searchLeads() {
         if (isSearching) return;
-
         const name = document.getElementById('nameInput').value.trim();
         const niche = document.getElementById('nicheInput').value.trim();
         const city = document.getElementById('cityInput').value.trim();
         const district = document.getElementById('districtInput').value.trim();
         const street = document.getElementById('streetInput').value.trim();
 
-        if (!name && (!niche || !city)) {
-          toast('Digite o NOME da empresa OU preencha NICHO e CIDADE.');
-          return;
-        }
-
+        if (!name && (!niche || !city)) { toast('Digite o NOME ou NICHO+CIDADE.'); return; }
         const settings = getSettings();
         if (!settings.googleApiKey) {
           toast('Configure a API Key do Google Maps primeiro.');
-          // Só redireciona se for Admin
           if (isUserAdmin) showSection('settings');
           return;
         }
-
-        if (!placesService) {
-          toast('Google Maps carregando... Aguarde.');
-          return;
-        }
+        if (!placesService) { toast('Google Maps carregando...'); return; }
 
         localStorage.setItem('vlhunt_last_name', name);
         localStorage.setItem('vlhunt_last_niche', niche);
@@ -1294,36 +681,24 @@
         if (district) queryParts.push(`bairro ${district}`);
         if (city) queryParts.push(`em ${city}`);
         
-        const query = queryParts.join(' ');
-
-        leads = [];
-        detailsQueue = [];
-        selectedLeadIds.clear();
-        isProcessingQueue = false;
-        isSearching = true;
-
+        leads = []; detailsQueue = []; selectedLeadIds.clear(); isProcessingQueue = false; isSearching = true;
         document.getElementById('selectAllCheckbox').checked = false;
         const btn = document.getElementById('searchBtn');
-        btn.disabled = true;
-        btn.textContent = 'Buscando (0)...';
+        btn.disabled = true; btn.textContent = 'Buscando...';
 
         renderLeads();
-
-        placesService.textSearch({ query: query, type: 'establishment' }, handlePlacesResults);
+        placesService.textSearch({ query: queryParts.join(' '), type: 'establishment' }, handlePlacesResults);
       }
 
       function handlePlacesResults(results, status, pagination) {
         if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-           setTimeout(() => {
-              if (pagination && pagination.hasNextPage) pagination.nextPage();
-           }, 2000);
+           setTimeout(() => { if (pagination && pagination.hasNextPage) pagination.nextPage(); }, 2000);
            return; 
         }
 
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
           const district = document.getElementById('districtInput').value.trim();
           const street = document.getElementById('streetInput').value.trim();
-
           results.forEach(place => {
             if (isStrictMatch(place, district, street)) {
                const normalized = normalizePlace(place);
@@ -1335,107 +710,52 @@
           });
         }
 
-        renderLeads();
-        updateCounters();
-
+        renderLeads(); updateCounters();
         const btn = document.getElementById('searchBtn');
         
         if (pagination && pagination.hasNextPage) {
-          btn.textContent = `Buscando mais... (${leads.length})`;
-          setTimeout(() => {
-            pagination.nextPage();
-          }, 2000);
+          btn.textContent = `Buscando... (${leads.length})`;
+          setTimeout(() => { pagination.nextPage(); }, 2000);
         } else {
-          isSearching = false;
-          btn.disabled = false;
-          btn.textContent = 'Extrair Leads';
-          
-          if (leads.length === 0) {
-             toast('Fim. Nenhum lead EXATO com esses filtros. Tente flexibilizar.');
-          } else {
-             toast(`Busca automatizada concluída! ${leads.length} leads na tela.`);
-          }
+          isSearching = false; btn.disabled = false; btn.textContent = 'Extrair Leads';
+          toast(leads.length === 0 ? 'Nenhum lead exato encontrado.' : `${leads.length} leads na tela.`);
         }
       }
 
       function normalizePlace(place) {
-        const photoUrl = place.photos && place.photos.length
-          ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 })
-          : '';
+        const photoUrl = place.photos && place.photos.length ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 }) : '';
         return {
-          place_id: place.place_id,
-          name: place.name || '',
-          address: place.formatted_address || place.vicinity || '',
-          phone: '',
-          website: '',
-          url: place.url || '',
-          rating: place.rating || '',
-          user_ratings_total: place.user_ratings_total || '',
-          photo: photoUrl,
-          status: 'Novo',
-          exported: false,
-          savedAt: null,
-          exportedAt: null
+          place_id: place.place_id, name: place.name || '', address: place.formatted_address || place.vicinity || '',
+          phone: '', website: '', url: place.url || '', rating: place.rating || '', user_ratings_total: place.user_ratings_total || '',
+          photo: photoUrl, status: 'Novo', exported: false, savedAt: null, exportedAt: null
         };
       }
 
       function fetchPlaceDetailsQueue(placeId) {
-        if (!detailsQueue.includes(placeId)) {
-           detailsQueue.push(placeId);
-        }
+        if (!detailsQueue.includes(placeId)) detailsQueue.push(placeId);
         processQueue();
       }
 
       function processQueue() {
-        if (isProcessingQueue || detailsQueue.length === 0) return;
+        if (isProcessingQueue || detailsQueue.length === 0 || !placesService) return;
         isProcessingQueue = true;
-
         const placeId = detailsQueue.shift();
 
-        if (!placesService) {
-          isProcessingQueue = false;
-          return;
-        }
-
-        placesService.getDetails(
-          {
-            placeId: placeId,
-            fields: ['name', 'formatted_address', 'formatted_phone_number', 'international_phone_number', 'website', 'url', 'rating', 'user_ratings_total', 'photos'] 
-          },
+        placesService.getDetails({ placeId: placeId, fields: ['name', 'formatted_address', 'formatted_phone_number', 'international_phone_number', 'website', 'url', 'rating', 'user_ratings_total', 'photos'] },
           (place, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
                detailsQueue.unshift(placeId); 
-               setTimeout(() => {
-                  isProcessingQueue = false;
-                  processQueue();
-               }, 2000); 
+               setTimeout(() => { isProcessingQueue = false; processQueue(); }, 2000); 
                return;
             }
-
             if (status === google.maps.places.PlacesServiceStatus.OK && place) {
               const index = leads.findIndex(lead => lead.place_id === placeId);
               if (index !== -1) {
-                leads[index] = {
-                  ...leads[index],
-                  name: place.name || leads[index].name,
-                  address: place.formatted_address || leads[index].address,
-                  phone: place.formatted_phone_number || place.international_phone_number || leads[index].phone,
-                  website: place.website || leads[index].website,
-                  url: place.url || leads[index].url,
-                  rating: place.rating || leads[index].rating,
-                  user_ratings_total: place.user_ratings_total || leads[index].user_ratings_total,
-                  photo: place.photos && place.photos.length
-                    ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 })
-                    : leads[index].photo 
-                };
+                leads[index] = { ...leads[index], name: place.name || leads[index].name, address: place.formatted_address || leads[index].address, phone: place.formatted_phone_number || place.international_phone_number || leads[index].phone, website: place.website || leads[index].website, url: place.url || leads[index].url, rating: place.rating || leads[index].rating, user_ratings_total: place.user_ratings_total || leads[index].user_ratings_total, photo: place.photos && place.photos.length ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 }) : leads[index].photo };
                 renderLeads();
               }
             }
-
-            setTimeout(() => {
-              isProcessingQueue = false;
-              processQueue();
-            }, 500);
+            setTimeout(() => { isProcessingQueue = false; processQueue(); }, 500);
           }
         );
       }
@@ -1443,103 +763,41 @@
       function renderLeads() {
         const grid = document.getElementById('leadsGrid');
         const empty = document.getElementById('resultsEmpty');
-
         grid.innerHTML = '';
-
         if (!leads.length) {
-          if (!isSearching) {
-             empty.innerHTML = 'Nenhum lead pesquisado ainda.';
-          } else {
-             empty.innerHTML = 'Aguarde, processando resultados no Google...';
-          }
-          empty.classList.remove('hidden');
-          return;
+          empty.innerHTML = isSearching ? 'Processando...' : 'Nenhum lead pesquisado.';
+          empty.classList.remove('hidden'); return;
         }
-
         empty.classList.add('hidden');
-
-        leads.forEach(lead => {
-          grid.appendChild(createLeadCard(lead, 'current'));
-        });
+        leads.forEach(lead => grid.appendChild(createLeadCard(lead, 'current')));
       }
 
       function createLeadCard(lead, source) {
         const card = document.createElement('div');
         card.className = 'lead-card';
-
-        if (source === 'current' && selectedLeadIds.has(lead.place_id)) {
-          card.classList.add('selected');
-        }
+        if (source === 'current' && selectedLeadIds.has(lead.place_id)) card.classList.add('selected');
 
         const websiteLabel = lead.website ? lead.website : 'Site não encontrado';
         const phoneLabel = lead.phone ? lead.phone : 'Telefone não encontrado';
         const mapsUrl = lead.url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lead.name + ' ' + lead.address)}`;
         const whatsappUrl = lead.phone ? makeWhatsAppUrl(lead.phone, lead.name) : '';
-
-        const folderBadge = source === 'saved' ? `
-          <div style="margin-bottom: 14px;">
-              <span style="background: #e0f2fe; color: #0369a1; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 900; letter-spacing: 0.5px;">📁 PASTA: ${escapeHtml(lead.folder || 'Geral')}</span>
-          </div>
-        ` : '';
+        const folderBadge = source === 'saved' ? `<div style="margin-bottom:14px;"><span style="background:#e0f2fe; color:#0369a1; padding:5px 10px; border-radius:8px; font-size:11px; font-weight:900;">📁 PASTA: ${escapeHtml(lead.folder || 'Geral')}</span></div>` : '';
 
         card.innerHTML = `
-          ${source === 'current' ? `
-            <input
-              type="checkbox"
-              class="lead-check"
-              ${selectedLeadIds.has(lead.place_id) ? 'checked' : ''}
-              onchange="toggleLeadSelection('${escapeAttr(lead.place_id)}', this.checked)"
-            />
-          ` : ''}
-
-          ${
-            lead.photo
-              ? `<img class="lead-photo" src="${escapeAttr(lead.photo)}" alt="${escapeAttr(lead.name)}" onerror="this.onerror=null; this.outerHTML='<div class=\\'lead-photo-placeholder\\'>🏢</div>';" />`
-              : `<div class="lead-photo-placeholder">🏢</div>`
-          }
-
+          ${source === 'current' ? `<input type="checkbox" class="lead-check" ${selectedLeadIds.has(lead.place_id) ? 'checked' : ''} onchange="toggleLeadSelection('${escapeAttr(lead.place_id)}', this.checked)" />` : ''}
+          ${lead.photo ? `<img class="lead-photo" src="${escapeAttr(lead.photo)}" onerror="this.outerHTML='<div class=\\'lead-photo-placeholder\\'>🏢</div>';" />` : `<div class="lead-photo-placeholder">🏢</div>`}
           ${folderBadge}
-
-          <div class="lead-title-row">
-            <h4 class="lead-title">${escapeHtml(lead.name)}</h4>
-            <span class="badge">${escapeHtml(lead.status || 'Novo')}</span>
-          </div>
-
+          <div class="lead-title-row"><h4 class="lead-title">${escapeHtml(lead.name)}</h4><span class="badge">${escapeHtml(lead.status || 'Novo')}</span></div>
           <p class="lead-info">📍 ${escapeHtml(lead.address || 'Endereço não encontrado')}</p>
           <p class="lead-info">📞 ${escapeHtml(phoneLabel)}</p>
-          <p class="lead-info">🌐 ${
-            lead.website
-              ? `<a href="${escapeAttr(lead.website)}" target="_blank">${escapeHtml(lead.website)}</a>`
-              : 'Site não encontrado'
-          }</p>
-          <p class="lead-info">⭐ ${
-            lead.rating
-              ? `${escapeHtml(String(lead.rating))} (${escapeHtml(String(lead.user_ratings_total || 0))} avaliações)`
-              : 'Sem avaliações'
-          }</p>
-
+          <p class="lead-info">🌐 ${lead.website ? `<a href="${escapeAttr(lead.website)}" target="_blank">${escapeHtml(lead.website)}</a>` : 'Site não encontrado'}</p>
+          <p class="lead-info">⭐ ${lead.rating ? `${escapeHtml(String(lead.rating))} (${escapeHtml(String(lead.user_ratings_total || 0))} avaliações)` : 'Sem avaliações'}</p>
           <div class="lead-buttons">
-            ${
-              whatsappUrl
-                ? `<a class="small-btn btn-soft-green" href="${escapeAttr(whatsappUrl)}" target="_blank">WhatsApp</a>`
-                : ''
-            }
-
-            ${
-              lead.website
-                ? `<a class="small-btn btn-soft-blue" href="${escapeAttr(lead.website)}" target="_blank">Site</a>`
-                : ''
-            }
-
+            ${whatsappUrl ? `<a class="small-btn btn-soft-green" href="${escapeAttr(whatsappUrl)}" target="_blank">WhatsApp</a>` : ''}
+            ${lead.website ? `<a class="small-btn btn-soft-blue" href="${escapeAttr(lead.website)}" target="_blank">Site</a>` : ''}
             <a class="small-btn btn-soft-gray" href="${escapeAttr(mapsUrl)}" target="_blank">Maps</a>
-
-            ${source === 'current' ? `
-            <button class="small-btn btn-soft-green" onclick="saveLeadById('${escapeAttr(lead.place_id)}')">
-              Salvar
-            </button>
-            ` : ''}
+            ${source === 'current' ? `<button class="small-btn btn-soft-green" onclick="saveLeadById('${escapeAttr(lead.place_id)}')">Salvar</button>` : ''}
           </div>
-
           <div class="lead-status-row">
             <select onchange="changeLeadStatus('${escapeAttr(lead.place_id)}', this.value)">
               <option value="Novo" ${lead.status === 'Novo' ? 'selected' : ''}>Novo</option>
@@ -1548,118 +806,64 @@
               <option value="Sem interesse" ${lead.status === 'Sem interesse' ? 'selected' : ''}>Sem interesse</option>
               <option value="Fechado" ${lead.status === 'Fechado' ? 'selected' : ''}>Fechado</option>
             </select>
-
             <span class="status-pill">${lead.exported ? 'Exportado' : 'Pendente'}</span>
           </div>
         `;
-
         return card;
       }
 
       function toggleLeadSelection(placeId, checked) {
-        if (checked) {
-          selectedLeadIds.add(placeId);
-        } else {
-          selectedLeadIds.delete(placeId);
-        }
+        checked ? selectedLeadIds.add(placeId) : selectedLeadIds.delete(placeId);
         renderLeads();
       }
 
       function toggleSelectAll(checked) {
-        if (checked) {
-          leads.forEach(lead => selectedLeadIds.add(lead.place_id));
-        } else {
-          selectedLeadIds.clear();
-        }
+        checked ? leads.forEach(l => selectedLeadIds.add(l.place_id)) : selectedLeadIds.clear();
         renderLeads();
       }
 
-      function clearSelected() {
-        selectedLeadIds.clear();
-        document.getElementById('selectAllCheckbox').checked = false;
-        renderLeads();
-        toast('Seleção limpa.');
-      }
-
-      function getSelectedLeads() {
-        return leads.filter(lead => selectedLeadIds.has(lead.place_id));
-      }
+      function clearSelected() { selectedLeadIds.clear(); document.getElementById('selectAllCheckbox').checked = false; renderLeads(); toast('Seleção limpa.'); }
+      function getSelectedLeads() { return leads.filter(l => selectedLeadIds.has(l.place_id)); }
 
       function openFolderModal() {
         const select = document.getElementById('folderSelect');
         const uniqueFolders = [...new Set(savedLeads.map(l => l.folder || 'Geral'))];
-        
-        select.innerHTML = '<option value="">-- Selecione uma pasta existente --</option>';
-        uniqueFolders.forEach(f => {
-           select.innerHTML += `<option value="${escapeAttr(f)}">${escapeHtml(f)}</option>`;
-        });
-        
+        select.innerHTML = '<option value="">-- Selecione uma pasta --</option>';
+        uniqueFolders.forEach(f => select.innerHTML += `<option value="${escapeAttr(f)}">${escapeHtml(f)}</option>`);
         document.getElementById('newFolderInput').value = '';
         document.getElementById('folderModal').style.display = 'flex';
       }
 
-      function closeFolderModal() {
-        document.getElementById('folderModal').style.display = 'none';
-        pendingLeadsToSave = [];
-      }
+      function closeFolderModal() { document.getElementById('folderModal').style.display = 'none'; pendingLeadsToSave = []; }
 
       function confirmFolderSave() {
-        const selectVal = document.getElementById('folderSelect').value;
-        const inputVal = document.getElementById('newFolderInput').value.trim();
-        const folderName = inputVal || selectVal || 'Geral';
-
+        const folderName = document.getElementById('newFolderInput').value.trim() || document.getElementById('folderSelect').value || 'Geral';
         let count = 0;
         pendingLeadsToSave.forEach(lead => {
-           savedLeads.push({
-              ...lead,
-              folder: folderName,
-              savedAt: new Date().toISOString()
-           });
-           
-           leads = leads.filter(item => item.place_id !== lead.place_id);
+           savedLeads.push({ ...lead, folder: folderName, savedAt: new Date().toISOString() });
+           leads = leads.filter(i => i.place_id !== lead.place_id);
            selectedLeadIds.delete(lead.place_id);
            count++;
         });
-
-        persistSavedLeads();
-        updateFolderFilterDropdown();
-        renderSavedLeads();
-        renderLeads();
-        updateCounters();
-        closeFolderModal();
-        toast(`✅ ${count} lead(s) salvo(s) na pasta "${folderName}".`);
+        localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
+        updateFolderFilterDropdown(); renderSavedLeads(); renderLeads(); updateCounters(); closeFolderModal();
+        toast(`✅ ${count} lead(s) salvo(s).`);
       }
 
-      function saveLeadById(placeId) {
-        const lead = leads.find(item => item.place_id === placeId);
+      function saveLeadById(id) {
+        const lead = leads.find(i => i.place_id === id);
         if (lead) {
-           if (savedLeads.some(item => item.place_id === lead.place_id)) {
-              toast('Este lead já está salvo.');
-              return;
-           }
-           pendingLeadsToSave = [lead];
-           openFolderModal();
+           if (savedLeads.some(i => i.place_id === lead.place_id)) { toast('Já está salvo.'); return; }
+           pendingLeadsToSave = [lead]; openFolderModal();
         }
       }
 
       function saveSelectedLeads() {
         const selected = getSelectedLeads();
-        if (!selected.length) {
-          toast('Selecione pelo menos um lead.');
-          return;
-        }
-        
-        pendingLeadsToSave = selected.filter(lead => !savedLeads.some(s => s.place_id === lead.place_id));
-        
-        if (!pendingLeadsToSave.length) {
-           toast('Todos os leads selecionados já estão salvos.');
-           return;
-        }
+        if (!selected.length) { toast('Selecione leads.'); return; }
+        pendingLeadsToSave = selected.filter(l => !savedLeads.some(s => s.place_id === l.place_id));
+        if (!pendingLeadsToSave.length) { toast('Leads selecionados já estão salvos.'); return; }
         openFolderModal();
-      }
-
-      function persistSavedLeads() {
-        localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
       }
 
       function updateFolderFilterDropdown() {
@@ -1667,190 +871,92 @@
         if(!filter) return;
         const currentVal = filter.value;
         const uniqueFolders = [...new Set(savedLeads.map(l => l.folder || 'Geral'))];
-        
         filter.innerHTML = '<option value="Todas">Todas as pastas</option>';
-        uniqueFolders.forEach(f => {
-           filter.innerHTML += `<option value="${escapeAttr(f)}">${escapeHtml(f)}</option>`;
-        });
-        
-        if (uniqueFolders.includes(currentVal) || currentVal === 'Todas') {
-           filter.value = currentVal;
-        }
-      }
-
-      function getFilteredSavedLeads() {
-        const filterVal = document.getElementById('savedFolderFilter').value;
-        if (filterVal === 'Todas') return savedLeads;
-        return savedLeads.filter(l => (l.folder || 'Geral') === filterVal);
+        uniqueFolders.forEach(f => filter.innerHTML += `<option value="${escapeAttr(f)}">${escapeHtml(f)}</option>`);
+        if (uniqueFolders.includes(currentVal) || currentVal === 'Todas') filter.value = currentVal;
       }
 
       function renderSavedLeads() {
         const grid = document.getElementById('savedGrid');
         const empty = document.getElementById('savedEmpty');
-        
         grid.innerHTML = '';
-        const filteredLeads = getFilteredSavedLeads();
-
-        if (!filteredLeads.length) {
-          empty.classList.remove('hidden');
-          updateCounters();
-          return;
-        }
+        const filterVal = document.getElementById('savedFolderFilter').value;
+        const list = filterVal === 'Todas' ? savedLeads : savedLeads.filter(l => (l.folder || 'Geral') === filterVal);
         
+        if (!list.length) { empty.classList.remove('hidden'); updateCounters(); return; }
         empty.classList.add('hidden');
-        filteredLeads.forEach(lead => {
-          grid.appendChild(createLeadCard(lead, 'saved'));
-        });
+        list.forEach(lead => grid.appendChild(createLeadCard(lead, 'saved')));
         updateCounters();
       }
 
       function clearSavedLeads() {
         const filterVal = document.getElementById('savedFolderFilter').value;
         if (filterVal === 'Todas') {
-           if (!confirm('Deseja apagar TODOS os leads de TODAS as pastas?')) return;
+           if (!confirm('Apagar TODOS os leads de TODAS as pastas?')) return;
            savedLeads = [];
         } else {
-           if (!confirm(`Deseja apagar TODOS os leads da pasta "${filterVal}"?`)) return;
+           if (!confirm(`Apagar TODOS os leads da pasta "${filterVal}"?`)) return;
            savedLeads = savedLeads.filter(l => (l.folder || 'Geral') !== filterVal);
         }
-        
-        persistSavedLeads();
-        updateFolderFilterDropdown();
-        renderSavedLeads();
-        updateCounters();
-        toast('Leads apagados com sucesso.');
+        localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
+        updateFolderFilterDropdown(); renderSavedLeads(); updateCounters(); toast('Apagados com sucesso.');
       }
 
-      function changeLeadStatus(placeId, status) {
-        leads = leads.map(lead => {
-          if (lead.place_id === placeId) return { ...lead, status };
-          return lead;
-        });
-        savedLeads = savedLeads.map(lead => {
-          if (lead.place_id === placeId) return { ...lead, status };
-          return lead;
-        });
-        persistSavedLeads();
-        renderLeads();
-        renderSavedLeads();
+      function changeLeadStatus(id, status) {
+        leads = leads.map(l => l.place_id === id ? { ...l, status } : l);
+        savedLeads = savedLeads.map(l => l.place_id === id ? { ...l, status } : l);
+        localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
+        renderLeads(); renderSavedLeads();
       }
 
       async function sendSavedToPipedrive() {
-        const list = getFilteredSavedLeads();
-        if (!list.length) {
-          toast('Nenhum lead na pasta atual para exportar.');
-          return;
-        }
-        await sendLeadsToPipedrive(list);
-      }
+        const filterVal = document.getElementById('savedFolderFilter').value;
+        const list = filterVal === 'Todas' ? savedLeads : savedLeads.filter(l => (l.folder || 'Geral') === filterVal);
+        if (!list.length) { toast('Nenhum lead para exportar.'); return; }
 
-      async function sendLeadsToPipedrive(list) {
         const settings = getSettings();
         if (!settings.pipedriveToken) {
-          toast('Configure o token do Pipedrive primeiro na aba Configurações.');
+          toast('Configure o token do Pipedrive.');
           if (isUserAdmin) showSection('settings');
           return;
         }
-        let success = 0;
-        let failed = 0;
-        toast(`Enviando ${list.length} lead(s) para o Pipedrive...`);
+
+        let success = 0; let failed = 0;
+        toast(`Enviando ${list.length} lead(s)...`);
 
         for (const lead of list) {
           if(lead.exported) continue; 
-          
           try {
-            await sendOneLeadToPipedrive(lead, settings);
-            markLeadAsExported(lead);
+            const token = encodeURIComponent(settings.pipedriveToken);
+            
+            // 1. Cria Org
+            const orgRes = await fetch(`https://api.pipedrive.com/v1/organizations?api_token=${token}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: lead.name, address: lead.address }) });
+            const orgData = await orgRes.json();
+            if (!orgRes.ok || !orgData.success) throw new Error('Erro Org');
+            const orgId = orgData.data.id;
+
+            // 2. Cria Deal com Nome do Usuário
+            const dealRes = await fetch(`https://api.pipedrive.com/v1/deals?api_token=${token}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: `${lead.name} - ${currentUserFullName}`, org_id: orgId, status: 'open' }) });
+            const dealData = await dealRes.json();
+            if (!dealRes.ok || !dealData.success) throw new Error('Erro Deal');
+
+            // 3. Cria Nota
+            const noteContent = `Empresa: ${lead.name}\nTelefone: ${lead.phone || '-'}\nSite: ${lead.website || '-'}\nEndereço: ${lead.address || '-'}\nMaps: ${lead.url || '-'}\nAvaliação: ${lead.rating || '-'}\nPasta: ${lead.folder || 'Geral'}\nComercial Responsável: ${currentUserFullName}`;
+            await fetch(`https://api.pipedrive.com/v1/notes?api_token=${token}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: noteContent, deal_id: dealData.data.id, org_id: orgId }) });
+
+            // Marca Exportado
+            const expRecord = { ...lead, exported: true, exportedAt: new Date().toISOString() };
+            if (!exportedLeads.some(i => i.place_id === lead.place_id)) exportedLeads.push(expRecord);
+            leads = leads.map(i => i.place_id === lead.place_id ? { ...i, exported: true, exportedAt: expRecord.exportedAt } : i);
+            savedLeads = savedLeads.map(i => i.place_id === lead.place_id ? { ...i, exported: true, exportedAt: expRecord.exportedAt } : i);
             success++;
-          } catch (error) {
-            console.error(error);
-            failed++;
-          }
+          } catch (e) { failed++; }
         }
-        persistExportedLeads();
-        persistSavedLeads();
-        renderLeads();
-        renderSavedLeads();
-        renderExportedLeads();
-        updateCounters();
 
-        if (failed) {
-          toast(`${success} enviado(s), ${failed} com erro.`);
-        } else {
-          toast(`${success} lead(s) novo(s) enviado(s) para o Pipedrive.`);
-        }
-      }
-
-      async function sendOneLeadToPipedrive(lead, settings) {
-        const token = encodeURIComponent(settings.pipedriveToken);
-        const orgPayload = { name: lead.name, address: lead.address || undefined };
-        
-        const orgResponse = await fetch(`https://api.pipedrive.com/v1/organizations?api_token=${token}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(orgPayload)
-        });
-        const orgData = await orgResponse.json();
-        if (!orgResponse.ok || !orgData.success) throw new Error('Erro ao criar organização');
-
-        const orgId = orgData.data.id;
-        const dealPayload = {
-          title: `${lead.name} - ${settings.commercial || 'Comercial'}`,
-          org_id: orgId,
-          status: 'open'
-        };
-        
-        const dealResponse = await fetch(`https://api.pipedrive.com/v1/deals?api_token=${token}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(dealPayload)
-        });
-        const dealData = await dealResponse.json();
-        if (!dealResponse.ok || !dealData.success) throw new Error('Erro ao criar negócio');
-
-        const noteContent = `
-  Empresa: ${lead.name}
-  Telefone: ${lead.phone || 'Não encontrado'}
-  Site: ${lead.website || 'Não encontrado'}
-  Endereço: ${lead.address || 'Não encontrado'}
-  Google Maps: ${lead.url || ''}
-  Avaliação: ${lead.rating || 'Sem avaliação'}
-  Pasta VL Hunt: ${lead.folder || 'Geral'}
-  Comercial: ${settings.commercial || ''}
-        `.trim();
-
-        await fetch(`https://api.pipedrive.com/v1/notes?api_token=${token}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            content: noteContent,
-            deal_id: dealData.data.id,
-            org_id: orgId
-          })
-        });
-      }
-
-      function markLeadAsExported(lead) {
-        const exportedRecord = {
-          ...lead,
-          exported: true,
-          exportedAt: new Date().toISOString()
-        };
-        if (!exportedLeads.some(item => item.place_id === lead.place_id)) {
-          exportedLeads.push(exportedRecord);
-        }
-        leads = leads.map(item => {
-          if (item.place_id === lead.place_id) return { ...item, exported: true, exportedAt: exportedRecord.exportedAt };
-          return item;
-        });
-        savedLeads = savedLeads.map(item => {
-          if (item.place_id === lead.place_id) return { ...item, exported: true, exportedAt: exportedRecord.exportedAt };
-          return item;
-        });
-      }
-
-      function persistExportedLeads() {
         localStorage.setItem(STORAGE_KEYS.exported, JSON.stringify(exportedLeads));
+        localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
+        renderLeads(); renderSavedLeads(); renderExportedLeads(); updateCounters();
+        toast(failed ? `${success} enviados, ${failed} falhas.` : `${success} lead(s) enviados.`);
       }
 
       function renderExportedLeads() {
@@ -1858,194 +964,109 @@
         const wrap = document.getElementById('exportedTableWrap');
         const tbody = document.getElementById('exportedTableBody');
         tbody.innerHTML = '';
-        if (!exportedLeads.length) {
-          empty.classList.remove('hidden');
-          wrap.classList.add('hidden');
-          updateCounters();
-          return;
-        }
-        empty.classList.add('hidden');
-        wrap.classList.remove('hidden');
-        exportedLeads.forEach(lead => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td><strong>${escapeHtml(lead.name)}</strong><br>${escapeHtml(lead.address || '')}</td>
-            <td>${escapeHtml(lead.phone || 'Não encontrado')}</td>
-            <td>${
-              lead.website
-                ? `<a href="${escapeAttr(lead.website)}" target="_blank">${escapeHtml(lead.website)}</a>`
-                : 'Não encontrado'
-            }</td>
-            <td>${lead.exportedAt ? formatDate(lead.exportedAt) : '-'}</td>
-            <td><span class="badge">Exportado</span></td>
-          `;
-          tbody.appendChild(tr);
-        });
-        updateCounters();
+        if (!exportedLeads.length) { empty.classList.remove('hidden'); wrap.classList.add('hidden'); return; }
+        empty.classList.add('hidden'); wrap.classList.remove('hidden');
+        exportedLeads.forEach(l => tbody.innerHTML += `<tr><td><strong>${escapeHtml(l.name)}</strong><br>${escapeHtml(l.address || '')}</td><td>${escapeHtml(l.phone || '-')}</td><td>${l.website ? `<a href="${escapeAttr(l.website)}" target="_blank">Site</a>` : '-'}</td><td>${l.exportedAt ? new Date(l.exportedAt).toLocaleDateString('pt-BR') : '-'}</td><td><span class="badge">Exportado</span></td></tr>`);
       }
 
       function clearResults() {
-        document.getElementById('nameInput').value = '';
-        document.getElementById('nicheInput').value = '';
-        document.getElementById('cityInput').value = '';
-        document.getElementById('districtInput').value = '';
-        document.getElementById('streetInput').value = '';
-          
-        detailsQueue = [];
-        isProcessingQueue = false;
-        isSearching = false;
-        leads = [];
-        selectedLeadIds.clear();
-
+        ['nameInput', 'nicheInput', 'cityInput', 'districtInput', 'streetInput'].forEach(id => document.getElementById(id).value = '');
+        detailsQueue = []; isProcessingQueue = false; isSearching = false; leads = []; selectedLeadIds.clear();
         document.getElementById('selectAllCheckbox').checked = false;
-        document.getElementById('searchBtn').disabled = false;
-        document.getElementById('searchBtn').textContent = 'Extrair Leads';
-
-        renderLeads();
-        updateCounters();
-        toast('Pesquisa e resultados limpos com sucesso.');
+        document.getElementById('searchBtn').disabled = false; document.getElementById('searchBtn').textContent = 'Extrair Leads';
+        renderLeads(); updateCounters(); toast('Pesquisa limpa.');
       }
 
       function exportSavedToCSV() {
-        const list = getFilteredSavedLeads();
-        if (!list.length) {
-          toast('Nenhum lead na pasta atual para exportar.');
-          return;
-        }
-        const headers = ['Empresa', 'Telefone', 'Site', 'Endereço', 'Avaliação', 'Pasta', 'Status', 'Google Maps'];
-        const rows = list.map(lead => [
-          lead.name || '', lead.phone || '', lead.website || '', lead.address || '', lead.rating || '',
-          lead.folder || 'Geral', lead.status || '', lead.url || ''
-        ]);
-        const csv = [headers, ...rows].map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(';')).join('\n');
-        const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        const folderName = document.getElementById('savedFolderFilter').value;
-        a.download = `leads-${folderName}-${new Date().toISOString().slice(0, 10)}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
-        toast('CSV exportado.');
+        const filterVal = document.getElementById('savedFolderFilter').value;
+        const list = filterVal === 'Todas' ? savedLeads : savedLeads.filter(l => (l.folder || 'Geral') === filterVal);
+        if (!list.length) { toast('Nenhum lead para exportar.'); return; }
+        
+        const csv = [['Empresa', 'Telefone', 'Site', 'Endereço', 'Avaliação', 'Pasta', 'Status', 'Google Maps'], ...list.map(l => [l.name || '', l.phone || '', l.website || '', l.address || '', l.rating || '', l.folder || 'Geral', l.status || '', l.url || ''])].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')).join('\n');
+        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }));
+        a.download = `leads-${filterVal}-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click(); toast('CSV exportado.');
       }
 
-      function makeWhatsAppUrl(phone, companyName) {
-        const digits = String(phone).replace(/\D/g, '');
-        if (!digits) return '';
-        const finalPhone = digits.startsWith('55') ? digits : `55${digits}`;
-        const message = `Olá, tudo bem? Falo com o responsável pela empresa ${companyName}?`;
-        return `https://wa.me/${finalPhone}?text=${encodeURIComponent(message)}`;
+      function makeWhatsAppUrl(phone, name) {
+        const d = String(phone).replace(/\D/g, ''); if (!d) return '';
+        return `https://wa.me/${d.startsWith('55') ? d : `55${d}`}?text=${encodeURIComponent(`Olá, tudo bem? Falo com o responsável pela empresa ${name}?`)}`;
       }
-
-      function formatDate(dateString) {
-        try {
-          return new Date(dateString).toLocaleString('pt-BR');
-        } catch {
-          return dateString;
-        }
-      }
-
-      function escapeHtml(value) {
-        return String(value || '')
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#039;');
-      }
-
-      function escapeAttr(value) {
-        return escapeHtml(value).replace(/`/g, '&#096;');
-      }
+      function escapeHtml(v) { return String(v || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+      function escapeAttr(v) { return escapeHtml(v).replace(/`/g, '&#096;'); }
     </script>
 
-    <!-- INÍCIO DA CONEXÃO COM O SUPABASE -->
+    <!-- SUPABASE E AUTENTICAÇÃO -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
       const supabaseUrl = 'https://sowbnurzaukkxybqbtxa.supabase.co';
       const supabaseKey = 'sb_publishable_36PhUy-41qXKbCXG7OQkrA_fOiKgUOK';
       const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-      console.log("Supabase conectado com sucesso!");
+      
+      const ADMIN_EMAILS = ['leonvquadros@gmail.com']; // APENAS ESSE E-MAIL VÊ CONFIGURAÇÕES
 
-      // =============== SUAS REGRAS DE NEGÓCIO NOVAS AQUI ===============
-
-      // 1. Seu e-mail configurado aqui como Administrador!
-      const ADMIN_EMAILS = ['leonvquadros@gmail.com'];
-
-      // Função que extrai o nome e iniciais a partir do e-mail
+      // Extrai Nome Corretamente
       function formatUserNameFromEmail(email) {
         let namePart = email.split('@')[0];
-        namePart = namePart.replace(/[._-]/g, ' '); // Tira pontos e traços
-        
-        // Coloca a primeira letra de cada palavra em maiúsculo
-        let words = namePart.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1));
+        namePart = namePart.replace(/[._-]/g, ' '); 
+        let words = namePart.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
         
         let fullName = words.join(' ');
-        let initials = words.length > 1 
-            ? words[0].charAt(0) + words[1].charAt(0) 
-            : words[0].charAt(0);
-
+        let initials = words.length > 1 ? words[0].charAt(0) + words[1].charAt(0) : words[0].charAt(0);
         return { fullName, initials };
       }
 
-      // Função que libera o sistema e aplica as travas de segurança
       function iniciarSistemaApp(email) {
         currentUserEmail = email;
         isUserAdmin = ADMIN_EMAILS.includes(email.toLowerCase());
 
-        // Esconde o Login e Mostra o App
+        // Esconde Login, Mostra App
         document.getElementById('loginOverlay').style.display = 'none';
         document.getElementById('mainApp').style.display = 'block';
 
-        // Atualiza Nome e Iniciais no topo da tela
+        // Atualiza Avatar e Nome
         const userInfo = formatUserNameFromEmail(email);
+        currentUserFullName = userInfo.fullName; // Salva pra mandar pro pipedrive
         document.getElementById('topUserName').textContent = userInfo.fullName;
         document.getElementById('topUserInitials').textContent = userInfo.initials;
 
         // Trava do Admin
         const navSettingsBtn = document.getElementById('navSettingsBtn');
         if (isUserAdmin) {
-            navSettingsBtn.style.display = 'flex'; // Mostra botão para você
+            navSettingsBtn.style.display = 'flex';
         } else {
-            navSettingsBtn.style.display = 'none'; // Esconde botão para clientes
-            // Se ele logar e por acaso estava na tela de config, joga ele pra extrair
-            showSection('extract'); 
+            navSettingsBtn.style.display = 'none';
         }
+
+        // FORÇA A TELA INICIAL (EVITA QUE O NÃO-ADMIN CAIA EM CONFIGURAÇÕES)
+        showSection('extract');
       }
 
-      // Função de Login Real com o Supabase
       async function handleSupabaseLogin(e) {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value.trim();
         const password = document.getElementById('loginPassword').value.trim();
         const btn = document.getElementById('loginBtn');
         
-        btn.textContent = "Validando acesso...";
-        btn.disabled = true;
+        btn.textContent = "Validando acesso..."; btn.disabled = true;
 
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: email,
-          password: password,
-        });
+        const { data, error } = await supabase.auth.signInWithPassword({ email: email, password: password });
 
         if (error) {
-          alert('Erro no login: ' + error.message);
-          btn.textContent = "Entrar no Sistema";
-          btn.disabled = false;
+          alert('Erro no login: E-mail ou senha incorretos.');
+          btn.textContent = "Entrar no Sistema"; btn.disabled = false;
         } else {
           iniciarSistemaApp(data.user.email);
         }
       }
 
-      // Função para Sair do Sistema
       async function handleSupabaseLogout() {
         if(confirm('Tem certeza que deseja sair?')) {
             await supabase.auth.signOut();
-            window.location.reload(); // Recarrega a página para voltar pra tela de login limpa
+            window.location.reload(); 
         }
       }
 
-      // Verifica se o cara já estava logado quando abre o site
       document.addEventListener('DOMContentLoaded', async () => {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
