@@ -598,9 +598,6 @@
       document.addEventListener('DOMContentLoaded', async () => {
         loadLocalData(); updateCounters(); updateFolderFilterDropdown(); renderSavedLeads(); renderExportedLeads();
 
-        // O usuário pediu para limpar os dados de pesquisa ao dar F5.
-        // Removida a rotina que preenchia os campos no reload e inserido um código
-        // para garantir que qualquer lixo anterior do localStorage dele seja limpo.
         localStorage.removeItem('vlhunt_last_name');
         localStorage.removeItem('vlhunt_last_niche');
         localStorage.removeItem('vlhunt_last_city');
@@ -725,16 +722,41 @@
         map = new google.maps.Map(mapEl, { center: { lat: -23.4205, lng: -51.9333 }, zoom: 13 });
         placesService = new google.maps.places.PlacesService(map);
         
-        // INTEGRAÇÃO DE AUTOCOMPLETE NOS 3 CAMPOS DE LOCALIDADE
         if (window.google.maps.places.Autocomplete) {
-            
-            // 1. AUTOCOMPLETE CIDADE
             const cityInput = document.getElementById('cityInput');
+            const districtInput = document.getElementById('districtInput');
+            const streetInput = document.getElementById('streetInput');
+
+            let autoCity, autoDistrict, autoStreet;
+
+            // 1. AUTOCOMPLETE CIDADE
             if (cityInput) {
-                const autoCity = new google.maps.places.Autocomplete(cityInput, {
+                autoCity = new google.maps.places.Autocomplete(cityInput, {
                     types: ['(cities)'],
-                    componentRestrictions: { country: 'br' } 
+                    componentRestrictions: { country: 'br' },
+                    fields: ['name', 'address_components', 'geometry'] 
                 });
+            }
+
+            // 2. AUTOCOMPLETE BAIRRO
+            if (districtInput) {
+                autoDistrict = new google.maps.places.Autocomplete(districtInput, {
+                    componentRestrictions: { country: 'br' },
+                    fields: ['name', 'geometry']
+                });
+            }
+
+            // 3. AUTOCOMPLETE RUA
+            if (streetInput) {
+                autoStreet = new google.maps.places.Autocomplete(streetInput, {
+                    types: ['address'],
+                    componentRestrictions: { country: 'br' },
+                    fields: ['name', 'address_components', 'geometry']
+                });
+            }
+
+            // LÓGICA DE CASCATA: CIDADE -> RESTRINGE BAIRRO E RUA
+            if (autoCity) {
                 autoCity.addListener('place_changed', () => {
                     const place = autoCity.getPlace();
                     if (place && place.name) {
@@ -744,37 +766,47 @@
                             if(state) formatted += `, ${state.short_name}`;
                         }
                         cityInput.value = formatted;
+
+                        // Se a cidade tiver área no mapa, tranca os limites do Bairro e da Rua nela
+                        if (place.geometry && place.geometry.viewport) {
+                            if (autoDistrict) {
+                                autoDistrict.setBounds(place.geometry.viewport);
+                                autoDistrict.setOptions({ strictBounds: true });
+                            }
+                            if (autoStreet) {
+                                autoStreet.setBounds(place.geometry.viewport);
+                                autoStreet.setOptions({ strictBounds: true });
+                            }
+                        }
                     }
                 });
                 cityInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
             }
 
-            // 2. AUTOCOMPLETE BAIRRO
-            const districtInput = document.getElementById('districtInput');
-            if (districtInput) {
-                const autoDistrict = new google.maps.places.Autocomplete(districtInput, {
-                    componentRestrictions: { country: 'br' }
-                });
+            // LÓGICA DE CASCATA: BAIRRO -> RESTRINGE RUA
+            if (autoDistrict) {
                 autoDistrict.addListener('place_changed', () => {
                     const place = autoDistrict.getPlace();
                     if (place && place.name) {
-                        districtInput.value = place.name; // Joga apenas o nome do bairro
+                        districtInput.value = place.name; 
+                        
+                        // Se o bairro tiver área no mapa, aperta o limite da Rua apenas para dentro do bairro
+                        if (place.geometry && place.geometry.viewport) {
+                            if (autoStreet) {
+                                autoStreet.setBounds(place.geometry.viewport);
+                                autoStreet.setOptions({ strictBounds: true });
+                            }
+                        }
                     }
                 });
                 districtInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
             }
 
-            // 3. AUTOCOMPLETE RUA
-            const streetInput = document.getElementById('streetInput');
-            if (streetInput) {
-                const autoStreet = new google.maps.places.Autocomplete(streetInput, {
-                    types: ['address'],
-                    componentRestrictions: { country: 'br' }
-                });
+            // LÓGICA DA RUA (Apenas captura o nome)
+            if (autoStreet) {
                 autoStreet.addListener('place_changed', () => {
                     const place = autoStreet.getPlace();
                     if (place && place.address_components) {
-                        // Tenta extrair apenas o nome da rua, ignorando o número predial
                         const route = place.address_components.find(c => c.types.includes('route'));
                         if (route) {
                             streetInput.value = route.long_name;
@@ -826,7 +858,6 @@
         if (district) queryParts.push(`bairro ${district}`);
         if (city) queryParts.push(`em ${city}`);
         
-        // Zera o estado para a nova busca
         leads = []; detailsQueue = []; selectedLeadIds.clear(); isProcessingQueue = false; isSearching = true;
         ignoredLeadsCount = 0; 
         
