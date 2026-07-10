@@ -3,127 +3,164 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VL Hunt</title>
+  <title>VL Hunt - Premium</title>
 
   <style>
     :root {
-      --bg: #f3f6fb; --card: #ffffff; --dark: #071833; --muted: #48607f; --border: #d8e0ed;
-      --green: #22c55e; --green-dark: #16a34a; --green-soft: #dcfce7; --blue-soft: #eaf2ff;
-      --yellow-soft: #fff3cd; --danger-soft: #ffe4e6; --sidebar: #064b38; --sidebar-dark: #033629;
-      --nav: #125a45; --shadow: 0 16px 40px rgba(7, 24, 51, 0.08); --radius: 18px;
+      /* CORES DARK MODE PREMIUM (Estilo SaaS Moderno) */
+      --bg: #09090b;          /* Fundo principal escuro */
+      --card: #141415;        /* Fundo dos cards/seções */
+      --dark: #fafafa;        /* Texto principal claro */
+      --muted: #a1a1aa;       /* Texto secundário/apagado */
+      --border: #27272a;      /* Bordas discretas */
+      
+      --primary: #ffffff;     /* Destaque principal */
+      --primary-inv: #000000; /* Cor invertida para botões principais */
+      
+      --sidebar: #09090b;
+      --nav: #141415;
+      --nav-hover: #27272a;
+      
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.4); 
+      --radius: 12px;
     }
+    
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: Inter, Arial, Helvetica, sans-serif; background: var(--bg); color: var(--dark); }
+    body { margin: 0; font-family: Inter, Arial, Helvetica, sans-serif; background: var(--bg); color: var(--dark); -webkit-font-smoothing: antialiased; }
     button, input, select { font-family: inherit; }
     .app { display: flex; min-height: 100vh; width: 100%; }
     
+    /* ICONES SVG ALINHAMENTO */
+    svg { vertical-align: middle; }
+
     /* SIDEBAR */
-    .sidebar { width: 267px; background: linear-gradient(180deg, var(--sidebar), var(--sidebar-dark)); color: #fff; padding: 32px 18px; position: fixed; left: 0; top: 0; bottom: 0; overflow-y: auto; z-index: 10; display: flex; flex-direction: column; }
-    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 34px; }
-    .brand-icon { width: 43px; height: 43px; border-radius: 14px; background: var(--green); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 24px; }
-    .brand h1 { margin: 0; font-size: 18px; line-height: 1.1; }
-    .brand p { margin: 5px 0 0; font-size: 12px; color: rgba(255, 255, 255, 0.78); }
-    .menu-title { font-size: 12px; font-weight: 900; color: rgba(255, 255, 255, 0.55); letter-spacing: 1.4px; margin-bottom: 12px; }
-    .menu-item { border: 0; width: 100%; height: 46px; border-radius: 13px; background: var(--nav); color: #fff; font-weight: 900; font-size: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 0 18px; cursor: pointer; text-align: left; transition: 0.2s ease; }
-    .menu-item:hover { filter: brightness(1.08); transform: translateY(-1px); }
-    .menu-item.active { background: var(--green); color: #061827; }
-    .logout-btn { margin-top: auto; background: rgba(220, 38, 38, 0.2); color: #fca5a5; }
-    .logout-btn:hover { background: rgba(220, 38, 38, 0.4); }
+    .sidebar { width: 267px; background: var(--sidebar); border-right: 1px solid var(--border); color: var(--dark); padding: 32px 18px; position: fixed; left: 0; top: 0; bottom: 0; overflow-y: auto; z-index: 10; display: flex; flex-direction: column; }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 34px; padding: 0 10px; }
+    .brand-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--primary); color: var(--primary-inv); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px; }
+    .brand h1 { margin: 0; font-size: 18px; line-height: 1.1; font-weight: 800; }
+    .brand p { margin: 5px 0 0; font-size: 12px; color: var(--muted); }
+    .menu-title { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 1px; margin-bottom: 12px; padding: 0 10px; text-transform: uppercase; }
+    .menu-item { border: 0; width: 100%; height: 44px; border-radius: 8px; background: transparent; color: var(--muted); font-weight: 600; font-size: 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 12px; padding: 0 14px; cursor: pointer; text-align: left; transition: 0.2s ease; }
+    .menu-item:hover { background: var(--nav-hover); color: var(--dark); }
+    .menu-item.active { background: var(--nav-hover); color: var(--dark); border-left: 2px solid var(--primary); border-radius: 0 8px 8px 0; }
+    .logout-btn { margin-top: auto; color: #ef4444; }
+    .logout-btn:hover { background: rgba(239, 68, 68, 0.1); color: #f87171; }
 
     /* MAIN CONTENT */
     .main { margin-left: 267px; width: calc(100% - 267px); padding: 36px 32px 60px; }
     .topbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 24px; }
-    .topbar h2 { margin: 8px 0 0; font-size: 30px; font-weight: 950; letter-spacing: -0.8px; }
-    .user-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; min-width: 142px; box-shadow: var(--shadow); }
-    .user-avatar { width: 40px; height: 40px; border-radius: 14px; background: var(--green-soft); color: #059669; display: flex; align-items: center; justify-content: center; font-weight: 950; font-size: 17px; }
-    .user-card strong { font-size: 14px; }
+    .topbar h2 { margin: 8px 0 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+    .user-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; display: flex; align-items: center; gap: 12px; min-width: 142px; }
+    .user-avatar { width: 36px; height: 36px; border-radius: 10px; background: var(--border); color: var(--dark); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; }
+    .user-card strong { font-size: 13px; font-weight: 600;}
     .user-card span { font-size: 12px; color: var(--muted); }
 
     /* STATS & SECTIONS */
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 22px; }
-    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; min-height: 102px; box-shadow: var(--shadow); }
-    .stat-card span { display: block; color: var(--muted); font-weight: 950; font-size: 13px; letter-spacing: 0.6px; margin-bottom: 12px; text-transform: uppercase; }
-    .stat-card strong { display: block; font-size: 30px; font-weight: 950; }
-    .section { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 24px; box-shadow: var(--shadow); margin-bottom: 22px; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; min-height: 90px; }
+    .stat-card span { display: block; color: var(--muted); font-weight: 600; font-size: 12px; letter-spacing: 0.5px; margin-bottom: 8px; text-transform: uppercase; }
+    .stat-card strong { display: block; font-size: 28px; font-weight: 800; }
+    
+    .section { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; }
     .section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
-    .section-title { display: flex; align-items: center; gap: 12px; }
-    .section-icon { width: 42px; height: 42px; border-radius: 14px; background: var(--green-soft); display: flex; align-items: center; justify-content: center; font-size: 22px; }
-    .section-title h3 { margin: 0; font-size: 21px; font-weight: 950; }
+    .section-title { display: flex; align-items: center; gap: 14px; }
+    .section-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--border); display: flex; align-items: center; justify-content: center; color: var(--dark); }
+    .section-title h3 { margin: 0; font-size: 18px; font-weight: 700; }
     .section-title p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
     
     /* GRIDS & FORMS */
     .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
     .grid-search { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: end; }
-    .field label { display: block; font-size: 13px; font-weight: 950; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-    .field input, .field select { width: 100%; height: 48px; border: 1px solid #c8d4e6; border-radius: 14px; padding: 0 15px; font-weight: 800; font-size: 14px; outline: none; background: #fff; color: var(--dark); }
-    .field input:focus, .field select:focus { border-color: #22c55e; box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15); }
+    .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .field input, .field select { width: 100%; height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; font-size: 14px; outline: none; background: var(--bg); color: var(--dark); transition: 0.2s; }
+    .field input:focus, .field select:focus { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
     
-    /* BUTTONS */
+    /* BUTTONS CLEAN */
     .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
-    .btn { border: 0; min-height: 48px; border-radius: 12px; padding: 0 18px; font-weight: 950; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s ease; text-decoration: none; color: inherit; white-space: nowrap; }
-    .btn:hover { transform: translateY(-1px); filter: brightness(0.98); }
-    .btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
-    .btn-green { background: var(--green-dark); color: #fff; }
-    .btn-dark { background: #071226; color: #fff; }
-    .btn-soft-green { background: var(--green-soft); color: #007a4c; }
-    .btn-soft-blue { background: var(--blue-soft); color: #0648c9; }
-    .btn-soft-gray { background: #f1f5f9; color: #071833; }
-    .btn-soft-yellow { background: var(--yellow-soft); color: #92400e; }
-    .btn-danger { background: var(--danger-soft); color: #be123c; }
+    .btn { border: 1px solid var(--border); min-height: 44px; border-radius: 8px; padding: 0 16px; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s ease; text-decoration: none; color: var(--dark); background: transparent; white-space: nowrap; }
+    .btn:hover { background: var(--nav-hover); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+    
+    /* Botões principais (estilo SaaS premium invertido) */
+    .btn-main { background: var(--primary); color: var(--primary-inv); border-color: var(--primary); }
+    .btn-main:hover { background: #e5e5e5; color: var(--primary-inv); }
+    
+    .btn-danger { color: #f87171; border-color: #7f1d1d; }
+    .btn-danger:hover { background: #7f1d1d; color: #fca5a5; }
 
     /* RESULTS */
     .results-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
     .bulk-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .select-all { height: 42px; display: inline-flex; align-items: center; gap: 8px; background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 0 14px; font-weight: 950; cursor: pointer; }
-    .select-all input { width: 17px; height: 17px; accent-color: var(--green-dark); }
+    .select-all { height: 40px; display: inline-flex; align-items: center; gap: 8px; background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .select-all:hover { background: var(--nav-hover); }
+    .select-all input { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
+    
+    /* LEADS GRID & CARDS CLEAN */
     .leads-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-    .lead-card { position: relative; border: 1px solid var(--border); border-radius: 18px; padding: 16px; background: #fff; overflow: hidden; min-height: 390px; }
-    .lead-card.selected { border-color: var(--green-dark); box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15); }
-    .lead-check { position: absolute; top: 18px; left: 18px; z-index: 2; width: 20px; height: 20px; accent-color: var(--green-dark); cursor: pointer; }
-    .lead-photo { width: 100%; height: 145px; border-radius: 14px; object-fit: cover; background: #edf2f7; display: block; margin-bottom: 14px; }
-    .lead-photo-placeholder { width: 100%; height: 145px; border-radius: 14px; background: linear-gradient(135deg, #e2e8f0, #f8fafc); display: flex; align-items: center; justify-content: center; font-size: 34px; margin-bottom: 14px; color: #94a3b8; }
-    .lead-title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
-    .lead-title { margin: 0; font-size: 18px; font-weight: 950; line-height: 1.2; }
-    .badge { background: var(--green-soft); color: #00985f; border-radius: 999px; padding: 6px 10px; font-size: 11px; font-weight: 950; white-space: nowrap; }
-    .lead-info { font-size: 13px; color: #18304f; line-height: 1.45; margin: 7px 0; font-weight: 650; word-break: break-word; }
-    .lead-info a { color: #0749bd; text-decoration: none; font-weight: 850; }
-    .lead-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
-    .small-btn { border: 0; min-height: 34px; border-radius: 10px; padding: 0 12px; font-size: 13px; font-weight: 950; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
-    .lead-status-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
-    .lead-status-row select { height: 35px; min-width: 136px; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0 10px; font-weight: 850; background: #fff; }
-    .status-pill { height: 35px; border-radius: 10px; padding: 0 12px; background: #f1f5f9; display: inline-flex; align-items: center; font-size: 13px; font-weight: 950; }
+    .lead-card { position: relative; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; background: var(--bg); overflow: hidden; display: flex; flex-direction: column; }
+    .lead-card.selected { border-color: var(--primary); }
+    .lead-check { position: absolute; top: 16px; left: 16px; z-index: 2; width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+    .lead-photo { width: 100%; height: 130px; border-radius: 8px; object-fit: cover; background: var(--border); display: block; margin-bottom: 16px; }
+    .lead-photo-placeholder { width: 100%; height: 130px; border-radius: 8px; background: var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: var(--muted); }
+    
+    .lead-title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+    .lead-title { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3; color: var(--dark); }
+    .badge { background: var(--border); color: var(--dark); border-radius: 6px; padding: 4px 8px; font-size: 10px; font-weight: 700; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    .lead-info { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 6px 0; display: flex; align-items: center; gap: 8px; word-break: break-word; }
+    .lead-info svg { flex-shrink: 0; color: var(--muted); }
+    .lead-info a { color: var(--dark); text-decoration: none; font-weight: 500; transition: 0.2s; }
+    .lead-info a:hover { text-decoration: underline; }
+    
+    .lead-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; margin-bottom: auto; }
+    .small-btn { border: 1px solid var(--border); background: transparent; color: var(--dark); min-height: 32px; border-radius: 6px; padding: 0 12px; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; }
+    .small-btn:hover { background: var(--border); }
+    
+    .lead-status-row { display: flex; align-items: center; gap: 8px; margin-top: 16px; flex-wrap: wrap; border-top: 1px solid var(--border); padding-top: 16px; }
+    .lead-status-row select { height: 32px; min-width: 130px; border: 1px solid var(--border); border-radius: 6px; padding: 0 8px; font-size: 12px; font-weight: 500; background: var(--bg); color: var(--dark); }
+    .status-pill { height: 32px; border-radius: 6px; padding: 0 10px; background: var(--border); display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; color: var(--muted); }
     
     /* UTILS & MODALS */
     .hidden { display: none !important; }
-    .empty { padding: 36px; text-align: center; color: var(--muted); font-weight: 800; background: #f8fafc; border: 1px dashed var(--border); border-radius: 16px; }
-    .toast { position: fixed; right: 24px; bottom: 24px; background: #071226; color: #fff; padding: 14px 18px; border-radius: 14px; font-weight: 850; box-shadow: 0 16px 40px rgba(0,0,0,.2); z-index: 9999; max-width: 360px; display: none; }
+    .empty { padding: 40px; text-align: center; color: var(--muted); font-weight: 500; font-size: 14px; background: transparent; border: 1px dashed var(--border); border-radius: var(--radius); }
+    .toast { position: fixed; right: 24px; bottom: 24px; background: var(--dark); color: var(--bg); padding: 14px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; box-shadow: var(--shadow); z-index: 9999; max-width: 360px; display: none; }
     .map-hidden { width: 1px; height: 1px; opacity: 0; position: fixed; left: -9999px; bottom: -9999px; }
+    
     .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 16px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; background: var(--bg); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
     th, td { text-align: left; padding: 14px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
-    th { font-weight: 950; text-transform: uppercase; color: var(--muted); background: #f8fafc; }
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 10000; }
-    .modal { background: #fff; padding: 24px; border-radius: 18px; width: 400px; max-width: 90%; box-shadow: var(--shadow); }
-    .modal h3 { margin-top: 0; font-size: 20px; font-weight: 950; margin-bottom: 8px; color: var(--dark); }
-    .modal p { color: var(--muted); font-size: 13px; margin-bottom: 20px; font-weight: 600;}
-    .modal label { display: block; font-size: 12px; font-weight: 900; text-transform: uppercase; margin-bottom: 6px;}
-    .modal select, .modal input { width: 100%; height: 48px; border: 1px solid #c8d4e6; border-radius: 14px; padding: 0 15px; margin-bottom: 15px; font-family: inherit; font-size: 14px; font-weight: 700;}
-    .modal-divider { text-align: center; margin: 10px 0 20px; color: #94a3b8; font-size: 11px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;}
-    .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
-    .folder-filter-wrap { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 14px; }
-    .folder-filter-wrap select { height: 48px; border: 1px solid var(--border); border-radius: 12px; padding: 0 16px; font-weight: 800; font-size: 14px; min-width: 200px; outline: none;}
+    th { font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); background: var(--card); font-size: 11px; }
+    td { color: var(--dark); }
+    
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(4px); }
+    .modal { background: var(--card); padding: 28px; border-radius: var(--radius); width: 400px; max-width: 90%; border: 1px solid var(--border); box-shadow: var(--shadow); }
+    .modal h3 { margin-top: 0; font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--dark); }
+    .modal p { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+    .modal label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; color: var(--muted); }
+    .modal select, .modal input { width: 100%; height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; margin-bottom: 16px; font-size: 14px; background: var(--bg); color: var(--dark); outline: none; }
+    .modal select:focus, .modal input:focus { border-color: var(--primary); }
+    .modal-divider { text-align: center; margin: 10px 0 20px; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+    
+    .folder-filter-wrap { display: flex; align-items: center; font-size: 14px; }
+    .folder-filter-wrap select { height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; font-size: 13px; font-weight: 500; min-width: 200px; outline: none; background: transparent; color: var(--dark); cursor: pointer; transition: 0.2s; }
+    .folder-filter-wrap select:hover { background: var(--nav-hover); }
 
     /* MEDIA QUERIES */
     @media (max-width: 1400px) { .grid-search { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 1200px) { .leads-grid { grid-template-columns: repeat(2, 1fr); } .stats, .grid-2 { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 800px) { .sidebar { position: relative; width: 100%; bottom: auto; } .app { display: block; } .main { margin-left: 0; width: 100%; padding: 22px 16px; } .topbar, .section-head { align-items: flex-start; flex-direction: column; } .stats, .grid-2, .grid-search, .leads-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 800px) { .sidebar { position: relative; width: 100%; bottom: auto; border-right: none; border-bottom: 1px solid var(--border); } .app { display: block; } .main { margin-left: 0; width: 100%; padding: 22px 16px; } .topbar, .section-head { align-items: flex-start; flex-direction: column; } .stats, .grid-2, .grid-search, .leads-grid { grid-template-columns: 1fr; } }
 
     /* ====== LOGIN ====== */
-    #loginOverlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #071833; display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; }
-    .login-box { background: #fff; max-width: 400px; width: 100%; padding: 40px; border-radius: 24px; box-shadow: 0 24px 48px rgba(0,0,0,0.2); text-align: center; }
-    .login-brand { width: 60px; height: 60px; background: #22c55e; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 32px; color: #fff; margin-bottom: 16px; margin: 0 auto 16px auto; }
-    .login-box input { width: 100%; height: 52px; padding: 0 15px; border-radius: 14px; border: 1px solid #c8d4e6; margin-bottom: 16px; font-size: 14px; box-sizing: border-box; }
-    .login-box button { width: 100%; height: 52px; border: none; border-radius: 14px; background: #22c55e; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    #loginOverlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; }
+    .login-box { background: var(--card); max-width: 380px; width: 100%; padding: 40px; border-radius: var(--radius); border: 1px solid var(--border); text-align: center; }
+    .login-brand { width: 56px; height: 56px; background: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 28px; color: var(--primary-inv); margin: 0 auto 24px auto; }
+    .login-box h2 { font-size: 20px; margin-bottom: 8px; color: var(--dark); }
+    .login-box p { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+    .login-box input { width: 100%; height: 48px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--dark); margin-bottom: 16px; font-size: 14px; box-sizing: border-box; outline: none; transition: 0.2s; }
+    .login-box input:focus { border-color: var(--primary); }
+    .login-box button { width: 100%; height: 48px; border: none; border-radius: 8px; background: var(--primary); color: var(--primary-inv); font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .login-box button:hover { background: #e5e5e5; }
     .login-box button:disabled { opacity: 0.7; cursor: not-allowed; }
   </style>
 </head>
@@ -154,30 +191,35 @@
           <div class="brand-icon">V</div>
           <div>
             <h1>VL Hunt</h1>
-            <p>Leads comerciais</p>
+            <p>Leads Comerciais</p>
           </div>
         </div>
 
-        <div class="menu-title">MENU</div>
+        <div class="menu-title">Menu Principal</div>
 
         <button class="menu-item active" data-section="extract" onclick="showSection('extract')">
-          🔎 Extrair Leads
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          Extrair Leads
         </button>
 
         <button class="menu-item" data-section="saved" onclick="showSection('saved')">
-          💾 Leads Salvos
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          Leads Salvos
         </button>
 
         <button class="menu-item" data-section="pipedrive" onclick="showSection('pipedrive')">
-          📥 Pipedrive
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+          Pipedrive
         </button>
 
         <button class="menu-item" id="navSettingsBtn" data-section="settings" onclick="showSection('settings')">
-          ⚙️ Configurações
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-2.82.33 1.65 1.65 0 0 0-.1 1.51v.1a2 2 0 0 1-3.91 0v-.1a1.65 1.65 0 0 0-1.82-1.33 1.65 1.65 0 0 0-1.51.1l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-2.82 1.65 1.65 0 0 0-1.51-.1h-.1a2 2 0 0 1 0-3.91h.1a1.65 1.65 0 0 0 1.33-1.82 1.65 1.65 0 0 0-.1-1.51l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 2.82-.33 1.65 1.65 0 0 0 .1-1.51v-.1a2 2 0 0 1 3.91 0v.1a1.65 1.65 0 0 0 1.82 1.33 1.65 1.65 0 0 0 1.51-.1l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 2.82 1.65 1.65 0 0 0 1.51.1h.1a2 2 0 0 1 0 3.91h-.1a1.65 1.65 0 0 0-1.33 1.82z"></path></svg>
+          Configurações
         </button>
 
         <button class="menu-item logout-btn" onclick="handleSupabaseLogout()">
-          🚪 Sair do Sistema
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          Sair do Sistema
         </button>
       </aside>
 
@@ -219,9 +261,11 @@
         <section id="extractSection">
           <div class="section">
             <div class="section-title" style="margin-bottom: 22px;">
-              <div class="section-icon">🔎</div>
+              <div class="section-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              </div>
               <div>
-                <h3>Buscar leads</h3>
+                <h3>Buscar Leads</h3>
                 <p>Busque pelo NOME exato, ou utilize NICHO + CIDADE para busca ampla.</p>
               </div>
             </div>
@@ -229,14 +273,14 @@
             <div class="grid-search">
               <!-- NOME -->
               <div class="field">
-                <label for="nameInput">Nome <span style="font-weight: normal; color: var(--muted); text-transform: none;">(Pesquisa direta)</span></label>
-                <input id="nameInput" type="text" placeholder="Ex: Tempero Mineiro" />
+                <label for="nameInput">Nome <span style="font-weight: normal; text-transform: none;">(Pesquisa direta)</span></label>
+                <input id="nameInput" type="text" placeholder="Nome da empresa" />
               </div>
 
               <!-- NICHO COM DATALIST -->
               <div class="field">
                 <label for="nicheInput">Nicho</label>
-                <input id="nicheInput" list="nicheList" type="text" placeholder="Ex: Restaurantes" autocomplete="off" />
+                <input id="nicheInput" list="nicheList" type="text" placeholder="Segmento de mercado" autocomplete="off" />
                 <datalist id="nicheList">
                   <option value="Advogados"></option>
                   <option value="Agências de Marketing"></option>
@@ -254,32 +298,32 @@
               <!-- CIDADE -->
               <div class="field">
                 <label for="cityInput">Cidade</label>
-                <input id="cityInput" type="text" placeholder="Ex: Maringá" />
+                <input id="cityInput" type="text" placeholder="Nome da cidade" />
               </div>
 
               <!-- BAIRRO -->
               <div class="field">
-                <label for="districtInput">Bairro <span style="font-weight: normal; color: var(--muted); text-transform: none;">(Opcional)</span></label>
-                <input id="districtInput" type="text" placeholder="Ex: Zona 7" />
+                <label for="districtInput">Bairro <span style="font-weight: normal; text-transform: none;">(Opcional)</span></label>
+                <input id="districtInput" type="text" placeholder="Nome do bairro" />
               </div>
 
               <!-- RUA -->
               <div class="field">
-                <label for="streetInput">Rua/Avenida <span style="font-weight: normal; color: var(--muted); text-transform: none;">(Opcional)</span></label>
-                <input id="streetInput" type="text" placeholder="Ex: Av. Colombo" />
+                <label for="streetInput">Rua/Avenida <span style="font-weight: normal; text-transform: none;">(Opcional)</span></label>
+                <input id="streetInput" type="text" placeholder="Nome da rua ou avenida" />
               </div>
 
               <!-- BOTÃO -->
               <div class="field">
-                <button class="btn btn-green" onclick="searchLeads()" id="searchBtn" style="height: 48px; width: 100%;">
+                <button class="btn btn-main" onclick="searchLeads()" id="searchBtn" style="height: 44px; width: 100%;">
                   Extrair Leads
                 </button>
               </div>
             </div>
 
             <div class="actions">
-              <button class="btn btn-soft-yellow" onclick="clearResults()">
-                Limpar resultados e pesquisa
+              <button class="btn" onclick="clearResults()">
+                Limpar pesquisa
               </button>
             </div>
           </div>
@@ -287,10 +331,12 @@
           <div class="section">
             <div class="section-head">
               <div class="section-title">
-                <div class="section-icon">📍</div>
+                <div class="section-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                </div>
                 <div>
                   <h3>Resultados</h3>
-                  <p>Lista carregada do Google Maps.</p>
+                  <p>Lista carregada do banco de dados geográfico.</p>
                 </div>
               </div>
             </div>
@@ -302,18 +348,18 @@
                   Selecionar todos
                 </label>
 
-                <button class="btn btn-soft-green" onclick="saveSelectedLeads()">
+                <button class="btn" onclick="saveSelectedLeads()">
                   Salvar selecionados
                 </button>
 
-                <button class="btn btn-soft-gray" onclick="clearSelected()">
+                <button class="btn" onclick="clearSelected()">
                   Limpar seleção
                 </button>
               </div>
             </div>
 
             <div id="resultsEmpty" class="empty">
-              Nenhum lead pesquisado ainda.
+              Nenhum lead pesquisado ainda. Utilize os filtros acima.
             </div>
 
             <div id="leadsGrid" class="leads-grid"></div>
@@ -325,7 +371,9 @@
           <div class="section">
             <div class="section-head">
               <div class="section-title">
-                <div class="section-icon">💾</div>
+                <div class="section-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                </div>
                 <div>
                   <h3>Leads Salvos</h3>
                   <p>Empresas salvas organizadas por pastas para prospecção.</p>
@@ -340,11 +388,11 @@
                   </select>
                 </div>
 
-                <button class="btn btn-dark" onclick="sendSavedToPipedrive()">
-                  Exportar Pipedrive
+                <button class="btn" onclick="sendSavedToPipedrive()">
+                  Exportar CRM
                 </button>
 
-                <button class="btn btn-soft-green" onclick="exportSavedToCSV()">
+                <button class="btn" onclick="exportSavedToCSV()">
                   Exportar CSV
                 </button>
 
@@ -366,9 +414,11 @@
         <section id="pipedriveSection" class="hidden">
           <div class="section">
             <div class="section-title" style="margin-bottom: 22px;">
-              <div class="section-icon">📥</div>
+              <div class="section-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+              </div>
               <div>
-                <h3>Pipedrive</h3>
+                <h3>Histórico CRM</h3>
                 <p>Histórico local de leads enviados para o Pipedrive.</p>
               </div>
             </div>
@@ -398,36 +448,38 @@
         <section id="settingsSection" class="hidden">
           <div class="section">
             <div class="section-title" style="margin-bottom: 22px;">
-              <div class="section-icon">⚙️</div>
+              <div class="section-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-2.82.33 1.65 1.65 0 0 0-.1 1.51v.1a2 2 0 0 1-3.91 0v-.1a1.65 1.65 0 0 0-1.82-1.33 1.65 1.65 0 0 0-1.51.1l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-2.82 1.65 1.65 0 0 0-1.51-.1h-.1a2 2 0 0 1 0-3.91h.1a1.65 1.65 0 0 0 1.33-1.82 1.65 1.65 0 0 0-.1-1.51l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 2.82-.33 1.65 1.65 0 0 0 .1-1.51v-.1a2 2 0 0 1 3.91 0v.1a1.65 1.65 0 0 0 1.82 1.33 1.65 1.65 0 0 0 1.51-.1l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 2.82 1.65 1.65 0 0 0 1.51.1h.1a2 2 0 0 1 0 3.91h-.1a1.65 1.65 0 0 0-1.33 1.82z"></path></svg>
+              </div>
               <div>
-                <h3>Configurações do Administrador</h3>
-                <p>Configure as chaves de API. Estas chaves valem para todos os usuários.</p>
+                <h3>Configurações de Sistema</h3>
+                <p>Configure as credenciais de API. Estas chaves valem para toda a equipe.</p>
               </div>
             </div>
 
             <div class="grid-2">
               <div class="field">
-                <label for="googleApiKeyInput">API Key Google Maps</label>
-                <input id="googleApiKeyInput" type="password" autocomplete="new-password" placeholder="Chave carregada do banco de dados..." />
+                <label for="googleApiKeyInput">Google Maps API Key</label>
+                <input id="googleApiKeyInput" type="password" autocomplete="new-password" placeholder="Chave do banco de dados..." />
               </div>
 
               <div class="field">
-                <label for="pipedriveTokenInput">Token Pipedrive</label>
-                <input id="pipedriveTokenInput" type="password" autocomplete="new-password" placeholder="Token do Pipedrive (opcional)..." />
+                <label for="pipedriveTokenInput">Token CRM (Pipedrive)</label>
+                <input id="pipedriveTokenInput" type="password" autocomplete="new-password" placeholder="Token do CRM (opcional)" />
               </div>
             </div>
 
             <div class="actions">
-              <button class="btn btn-soft-green" onclick="saveSettings()">
+              <button class="btn btn-main" onclick="saveSettings()">
                 Salvar configurações
               </button>
 
-              <button class="btn btn-soft-yellow" onclick="clearSettings()">
+              <button class="btn" onclick="clearSettings()">
                 Limpar configurações
               </button>
 
-              <button class="btn btn-dark" onclick="reloadGoogleMapsScript()">
-                Recarregar Google Maps
+              <button class="btn" onclick="reloadGoogleMapsScript()">
+                Recarregar Conexão
               </button>
             </div>
           </div>
@@ -452,8 +504,8 @@
         <input type="text" id="newFolderInput" placeholder="Ex: Contatos - Março">
         
         <div class="modal-buttons">
-          <button class="btn btn-soft-gray" onclick="closeFolderModal()">Cancelar</button>
-          <button class="btn btn-green" onclick="confirmFolderSave()">Confirmar e Salvar</button>
+          <button class="btn" onclick="closeFolderModal()">Cancelar</button>
+          <button class="btn btn-main" onclick="confirmFolderSave()">Salvar</button>
         </div>
       </div>
     </div>
@@ -474,28 +526,17 @@
       const supa = window.supabase.createClient(supabaseUrl, supabaseKey);
       const ADMIN_EMAILS = ['leonvquadros@gmail.com']; 
 
-      // Variável Global para armazenar as chaves lidas do Banco de Dados
       let configSupabase = { googleApiKey: '', pipedriveToken: '' };
-
-      let map = null;
-      let placesService = null;
-      let detailsQueue = [];
-      let isProcessingQueue = false;
-      let leads = [];
-      let savedLeads = [];
-      let exportedLeads = [];
+      let map = null, placesService = null;
+      let detailsQueue = [], isProcessingQueue = false;
+      let leads = [], savedLeads = [], exportedLeads = [];
       let selectedLeadIds = new Set();
       let isSearching = false;
       let pendingLeadsToSave = []; 
       
-      let currentUserEmail = ''; 
-      let currentUserFullName = ''; 
-      let isUserAdmin = false; 
+      let currentUserEmail = '', currentUserFullName = '', isUserAdmin = false; 
 
-      const STORAGE_KEYS = {
-        saved: 'vlhunt_saved_leads_v2',
-        exported: 'vlhunt_exported_leads_v2'
-      };
+      const STORAGE_KEYS = { saved: 'vlhunt_saved_leads_v2', exported: 'vlhunt_exported_leads_v2' };
 
       // ============================================
       // FUNÇÕES DE AUTENTICAÇÃO E INICIALIZAÇÃO
@@ -522,57 +563,33 @@
         document.getElementById('topUserInitials').textContent = userInfo.initials;
 
         const navSettingsBtn = document.getElementById('navSettingsBtn');
-        if (isUserAdmin) {
-            navSettingsBtn.style.display = 'flex';
-        } else {
-            navSettingsBtn.style.display = 'none';
-        }
+        if (isUserAdmin) { navSettingsBtn.style.display = 'flex'; } else { navSettingsBtn.style.display = 'none'; }
 
         showSection('extract');
-
-        // BUSCA AS CHAVES DO SUPABASE AO ENTRAR NO SISTEMA
         await carregarConfiguracoesDoSupabase();
       }
 
       document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault(); 
-        
         const email = document.getElementById('loginEmail').value.trim();
         const password = document.getElementById('loginPassword').value.trim();
         const btn = document.getElementById('loginBtn');
         
-        btn.textContent = "Validando acesso..."; 
-        btn.disabled = true;
+        btn.textContent = "Validando..."; btn.disabled = true;
 
         try {
           const { data, error } = await supa.auth.signInWithPassword({ email: email, password: password });
-          if (error) {
-            alert('Erro no login: E-mail ou senha incorretos.');
-            btn.textContent = "Entrar no Sistema"; 
-            btn.disabled = false;
-          } else {
-            iniciarSistemaApp(data.user.email);
-          }
-        } catch(err) {
-            alert('Erro de conexão com o servidor.');
-            btn.textContent = "Entrar no Sistema"; 
-            btn.disabled = false;
-        }
+          if (error) { alert('Erro no login: E-mail ou senha incorretos.'); btn.textContent = "Entrar no Sistema"; btn.disabled = false; } 
+          else { iniciarSistemaApp(data.user.email); }
+        } catch(err) { alert('Erro de conexão.'); btn.textContent = "Entrar no Sistema"; btn.disabled = false; }
       });
 
       async function handleSupabaseLogout() {
-        if(confirm('Tem certeza que deseja sair?')) {
-            await supa.auth.signOut();
-            window.location.reload(); 
-        }
+        if(confirm('Tem certeza que deseja sair?')) { await supa.auth.signOut(); window.location.reload(); }
       }
 
       document.addEventListener('DOMContentLoaded', async () => {
-        loadLocalData();
-        updateCounters();
-        updateFolderFilterDropdown();
-        renderSavedLeads();
-        renderExportedLeads();
+        loadLocalData(); updateCounters(); updateFolderFilterDropdown(); renderSavedLeads(); renderExportedLeads();
 
         const savedName = localStorage.getItem('vlhunt_last_name') || '';
         const savedNiche = localStorage.getItem('vlhunt_last_niche') || '';
@@ -589,139 +606,82 @@
         const searchFields = document.querySelectorAll('#nameInput, #nicheInput, #cityInput, #districtInput, #streetInput');
         searchFields.forEach(field => {
           field.addEventListener('keypress', (event) => {
-            if (event.key === 'Enter') {
-              event.preventDefault();
-              document.getElementById('searchBtn').click();
-            }
+            if (event.key === 'Enter') { event.preventDefault(); document.getElementById('searchBtn').click(); }
           });
         });
 
-        // Verifica se usuário já está logado
         const { data: { session } } = await supa.auth.getSession();
-        if (session) {
-           iniciarSistemaApp(session.user.email);
-        }
+        if (session) { iniciarSistemaApp(session.user.email); }
       });
 
       // ============================================
-      // FUNÇÕES DE CONFIGURAÇÃO (AGORA INTEGRADAS AO SUPABASE)
+      // FUNÇÕES DE CONFIGURAÇÃO (SUPABASE)
       // ============================================
 
       async function carregarConfiguracoesDoSupabase() {
         try {
           const { data, error } = await supa.from('configuracoes').select('*').limit(1);
-          if (error) {
-             console.error('Erro ao buscar configs:', error);
-             return;
-          }
-          
+          if (error) return;
           if (data && data.length > 0) {
              configSupabase.googleApiKey = data[0].google_api_key || '';
              configSupabase.pipedriveToken = data[0].pipedrive_token || '';
+             if (configSupabase.googleApiKey) { loadGoogleMapsScript(configSupabase.googleApiKey); }
              
-             // Se tiver a chave do Google, já injeta no mapa
-             if (configSupabase.googleApiKey) {
-                 loadGoogleMapsScript(configSupabase.googleApiKey);
-             }
-             
-             // Preenche os campos da aba de configurações visualmente
              const gKeyInput = document.getElementById('googleApiKeyInput');
              const pKeyInput = document.getElementById('pipedriveTokenInput');
              if(gKeyInput) gKeyInput.value = configSupabase.googleApiKey;
              if(pKeyInput) pKeyInput.value = configSupabase.pipedriveToken;
           }
-        } catch (err) {
-          console.error('Erro geral ao carregar config:', err);
-        }
+        } catch (err) { console.error(err); }
       }
 
-      // Função reescrita: agora ela apenas retorna o que já foi lido do Supabase
-      function getSettings() {
-        return {
-          googleApiKey: configSupabase.googleApiKey,
-          pipedriveToken: configSupabase.pipedriveToken
-        };
-      }
+      function getSettings() { return { googleApiKey: configSupabase.googleApiKey, pipedriveToken: configSupabase.pipedriveToken }; }
 
-      // Função reescrita: salva diretamente no Supabase em vez de salvar no localStorage
       async function saveSettings() {
         const gKey = document.getElementById('googleApiKeyInput').value.trim();
         const pToken = document.getElementById('pipedriveTokenInput').value.trim();
 
         const btn = document.querySelector('button[onclick="saveSettings()"]');
-        const oldText = btn.textContent;
-        btn.textContent = 'Salvando no banco...';
-        btn.disabled = true;
+        const oldText = btn.textContent; btn.textContent = 'Salvando...'; btn.disabled = true;
 
         try {
-          // Verifica se já existe uma linha para atualizar, ou se precisa inserir
           const { data: existe } = await supa.from('configuracoes').select('id').limit(1);
           let error;
           
           if (existe && existe.length > 0) {
-              const res = await supa.from('configuracoes').update({ 
-                  google_api_key: gKey, pipedrive_token: pToken 
-              }).eq('id', existe[0].id);
+              const res = await supa.from('configuracoes').update({ google_api_key: gKey, pipedrive_token: pToken }).eq('id', existe[0].id);
               error = res.error;
           } else {
-              const res = await supa.from('configuracoes').insert([{ 
-                  google_api_key: gKey, pipedrive_token: pToken 
-              }]);
+              const res = await supa.from('configuracoes').insert([{ google_api_key: gKey, pipedrive_token: pToken }]);
               error = res.error;
           }
-
           if (error) throw error;
 
-          // Atualiza as chaves na memória
-          configSupabase.googleApiKey = gKey;
-          configSupabase.pipedriveToken = pToken;
-
-          toast('Configurações salvas para todos os usuários!');
+          configSupabase.googleApiKey = gKey; configSupabase.pipedriveToken = pToken;
+          toast('Configurações salvas!');
           if (gKey) loadGoogleMapsScript(gKey);
-
-        } catch (err) {
-          console.error(err);
-          toast('Erro ao salvar no banco de dados!');
-        } finally {
-          btn.textContent = oldText;
-          btn.disabled = false;
-        }
+        } catch (err) { toast('Erro ao salvar no banco!'); } finally { btn.textContent = oldText; btn.disabled = false; }
       }
 
       async function clearSettings() {
         if (!confirm('Deseja limpar as chaves de acesso para TODOS os usuários?')) return;
-        document.getElementById('googleApiKeyInput').value = '';
-        document.getElementById('pipedriveTokenInput').value = '';
-        await saveSettings();
-        toast('Configurações limpas.');
+        document.getElementById('googleApiKeyInput').value = ''; document.getElementById('pipedriveTokenInput').value = '';
+        await saveSettings(); toast('Configurações limpas.');
       }
 
       function reloadGoogleMapsScript() {
         const settings = getSettings();
-        if (!settings.googleApiKey) {
-          toast('Nenhuma API Key do Google encontrada no banco de dados.');
-          return;
-        }
+        if (!settings.googleApiKey) { toast('Nenhuma API Key encontrada no banco.'); return; }
         loadGoogleMapsScript(settings.googleApiKey, true);
       }
 
       // ============================================
-      // RESTANTE DO CÓDIGO DO SISTEMA (MAPS, LEADS, PIPEDRIVE, ETC)
+      // RESTANTE DO CÓDIGO (MAPS, LEADS, PIPEDRIVE)
       // ============================================
 
       function showSection(section) {
-        if (section === 'settings' && !isUserAdmin) {
-            toast('Acesso negado. Apenas o administrador tem acesso.');
-            return;
-        }
-
-        const sections = {
-          extract: document.getElementById('extractSection'),
-          saved: document.getElementById('savedSection'),
-          pipedrive: document.getElementById('pipedriveSection'),
-          settings: document.getElementById('settingsSection')
-        };
-
+        if (section === 'settings' && !isUserAdmin) { toast('Acesso negado.'); return; }
+        const sections = { extract: document.getElementById('extractSection'), saved: document.getElementById('savedSection'), pipedrive: document.getElementById('pipedriveSection'), settings: document.getElementById('settingsSection') };
         Object.values(sections).forEach(el => el.classList.add('hidden'));
         if (sections[section]) sections[section].classList.remove('hidden');
 
@@ -729,19 +689,14 @@
         const activeButton = document.querySelector(`.menu-item[data-section="${section}"]`);
         if (activeButton) activeButton.classList.add('active');
 
-        if (section === 'saved') {
-            updateFolderFilterDropdown();
-            renderSavedLeads();
-        }
+        if (section === 'saved') { updateFolderFilterDropdown(); renderSavedLeads(); }
         if (section === 'pipedrive') renderExportedLeads();
       }
 
       function toast(message) {
         const el = document.getElementById('toast');
-        el.textContent = message;
-        el.style.display = 'block';
-        clearTimeout(window.__toastTimer);
-        window.__toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3500); 
+        el.textContent = message; el.style.display = 'block';
+        clearTimeout(window.__toastTimer); window.__toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3500); 
       }
 
       function loadLocalData() {
@@ -750,21 +705,14 @@
       }
 
       function loadGoogleMapsScript(apiKey, forceReload = false) {
-        if (window.google && window.google.maps && window.google.maps.places && !forceReload) {
-          initGoogleMaps();
-          return;
-        }
+        if (window.google && window.google.maps && window.google.maps.places && !forceReload) { initGoogleMaps(); return; }
         const oldScript = document.getElementById('googleMapsScript');
         if (oldScript) oldScript.remove();
-
         window.initVLHuntGoogleMaps = function () { initGoogleMaps(); };
-
-        const script = document.createElement('script');
-        script.id = 'googleMapsScript';
+        const script = document.createElement('script'); script.id = 'googleMapsScript';
         script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&libraries=places&callback=initVLHuntGoogleMaps`;
-        script.async = true;
-        script.defer = true;
-        script.onerror = function () { toast('Erro ao carregar Google Maps. Verifique sua API Key.'); };
+        script.async = true; script.defer = true;
+        script.onerror = function () { toast('Erro ao carregar mapa. Verifique a API Key.'); };
         document.body.appendChild(script);
       }
 
@@ -772,7 +720,7 @@
         const mapEl = document.getElementById('map');
         map = new google.maps.Map(mapEl, { center: { lat: -23.4205, lng: -51.9333 }, zoom: 13 });
         placesService = new google.maps.places.PlacesService(map);
-        toast('Google Maps conectado com sucesso!');
+        toast('Sistema geográfico conectado!');
       }
 
       function updateCounters() {
@@ -782,15 +730,12 @@
         document.getElementById('pendingCount').textContent = leads.length; 
       }
 
-      function normalizeString(str) {
-        return (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-      }
+      function normalizeString(str) { return (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
 
       function isStrictMatch(place, district, street) {
         if (!district && !street) return true; 
         const addr = normalizeString(place.formatted_address || place.vicinity || place.name || '');
-        let matchDistrict = true;
-        let matchStreet = true;
+        let matchDistrict = true, matchStreet = true;
         if (district) matchDistrict = addr.includes(normalizeString(district));
         if (street) matchStreet = addr.includes(normalizeString(street).replace(/^(rua|av|avenida|trav|travessa|alameda|rodovia|rod)\.?\s+/g, ''));
         return matchDistrict && matchStreet;
@@ -798,26 +743,14 @@
 
       function searchLeads() {
         if (isSearching) return;
-        const name = document.getElementById('nameInput').value.trim();
-        const niche = document.getElementById('nicheInput').value.trim();
-        const city = document.getElementById('cityInput').value.trim();
-        const district = document.getElementById('districtInput').value.trim();
-        const street = document.getElementById('streetInput').value.trim();
+        const name = document.getElementById('nameInput').value.trim(), niche = document.getElementById('nicheInput').value.trim(), city = document.getElementById('cityInput').value.trim(), district = document.getElementById('districtInput').value.trim(), street = document.getElementById('streetInput').value.trim();
 
         if (!name && (!niche || !city)) { toast('Digite o NOME ou NICHO+CIDADE.'); return; }
         const settings = getSettings();
-        if (!settings.googleApiKey) {
-          toast('O Administrador precisa configurar a API do Google Maps.');
-          if (isUserAdmin) showSection('settings');
-          return;
-        }
-        if (!placesService) { toast('Google Maps carregando...'); return; }
+        if (!settings.googleApiKey) { toast('O Admin precisa configurar a API.'); if (isUserAdmin) showSection('settings'); return; }
+        if (!placesService) { toast('Carregando base de dados...'); return; }
 
-        localStorage.setItem('vlhunt_last_name', name);
-        localStorage.setItem('vlhunt_last_niche', niche);
-        localStorage.setItem('vlhunt_last_city', city);
-        localStorage.setItem('vlhunt_last_district', district);
-        localStorage.setItem('vlhunt_last_street', street);
+        localStorage.setItem('vlhunt_last_name', name); localStorage.setItem('vlhunt_last_niche', niche); localStorage.setItem('vlhunt_last_city', city); localStorage.setItem('vlhunt_last_district', district); localStorage.setItem('vlhunt_last_street', street);
 
         let queryParts = [];
         if (name) queryParts.push(name);
@@ -828,8 +761,7 @@
         
         leads = []; detailsQueue = []; selectedLeadIds.clear(); isProcessingQueue = false; isSearching = true;
         document.getElementById('selectAllCheckbox').checked = false;
-        const btn = document.getElementById('searchBtn');
-        btn.disabled = true; btn.textContent = 'Buscando...';
+        const btn = document.getElementById('searchBtn'); btn.disabled = true; btn.textContent = 'Extraindo...';
 
         renderLeads();
         placesService.textSearch({ query: queryParts.join(' '), type: 'establishment' }, handlePlacesResults);
@@ -837,49 +769,35 @@
 
       function handlePlacesResults(results, status, pagination) {
         if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-           setTimeout(() => { if (pagination && pagination.hasNextPage) pagination.nextPage(); }, 2000);
-           return; 
+           setTimeout(() => { if (pagination && pagination.hasNextPage) pagination.nextPage(); }, 2000); return; 
         }
-
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-          const district = document.getElementById('districtInput').value.trim();
-          const street = document.getElementById('streetInput').value.trim();
+          const district = document.getElementById('districtInput').value.trim(), street = document.getElementById('streetInput').value.trim();
           results.forEach(place => {
             if (isStrictMatch(place, district, street)) {
                const normalized = normalizePlace(place);
                if (!leads.some(l => l.place_id === normalized.place_id) && !savedLeads.some(s => s.place_id === normalized.place_id)) {
-                 leads.push(normalized);
-                 fetchPlaceDetailsQueue(normalized.place_id);
+                 leads.push(normalized); fetchPlaceDetailsQueue(normalized.place_id);
                }
             }
           });
         }
-
         renderLeads(); updateCounters();
         const btn = document.getElementById('searchBtn');
-        
         if (pagination && pagination.hasNextPage) {
-          btn.textContent = `Buscando... (${leads.length})`;
-          setTimeout(() => { pagination.nextPage(); }, 2000);
+          btn.textContent = `Processando... (${leads.length})`; setTimeout(() => { pagination.nextPage(); }, 2000);
         } else {
           isSearching = false; btn.disabled = false; btn.textContent = 'Extrair Leads';
-          toast(leads.length === 0 ? 'Nenhum lead exato encontrado.' : `${leads.length} leads na tela.`);
+          toast(leads.length === 0 ? 'Nenhum lead encontrado.' : `${leads.length} encontrados.`);
         }
       }
 
       function normalizePlace(place) {
         const photoUrl = place.photos && place.photos.length ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 }) : '';
-        return {
-          place_id: place.place_id, name: place.name || '', address: place.formatted_address || place.vicinity || '',
-          phone: '', website: '', url: place.url || '', rating: place.rating || '', user_ratings_total: place.user_ratings_total || '',
-          photo: photoUrl, status: 'Novo', exported: false, savedAt: null, exportedAt: null
-        };
+        return { place_id: place.place_id, name: place.name || '', address: place.formatted_address || place.vicinity || '', phone: '', website: '', url: place.url || '', rating: place.rating || '', user_ratings_total: place.user_ratings_total || '', photo: photoUrl, status: 'Novo', exported: false, savedAt: null, exportedAt: null };
       }
 
-      function fetchPlaceDetailsQueue(placeId) {
-        if (!detailsQueue.includes(placeId)) detailsQueue.push(placeId);
-        processQueue();
-      }
+      function fetchPlaceDetailsQueue(placeId) { if (!detailsQueue.includes(placeId)) detailsQueue.push(placeId); processQueue(); }
 
       function processQueue() {
         if (isProcessingQueue || detailsQueue.length === 0 || !placesService) return;
@@ -888,11 +806,7 @@
 
         placesService.getDetails({ placeId: placeId, fields: ['name', 'formatted_address', 'formatted_phone_number', 'international_phone_number', 'website', 'url', 'rating', 'user_ratings_total', 'photos'] },
           (place, status) => {
-            if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-               detailsQueue.unshift(placeId); 
-               setTimeout(() => { isProcessingQueue = false; processQueue(); }, 2000); 
-               return;
-            }
+            if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) { detailsQueue.unshift(placeId); setTimeout(() => { isProcessingQueue = false; processQueue(); }, 2000); return; }
             if (status === google.maps.places.PlacesServiceStatus.OK && place) {
               const index = leads.findIndex(lead => lead.place_id === placeId);
               if (index !== -1) {
@@ -906,13 +820,9 @@
       }
 
       function renderLeads() {
-        const grid = document.getElementById('leadsGrid');
-        const empty = document.getElementById('resultsEmpty');
+        const grid = document.getElementById('leadsGrid'), empty = document.getElementById('resultsEmpty');
         grid.innerHTML = '';
-        if (!leads.length) {
-          empty.innerHTML = isSearching ? 'Processando...' : 'Nenhum lead pesquisado.';
-          empty.classList.remove('hidden'); return;
-        }
+        if (!leads.length) { empty.innerHTML = isSearching ? 'Pesquisando...' : 'Nenhum lead pesquisado.'; empty.classList.remove('hidden'); return; }
         empty.classList.add('hidden');
         leads.forEach(lead => grid.appendChild(createLeadCard(lead, 'current')));
       }
@@ -922,26 +832,34 @@
         card.className = 'lead-card';
         if (source === 'current' && selectedLeadIds.has(lead.place_id)) card.classList.add('selected');
 
-        const websiteLabel = lead.website ? lead.website : 'Site não encontrado';
-        const phoneLabel = lead.phone ? lead.phone : 'Telefone não encontrado';
+        const websiteLabel = lead.website ? lead.website : 'Site não cadastrado';
+        const phoneLabel = lead.phone ? lead.phone : 'Telefone não cadastrado';
         const mapsUrl = lead.url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lead.name + ' ' + lead.address)}`;
         const whatsappUrl = lead.phone ? makeWhatsAppUrl(lead.phone, lead.name) : '';
-        const folderBadge = source === 'saved' ? `<div style="margin-bottom:14px;"><span style="background:#e0f2fe; color:#0369a1; padding:5px 10px; border-radius:8px; font-size:11px; font-weight:900;">📁 PASTA: ${escapeHtml(lead.folder || 'Geral')}</span></div>` : '';
+        const folderBadge = source === 'saved' ? `<div style="margin-bottom:14px;"><span class="badge" style="background:var(--border);">Pasta: ${escapeHtml(lead.folder || 'Geral')}</span></div>` : '';
+
+        // SVGs limpos para os ícones de info (Address, Phone, Site, Star)
+        const iconPin = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
+        const iconPhone = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>`;
+        const iconSite = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`;
+        const iconStar = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
 
         card.innerHTML = `
           ${source === 'current' ? `<input type="checkbox" class="lead-check" ${selectedLeadIds.has(lead.place_id) ? 'checked' : ''} onchange="toggleLeadSelection('${escapeAttr(lead.place_id)}', this.checked)" />` : ''}
-          ${lead.photo ? `<img class="lead-photo" src="${escapeAttr(lead.photo)}" onerror="this.outerHTML='<div class=\\'lead-photo-placeholder\\'>🏢</div>';" />` : `<div class="lead-photo-placeholder">🏢</div>`}
+          ${lead.photo ? `<img class="lead-photo" src="${escapeAttr(lead.photo)}" onerror="this.outerHTML='<div class=\\'lead-photo-placeholder\\'>Imagem indisponível</div>';" />` : `<div class="lead-photo-placeholder">Sem imagem</div>`}
           ${folderBadge}
           <div class="lead-title-row"><h4 class="lead-title">${escapeHtml(lead.name)}</h4><span class="badge">${escapeHtml(lead.status || 'Novo')}</span></div>
-          <p class="lead-info">📍 ${escapeHtml(lead.address || 'Endereço não encontrado')}</p>
-          <p class="lead-info">📞 ${escapeHtml(phoneLabel)}</p>
-          <p class="lead-info">🌐 ${lead.website ? `<a href="${escapeAttr(lead.website)}" target="_blank">${escapeHtml(lead.website)}</a>` : 'Site não encontrado'}</p>
-          <p class="lead-info">⭐ ${lead.rating ? `${escapeHtml(String(lead.rating))} (${escapeHtml(String(lead.user_ratings_total || 0))} avaliações)` : 'Sem avaliações'}</p>
+          
+          <div class="lead-info">${iconPin} <span>${escapeHtml(lead.address || 'Endereço não cadastrado')}</span></div>
+          <div class="lead-info">${iconPhone} <span>${escapeHtml(phoneLabel)}</span></div>
+          <div class="lead-info">${iconSite} <span>${lead.website ? `<a href="${escapeAttr(lead.website)}" target="_blank">${escapeHtml(lead.website)}</a>` : 'Site não cadastrado'}</span></div>
+          <div class="lead-info">${iconStar} <span>${lead.rating ? `${escapeHtml(String(lead.rating))} (${escapeHtml(String(lead.user_ratings_total || 0))} reviews)` : 'Sem avaliações'}</span></div>
+          
           <div class="lead-buttons">
-            ${whatsappUrl ? `<a class="small-btn btn-soft-green" href="${escapeAttr(whatsappUrl)}" target="_blank">WhatsApp</a>` : ''}
-            ${lead.website ? `<a class="small-btn btn-soft-blue" href="${escapeAttr(lead.website)}" target="_blank">Site</a>` : ''}
-            <a class="small-btn btn-soft-gray" href="${escapeAttr(mapsUrl)}" target="_blank">Maps</a>
-            ${source === 'current' ? `<button class="small-btn btn-soft-green" onclick="saveLeadById('${escapeAttr(lead.place_id)}')">Salvar</button>` : ''}
+            ${whatsappUrl ? `<a class="small-btn" href="${escapeAttr(whatsappUrl)}" target="_blank">WhatsApp</a>` : ''}
+            ${lead.website ? `<a class="small-btn" href="${escapeAttr(lead.website)}" target="_blank">Site</a>` : ''}
+            <a class="small-btn" href="${escapeAttr(mapsUrl)}" target="_blank">Ver Mapa</a>
+            ${source === 'current' ? `<button class="small-btn" style="border-color: var(--dark);" onclick="saveLeadById('${escapeAttr(lead.place_id)}')">Salvar</button>` : ''}
           </div>
           <div class="lead-status-row">
             <select onchange="changeLeadStatus('${escapeAttr(lead.place_id)}', this.value)">
@@ -957,16 +875,8 @@
         return card;
       }
 
-      function toggleLeadSelection(placeId, checked) {
-        checked ? selectedLeadIds.add(placeId) : selectedLeadIds.delete(placeId);
-        renderLeads();
-      }
-
-      function toggleSelectAll(checked) {
-        checked ? leads.forEach(l => selectedLeadIds.add(l.place_id)) : selectedLeadIds.clear();
-        renderLeads();
-      }
-
+      function toggleLeadSelection(placeId, checked) { checked ? selectedLeadIds.add(placeId) : selectedLeadIds.delete(placeId); renderLeads(); }
+      function toggleSelectAll(checked) { checked ? leads.forEach(l => selectedLeadIds.add(l.place_id)) : selectedLeadIds.clear(); renderLeads(); }
       function clearSelected() { selectedLeadIds.clear(); document.getElementById('selectAllCheckbox').checked = false; renderLeads(); toast('Seleção limpa.'); }
       function getSelectedLeads() { return leads.filter(l => selectedLeadIds.has(l.place_id)); }
 
@@ -1022,8 +932,7 @@
       }
 
       function renderSavedLeads() {
-        const grid = document.getElementById('savedGrid');
-        const empty = document.getElementById('savedEmpty');
+        const grid = document.getElementById('savedGrid'), empty = document.getElementById('savedEmpty');
         grid.innerHTML = '';
         const filterVal = document.getElementById('savedFolderFilter').value;
         const list = filterVal === 'Todas' ? savedLeads : savedLeads.filter(l => (l.folder || 'Geral') === filterVal);
@@ -1036,13 +945,8 @@
 
       function clearSavedLeads() {
         const filterVal = document.getElementById('savedFolderFilter').value;
-        if (filterVal === 'Todas') {
-           if (!confirm('Apagar TODOS os leads de TODAS as pastas?')) return;
-           savedLeads = [];
-        } else {
-           if (!confirm(`Apagar TODOS os leads da pasta "${filterVal}"?`)) return;
-           savedLeads = savedLeads.filter(l => (l.folder || 'Geral') !== filterVal);
-        }
+        if (filterVal === 'Todas') { if (!confirm('Apagar TODOS os leads de TODAS as pastas?')) return; savedLeads = []; } 
+        else { if (!confirm(`Apagar TODOS os leads da pasta "${filterVal}"?`)) return; savedLeads = savedLeads.filter(l => (l.folder || 'Geral') !== filterVal); }
         localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
         updateFolderFilterDropdown(); renderSavedLeads(); updateCounters(); toast('Apagados com sucesso.');
       }
@@ -1060,20 +964,14 @@
         if (!list.length) { toast('Nenhum lead para exportar.'); return; }
 
         const settings = getSettings();
-        if (!settings.pipedriveToken) {
-          toast('O token do Pipedrive não está configurado.');
-          if (isUserAdmin) showSection('settings');
-          return;
-        }
+        if (!settings.pipedriveToken) { toast('O token do CRM não está configurado.'); if (isUserAdmin) showSection('settings'); return; }
 
-        let success = 0; let failed = 0;
-        toast(`Enviando ${list.length} lead(s)...`);
+        let success = 0, failed = 0; toast(`Enviando ${list.length} lead(s)...`);
 
         for (const lead of list) {
           if(lead.exported) continue; 
           try {
             const token = encodeURIComponent(settings.pipedriveToken);
-            
             const orgRes = await fetch(`https://api.pipedrive.com/v1/organizations?api_token=${token}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: lead.name, address: lead.address }) });
             const orgData = await orgRes.json();
             if (!orgRes.ok || !orgData.success) throw new Error('Erro Org');
@@ -1083,7 +981,7 @@
             const dealData = await dealRes.json();
             if (!dealRes.ok || !dealData.success) throw new Error('Erro Deal');
 
-            const noteContent = `Empresa: ${lead.name}\nTelefone: ${lead.phone || '-'}\nSite: ${lead.website || '-'}\nEndereço: ${lead.address || '-'}\nMaps: ${lead.url || '-'}\nAvaliação: ${lead.rating || '-'}\nPasta: ${lead.folder || 'Geral'}\nComercial Responsável: ${currentUserFullName}`;
+            const noteContent = `Empresa: ${lead.name}\nTelefone: ${lead.phone || '-'}\nSite: ${lead.website || '-'}\nEndereço: ${lead.address || '-'}\nMaps: ${lead.url || '-'}\nAvaliação: ${lead.rating || '-'}\nPasta: ${lead.folder || 'Geral'}\nResponsável: ${currentUserFullName}`;
             await fetch(`https://api.pipedrive.com/v1/notes?api_token=${token}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: noteContent, deal_id: dealData.data.id, org_id: orgId }) });
 
             const expRecord = { ...lead, exported: true, exportedAt: new Date().toISOString() };
@@ -1093,21 +991,17 @@
             success++;
           } catch (e) { failed++; }
         }
-
-        localStorage.setItem(STORAGE_KEYS.exported, JSON.stringify(exportedLeads));
-        localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
+        localStorage.setItem(STORAGE_KEYS.exported, JSON.stringify(exportedLeads)); localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
         renderLeads(); renderSavedLeads(); renderExportedLeads(); updateCounters();
         toast(failed ? `${success} enviados, ${failed} falhas.` : `${success} lead(s) enviados.`);
       }
 
       function renderExportedLeads() {
-        const empty = document.getElementById('exportedEmpty');
-        const wrap = document.getElementById('exportedTableWrap');
-        const tbody = document.getElementById('exportedTableBody');
+        const empty = document.getElementById('exportedEmpty'), wrap = document.getElementById('exportedTableWrap'), tbody = document.getElementById('exportedTableBody');
         tbody.innerHTML = '';
         if (!exportedLeads.length) { empty.classList.remove('hidden'); wrap.classList.add('hidden'); return; }
         empty.classList.add('hidden'); wrap.classList.remove('hidden');
-        exportedLeads.forEach(l => tbody.innerHTML += `<tr><td><strong>${escapeHtml(l.name)}</strong><br>${escapeHtml(l.address || '')}</td><td>${escapeHtml(l.phone || '-')}</td><td>${l.website ? `<a href="${escapeAttr(l.website)}" target="_blank">Site</a>` : '-'}</td><td>${l.exportedAt ? new Date(l.exportedAt).toLocaleDateString('pt-BR') : '-'}</td><td><span class="badge">Exportado</span></td></tr>`);
+        exportedLeads.forEach(l => tbody.innerHTML += `<tr><td><strong>${escapeHtml(l.name)}</strong><br><span style="color:var(--muted); font-size: 12px;">${escapeHtml(l.address || '')}</span></td><td>${escapeHtml(l.phone || '-')}</td><td>${l.website ? `<a href="${escapeAttr(l.website)}" target="_blank" style="color:var(--dark);">Visitar</a>` : '-'}</td><td>${l.exportedAt ? new Date(l.exportedAt).toLocaleDateString('pt-BR') : '-'}</td><td><span class="badge" style="background:var(--border);">Exportado</span></td></tr>`);
       }
 
       function clearResults() {
@@ -1125,8 +1019,7 @@
         
         const csv = [['Empresa', 'Telefone', 'Site', 'Endereço', 'Avaliação', 'Pasta', 'Status', 'Google Maps'], ...list.map(l => [l.name || '', l.phone || '', l.website || '', l.address || '', l.rating || '', l.folder || 'Geral', l.status || '', l.url || ''])].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')).join('\n');
         const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }));
-        a.download = `leads-${filterVal}-${new Date().toISOString().slice(0, 10)}.csv`;
-        a.click(); toast('CSV exportado.');
+        a.download = `leads-${filterVal}-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); toast('CSV exportado.');
       }
 
       function makeWhatsAppUrl(phone, name) {
