@@ -7,7 +7,7 @@
 
   <style>
     :root {
-      /* CORES DARK MODE PREMIUM (Estilo SaaS Moderno) */
+      /* CORES DARK MODE PREMIUM */
       --bg: #09090b;          
       --card: #141415;        
       --dark: #fafafa;        
@@ -30,7 +30,6 @@
     button, input, select { font-family: inherit; }
     .app { display: flex; min-height: 100vh; width: 100%; }
     
-    /* ICONES SVG ALINHAMENTO */
     svg { vertical-align: middle; }
 
     /* SIDEBAR */
@@ -75,14 +74,14 @@
     .field input, .field select { width: 100%; height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; font-size: 14px; outline: none; background: var(--bg); color: var(--dark); transition: 0.2s; }
     .field input:focus, .field select:focus { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
     
-    /* Mudar fundo do dropdown do autocomplete do Google (pois ele injeta divs no body) */
-    .pac-container { background-color: var(--card); border: 1px solid var(--border); border-radius: 8px; font-family: inherit; box-shadow: var(--shadow); }
+    /* GOOGLE AUTOCOMPLETE (Fundo Escuro) */
+    .pac-container { background-color: var(--card); border: 1px solid var(--border); border-radius: 8px; font-family: inherit; box-shadow: var(--shadow); margin-top: 4px; }
     .pac-item { color: var(--dark); border-top: 1px solid var(--border); padding: 8px 12px; cursor: pointer; }
     .pac-item:hover { background-color: var(--nav-hover); }
     .pac-item-query { color: var(--dark); font-weight: 600; }
     .pac-matched { color: var(--primary); }
     
-    /* BUTTONS CLEAN */
+    /* BUTTONS */
     .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
     .btn { border: 1px solid var(--border); min-height: 44px; border-radius: 8px; padding: 0 16px; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s ease; text-decoration: none; color: var(--dark); background: transparent; white-space: nowrap; }
     .btn:hover { background: var(--nav-hover); }
@@ -101,7 +100,7 @@
     .select-all:hover { background: var(--nav-hover); }
     .select-all input { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
     
-    /* LEADS GRID & CARDS CLEAN */
+    /* LEADS GRID & CARDS */
     .leads-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
     .lead-card { position: relative; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; background: var(--bg); overflow: hidden; display: flex; flex-direction: column; }
     .lead-card.selected { border-color: var(--primary); }
@@ -316,7 +315,7 @@
               <!-- RUA -->
               <div class="field">
                 <label for="streetInput">Rua/Avenida <span style="font-weight: normal; text-transform: none;">(Opcional)</span></label>
-                <input id="streetInput" type="text" placeholder="Nome da rua ou avenida" />
+                <input id="streetInput" type="text" placeholder="Ex: Avenida Brasil" />
               </div>
 
               <!-- BOTÃO -->
@@ -540,7 +539,6 @@
       let isSearching = false;
       let pendingLeadsToSave = []; 
       
-      // NOVA VARIÁVEL: Fase 5 (Contador de Ocultados)
       let ignoredLeadsCount = 0; 
       
       let currentUserEmail = '', currentUserFullName = '', isUserAdmin = false; 
@@ -600,19 +598,16 @@
       document.addEventListener('DOMContentLoaded', async () => {
         loadLocalData(); updateCounters(); updateFolderFilterDropdown(); renderSavedLeads(); renderExportedLeads();
 
-        const savedName = localStorage.getItem('vlhunt_last_name') || '';
-        const savedNiche = localStorage.getItem('vlhunt_last_niche') || '';
-        const savedCity = localStorage.getItem('vlhunt_last_city') || '';
-        const savedDistrict = localStorage.getItem('vlhunt_last_district') || '';
-        const savedStreet = localStorage.getItem('vlhunt_last_street') || '';
+        // O usuário pediu para limpar os dados de pesquisa ao dar F5.
+        // Removida a rotina que preenchia os campos no reload e inserido um código
+        // para garantir que qualquer lixo anterior do localStorage dele seja limpo.
+        localStorage.removeItem('vlhunt_last_name');
+        localStorage.removeItem('vlhunt_last_niche');
+        localStorage.removeItem('vlhunt_last_city');
+        localStorage.removeItem('vlhunt_last_district');
+        localStorage.removeItem('vlhunt_last_street');
 
-        document.getElementById('nameInput').value = savedName;
-        document.getElementById('nicheInput').value = savedNiche;
-        document.getElementById('cityInput').value = savedCity;
-        document.getElementById('districtInput').value = savedDistrict;
-        document.getElementById('streetInput').value = savedStreet;
-
-        const searchFields = document.querySelectorAll('#nameInput, #nicheInput, #districtInput, #streetInput'); // cityInput removido para não dar conflito no autocomplete
+        const searchFields = document.querySelectorAll('#nameInput, #nicheInput, #districtInput, #streetInput'); 
         searchFields.forEach(field => {
           field.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') { event.preventDefault(); document.getElementById('searchBtn').click(); }
@@ -730,32 +725,68 @@
         map = new google.maps.Map(mapEl, { center: { lat: -23.4205, lng: -51.9333 }, zoom: 13 });
         placesService = new google.maps.places.PlacesService(map);
         
-        // FASE 4: INTEGRAÇÃO DO AUTOCOMPLETE PARA CIDADES
-        const cityInput = document.getElementById('cityInput');
-        if (cityInput && window.google.maps.places.Autocomplete) {
-            const autocomplete = new google.maps.places.Autocomplete(cityInput, {
-                types: ['(cities)'],
-                componentRestrictions: { country: 'br' } // Apenas cidades do Brasil
-            });
+        // INTEGRAÇÃO DE AUTOCOMPLETE NOS 3 CAMPOS DE LOCALIDADE
+        if (window.google.maps.places.Autocomplete) {
             
-            // Garante que o input receba o nome formatado bonitinho
-            autocomplete.addListener('place_changed', () => {
-                const place = autocomplete.getPlace();
-                if (place && place.name) {
-                    // Pega o nome da cidade e estado se disponível
-                    let formatted = place.name;
-                    if(place.address_components) {
-                        const state = place.address_components.find(c => c.types.includes("administrative_area_level_1"));
-                        if(state) formatted += `, ${state.short_name}`;
+            // 1. AUTOCOMPLETE CIDADE
+            const cityInput = document.getElementById('cityInput');
+            if (cityInput) {
+                const autoCity = new google.maps.places.Autocomplete(cityInput, {
+                    types: ['(cities)'],
+                    componentRestrictions: { country: 'br' } 
+                });
+                autoCity.addListener('place_changed', () => {
+                    const place = autoCity.getPlace();
+                    if (place && place.name) {
+                        let formatted = place.name;
+                        if(place.address_components) {
+                            const state = place.address_components.find(c => c.types.includes("administrative_area_level_1"));
+                            if(state) formatted += `, ${state.short_name}`;
+                        }
+                        cityInput.value = formatted;
                     }
-                    cityInput.value = formatted;
-                }
-            });
-            
-            // Impede dar 'Enter' e buscar antes de selecionar a cidade
-            cityInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') { e.preventDefault(); }
-            });
+                });
+                cityInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+            }
+
+            // 2. AUTOCOMPLETE BAIRRO
+            const districtInput = document.getElementById('districtInput');
+            if (districtInput) {
+                const autoDistrict = new google.maps.places.Autocomplete(districtInput, {
+                    componentRestrictions: { country: 'br' }
+                });
+                autoDistrict.addListener('place_changed', () => {
+                    const place = autoDistrict.getPlace();
+                    if (place && place.name) {
+                        districtInput.value = place.name; // Joga apenas o nome do bairro
+                    }
+                });
+                districtInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+            }
+
+            // 3. AUTOCOMPLETE RUA
+            const streetInput = document.getElementById('streetInput');
+            if (streetInput) {
+                const autoStreet = new google.maps.places.Autocomplete(streetInput, {
+                    types: ['address'],
+                    componentRestrictions: { country: 'br' }
+                });
+                autoStreet.addListener('place_changed', () => {
+                    const place = autoStreet.getPlace();
+                    if (place && place.address_components) {
+                        // Tenta extrair apenas o nome da rua, ignorando o número predial
+                        const route = place.address_components.find(c => c.types.includes('route'));
+                        if (route) {
+                            streetInput.value = route.long_name;
+                        } else if (place.name) {
+                            streetInput.value = place.name;
+                        }
+                    } else if (place && place.name) {
+                        streetInput.value = place.name;
+                    }
+                });
+                streetInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+            }
         }
 
         toast('Sistema geográfico conectado!');
@@ -788,8 +819,6 @@
         if (!settings.googleApiKey) { toast('O Admin precisa configurar a API.'); if (isUserAdmin) showSection('settings'); return; }
         if (!placesService) { toast('Carregando base de dados...'); return; }
 
-        localStorage.setItem('vlhunt_last_name', name); localStorage.setItem('vlhunt_last_niche', niche); localStorage.setItem('vlhunt_last_city', city); localStorage.setItem('vlhunt_last_district', district); localStorage.setItem('vlhunt_last_street', street);
-
         let queryParts = [];
         if (name) queryParts.push(name);
         if (niche) queryParts.push(niche);
@@ -799,7 +828,7 @@
         
         // Zera o estado para a nova busca
         leads = []; detailsQueue = []; selectedLeadIds.clear(); isProcessingQueue = false; isSearching = true;
-        ignoredLeadsCount = 0; // FASE 5: Zerando contador
+        ignoredLeadsCount = 0; 
         
         document.getElementById('selectAllCheckbox').checked = false;
         const btn = document.getElementById('searchBtn'); btn.disabled = true; btn.textContent = 'Extraindo...';
@@ -820,9 +849,8 @@
             if (isStrictMatch(place, district, street)) {
                const normalized = normalizePlace(place);
                
-               // FASE 5: FILTRO ANTI-REPETIÇÃO INTELIGENTE
                if (savedLeads.some(s => s.place_id === normalized.place_id)) {
-                   ignoredLeadsCount++; // Já tem na base salva, então oculta
+                   ignoredLeadsCount++; 
                } else if (!leads.some(l => l.place_id === normalized.place_id)) {
                    leads.push(normalized); 
                    fetchPlaceDetailsQueue(normalized.place_id);
@@ -840,7 +868,6 @@
         } else {
           isSearching = false; btn.disabled = false; btn.textContent = 'Extrair Leads';
           
-          // Notificação de Sucesso com Dados Ocultados
           let finalMsg = leads.length === 0 ? 'Nenhum lead novo retornado.' : `${leads.length} encontrados.`;
           if (ignoredLeadsCount > 0) {
               finalMsg += ` (${ignoredLeadsCount} ocultados pois já estão salvos)`;
@@ -895,7 +922,6 @@
         const whatsappUrl = lead.phone ? makeWhatsAppUrl(lead.phone, lead.name) : '';
         const folderBadge = source === 'saved' ? `<div style="margin-bottom:14px;"><span class="badge" style="background:var(--border);">Pasta: ${escapeHtml(lead.folder || 'Geral')}</span></div>` : '';
 
-        // SVGs limpos para os ícones de info
         const iconPin = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
         const iconPhone = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>`;
         const iconSite = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`;
