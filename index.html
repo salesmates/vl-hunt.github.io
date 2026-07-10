@@ -8,14 +8,14 @@
   <style>
     :root {
       /* CORES DARK MODE PREMIUM (Estilo SaaS Moderno) */
-      --bg: #09090b;          /* Fundo principal escuro */
-      --card: #141415;        /* Fundo dos cards/seções */
-      --dark: #fafafa;        /* Texto principal claro */
-      --muted: #a1a1aa;       /* Texto secundário/apagado */
-      --border: #27272a;      /* Bordas discretas */
+      --bg: #09090b;          
+      --card: #141415;        
+      --dark: #fafafa;        
+      --muted: #a1a1aa;       
+      --border: #27272a;      
       
-      --primary: #ffffff;     /* Destaque principal */
-      --primary-inv: #000000; /* Cor invertida para botões principais */
+      --primary: #ffffff;     
+      --primary-inv: #000000; 
       
       --sidebar: #09090b;
       --nav: #141415;
@@ -75,13 +75,19 @@
     .field input, .field select { width: 100%; height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; font-size: 14px; outline: none; background: var(--bg); color: var(--dark); transition: 0.2s; }
     .field input:focus, .field select:focus { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
     
+    /* Mudar fundo do dropdown do autocomplete do Google (pois ele injeta divs no body) */
+    .pac-container { background-color: var(--card); border: 1px solid var(--border); border-radius: 8px; font-family: inherit; box-shadow: var(--shadow); }
+    .pac-item { color: var(--dark); border-top: 1px solid var(--border); padding: 8px 12px; cursor: pointer; }
+    .pac-item:hover { background-color: var(--nav-hover); }
+    .pac-item-query { color: var(--dark); font-weight: 600; }
+    .pac-matched { color: var(--primary); }
+    
     /* BUTTONS CLEAN */
     .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
     .btn { border: 1px solid var(--border); min-height: 44px; border-radius: 8px; padding: 0 16px; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s ease; text-decoration: none; color: var(--dark); background: transparent; white-space: nowrap; }
     .btn:hover { background: var(--nav-hover); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
     
-    /* Botões principais (estilo SaaS premium invertido) */
     .btn-main { background: var(--primary); color: var(--primary-inv); border-color: var(--primary); }
     .btn-main:hover { background: #e5e5e5; color: var(--primary-inv); }
     
@@ -123,7 +129,7 @@
     /* UTILS & MODALS */
     .hidden { display: none !important; }
     .empty { padding: 40px; text-align: center; color: var(--muted); font-weight: 500; font-size: 14px; background: transparent; border: 1px dashed var(--border); border-radius: var(--radius); }
-    .toast { position: fixed; right: 24px; bottom: 24px; background: var(--dark); color: var(--bg); padding: 14px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; box-shadow: var(--shadow); z-index: 9999; max-width: 360px; display: none; }
+    .toast { position: fixed; right: 24px; bottom: 24px; background: var(--dark); color: var(--bg); padding: 14px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; box-shadow: var(--shadow); z-index: 9999; max-width: 400px; display: none; }
     .map-hidden { width: 1px; height: 1px; opacity: 0; position: fixed; left: -9999px; bottom: -9999px; }
     
     .table-wrap { overflow-x: auto; }
@@ -298,7 +304,7 @@
               <!-- CIDADE -->
               <div class="field">
                 <label for="cityInput">Cidade</label>
-                <input id="cityInput" type="text" placeholder="Nome da cidade" />
+                <input id="cityInput" type="text" placeholder="Ex: Maringá, PR" />
               </div>
 
               <!-- BAIRRO -->
@@ -534,6 +540,9 @@
       let isSearching = false;
       let pendingLeadsToSave = []; 
       
+      // NOVA VARIÁVEL: Fase 5 (Contador de Ocultados)
+      let ignoredLeadsCount = 0; 
+      
       let currentUserEmail = '', currentUserFullName = '', isUserAdmin = false; 
 
       const STORAGE_KEYS = { saved: 'vlhunt_saved_leads_v2', exported: 'vlhunt_exported_leads_v2' };
@@ -603,9 +612,9 @@
         document.getElementById('districtInput').value = savedDistrict;
         document.getElementById('streetInput').value = savedStreet;
 
-        const searchFields = document.querySelectorAll('#nameInput, #nicheInput, #cityInput, #districtInput, #streetInput');
+        const searchFields = document.querySelectorAll('#nameInput, #nicheInput, #districtInput, #streetInput'); // cityInput removido para não dar conflito no autocomplete
         searchFields.forEach(field => {
-          field.addEventListener('keypress', (event) => {
+          field.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') { event.preventDefault(); document.getElementById('searchBtn').click(); }
           });
         });
@@ -696,7 +705,7 @@
       function toast(message) {
         const el = document.getElementById('toast');
         el.textContent = message; el.style.display = 'block';
-        clearTimeout(window.__toastTimer); window.__toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3500); 
+        clearTimeout(window.__toastTimer); window.__toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3800); 
       }
 
       function loadLocalData() {
@@ -720,6 +729,35 @@
         const mapEl = document.getElementById('map');
         map = new google.maps.Map(mapEl, { center: { lat: -23.4205, lng: -51.9333 }, zoom: 13 });
         placesService = new google.maps.places.PlacesService(map);
+        
+        // FASE 4: INTEGRAÇÃO DO AUTOCOMPLETE PARA CIDADES
+        const cityInput = document.getElementById('cityInput');
+        if (cityInput && window.google.maps.places.Autocomplete) {
+            const autocomplete = new google.maps.places.Autocomplete(cityInput, {
+                types: ['(cities)'],
+                componentRestrictions: { country: 'br' } // Apenas cidades do Brasil
+            });
+            
+            // Garante que o input receba o nome formatado bonitinho
+            autocomplete.addListener('place_changed', () => {
+                const place = autocomplete.getPlace();
+                if (place && place.name) {
+                    // Pega o nome da cidade e estado se disponível
+                    let formatted = place.name;
+                    if(place.address_components) {
+                        const state = place.address_components.find(c => c.types.includes("administrative_area_level_1"));
+                        if(state) formatted += `, ${state.short_name}`;
+                    }
+                    cityInput.value = formatted;
+                }
+            });
+            
+            // Impede dar 'Enter' e buscar antes de selecionar a cidade
+            cityInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); }
+            });
+        }
+
         toast('Sistema geográfico conectado!');
       }
 
@@ -745,7 +783,7 @@
         if (isSearching) return;
         const name = document.getElementById('nameInput').value.trim(), niche = document.getElementById('nicheInput').value.trim(), city = document.getElementById('cityInput').value.trim(), district = document.getElementById('districtInput').value.trim(), street = document.getElementById('streetInput').value.trim();
 
-        if (!name && (!niche || !city)) { toast('Digite o NOME ou NICHO+CIDADE.'); return; }
+        if (!name && (!niche || !city)) { toast('Digite o NOME ou NICHO + CIDADE.'); return; }
         const settings = getSettings();
         if (!settings.googleApiKey) { toast('O Admin precisa configurar a API.'); if (isUserAdmin) showSection('settings'); return; }
         if (!placesService) { toast('Carregando base de dados...'); return; }
@@ -759,7 +797,10 @@
         if (district) queryParts.push(`bairro ${district}`);
         if (city) queryParts.push(`em ${city}`);
         
+        // Zera o estado para a nova busca
         leads = []; detailsQueue = []; selectedLeadIds.clear(); isProcessingQueue = false; isSearching = true;
+        ignoredLeadsCount = 0; // FASE 5: Zerando contador
+        
         document.getElementById('selectAllCheckbox').checked = false;
         const btn = document.getElementById('searchBtn'); btn.disabled = true; btn.textContent = 'Extraindo...';
 
@@ -771,24 +812,40 @@
         if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
            setTimeout(() => { if (pagination && pagination.hasNextPage) pagination.nextPage(); }, 2000); return; 
         }
+        
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
           const district = document.getElementById('districtInput').value.trim(), street = document.getElementById('streetInput').value.trim();
+          
           results.forEach(place => {
             if (isStrictMatch(place, district, street)) {
                const normalized = normalizePlace(place);
-               if (!leads.some(l => l.place_id === normalized.place_id) && !savedLeads.some(s => s.place_id === normalized.place_id)) {
-                 leads.push(normalized); fetchPlaceDetailsQueue(normalized.place_id);
+               
+               // FASE 5: FILTRO ANTI-REPETIÇÃO INTELIGENTE
+               if (savedLeads.some(s => s.place_id === normalized.place_id)) {
+                   ignoredLeadsCount++; // Já tem na base salva, então oculta
+               } else if (!leads.some(l => l.place_id === normalized.place_id)) {
+                   leads.push(normalized); 
+                   fetchPlaceDetailsQueue(normalized.place_id);
                }
             }
           });
         }
+        
         renderLeads(); updateCounters();
         const btn = document.getElementById('searchBtn');
+        
         if (pagination && pagination.hasNextPage) {
-          btn.textContent = `Processando... (${leads.length})`; setTimeout(() => { pagination.nextPage(); }, 2000);
+          btn.textContent = `Processando... (${leads.length})`; 
+          setTimeout(() => { pagination.nextPage(); }, 2000);
         } else {
           isSearching = false; btn.disabled = false; btn.textContent = 'Extrair Leads';
-          toast(leads.length === 0 ? 'Nenhum lead encontrado.' : `${leads.length} encontrados.`);
+          
+          // Notificação de Sucesso com Dados Ocultados
+          let finalMsg = leads.length === 0 ? 'Nenhum lead novo retornado.' : `${leads.length} encontrados.`;
+          if (ignoredLeadsCount > 0) {
+              finalMsg += ` (${ignoredLeadsCount} ocultados pois já estão salvos)`;
+          }
+          toast(finalMsg);
         }
       }
 
@@ -838,7 +895,7 @@
         const whatsappUrl = lead.phone ? makeWhatsAppUrl(lead.phone, lead.name) : '';
         const folderBadge = source === 'saved' ? `<div style="margin-bottom:14px;"><span class="badge" style="background:var(--border);">Pasta: ${escapeHtml(lead.folder || 'Geral')}</span></div>` : '';
 
-        // SVGs limpos para os ícones de info (Address, Phone, Site, Star)
+        // SVGs limpos para os ícones de info
         const iconPin = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
         const iconPhone = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>`;
         const iconSite = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`;
@@ -1032,4 +1089,3 @@
   </div>
 </body>
 </html>
-
