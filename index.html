@@ -3,1342 +3,1140 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VL Hunt Leads</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>VL Hunt</title>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Inter", sans-serif;
-    }
-
     :root {
-      --green: #10b981;
-      --green-dark: #059669;
-      --green-soft: #ecfdf5;
-      --bg: #f3f6f8;
-      --card: #ffffff;
-      --border: #e5e7eb;
-      --text: #111827;
-      --muted: #6b7280;
-      --muted-light: #9ca3af;
-      --danger: #ef4444;
-      --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-      --radius: 16px;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    .app {
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      min-height: 100vh;
-    }
-
-    .sidebar {
-      background: #ffffff;
-      border-right: 1px solid var(--border);
-      padding: 22px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      height: 100vh;
-      position: sticky;
-      top: 0;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding-bottom: 18px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .brand-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, var(--green), var(--green-dark));
-      color: #ffffff;
-      font-size: 21px;
-      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.25);
-    }
-
-    .brand strong {
-      display: block;
-      font-size: 16px;
-      font-weight: 800;
-    }
-
-    .brand span {
-      display: block;
-      font-size: 12px;
-      color: var(--green-dark);
-      font-weight: 800;
-      letter-spacing: 0.7px;
-      text-transform: uppercase;
-    }
-
-    .nav-title {
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--muted-light);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 8px;
-    }
-
-    .nav-btn {
-      width: 100%;
-      border: 0;
-      background: transparent;
-      padding: 12px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 700;
-      transition: 0.2s;
-      text-align: left;
-    }
-
-    .nav-btn:hover,
-    .nav-btn.active {
-      background: var(--green-soft);
-      color: var(--green-dark);
-    }
-
-    .folder-list {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .folder-item {
-      padding: 10px 12px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 700;
-      transition: 0.2s;
-    }
-
-    .folder-item:hover,
-    .folder-item.active {
-      background: #f9fafb;
-      color: var(--text);
-    }
-
-    .folder-count {
-      margin-left: auto;
-      font-size: 11px;
-      background: #eef2f7;
-      color: var(--muted);
-      padding: 2px 7px;
-      border-radius: 999px;
-    }
-
-    .add-folder {
-      margin-top: 8px;
-      border: 1.5px dashed #d1d5db;
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 10px 12px;
-      color: var(--muted);
-      font-weight: 800;
-      cursor: pointer;
-      text-align: left;
-      width: 100%;
-    }
-
-    .add-folder:hover {
-      color: var(--green-dark);
-      border-color: var(--green);
-    }
-
-    .user {
-      margin-top: auto;
-      padding-top: 18px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .avatar {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, var(--green), var(--green-dark));
-      color: #ffffff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-    }
-
-    .user strong {
-      display: block;
-      font-size: 13px;
-    }
-
-    .user span {
-      font-size: 12px;
-      color: var(--muted-light);
-    }
-
-    .main {
-      min-width: 0;
-    }
-
-    .topbar {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 24px 34px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 5;
-    }
-
-    .topbar h1 {
-      font-size: 23px;
-      font-weight: 800;
-      letter-spacing: -0.6px;
-    }
-
-    .topbar p {
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .badge {
-      display: none;
-      background: var(--green-soft);
-      color: var(--green-dark);
-      padding: 8px 14px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .content {
-      padding: 30px 34px;
-      max-width: 1400px;
-    }
-
-    .search-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 24px;
-      margin-bottom: 24px;
-    }
-
-    .search-title {
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.7px;
-      margin-bottom: 16px;
-    }
-
-    .search-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr 1fr auto;
-      gap: 14px;
-      align-items: end;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-
-    .field label {
-      font-size: 13px;
-      color: #374151;
-      font-weight: 800;
-    }
-
-    .field input {
-      height: 46px;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 0 14px;
-      font-size: 14px;
-      outline: none;
-      transition: 0.2s;
-      background: #ffffff;
-    }
-
-    .field input:focus {
-      border-color: var(--green);
-      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.11);
-    }
-
-    .btn {
-      height: 46px;
-      border: 0;
-      border-radius: 12px;
-      padding: 0 20px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 800;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: 0.2s;
-      white-space: nowrap;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--green), var(--green-dark));
-      color: #ffffff;
-      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.23);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(16, 185, 129, 0.3);
-    }
-
-    .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-outline {
-      height: 38px;
-      border: 1.5px solid var(--border);
-      background: #ffffff;
-      color: var(--muted);
-      border-radius: 10px;
-      padding: 0 14px;
-      cursor: pointer;
-      font-weight: 800;
-      font-size: 13px;
-    }
-
-    .btn-outline:hover {
-      border-color: var(--green);
-      color: var(--green-dark);
-    }
-
-    .state-card {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 54px 24px;
-      text-align: center;
-    }
-
-    .state-icon {
-      width: 66px;
-      height: 66px;
-      background: #f3f4f6;
-      border-radius: 50%;
-      margin: 0 auto 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
-    }
-
-    .state-card h2 {
-      font-size: 18px;
-      margin-bottom: 8px;
-    }
-
-    .state-card p {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .loading {
-      display: none;
-    }
-
-    .spinner {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: 4px solid #e5e7eb;
-      border-top-color: var(--green);
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto 16px;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .results {
-      display: none;
-    }
-
-    .results-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 16px;
-    }
-
-    .results-head h2 {
-      font-size: 17px;
-      font-weight: 800;
-    }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 16px;
-    }
-
-    .lead-card {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      transition: 0.2s;
-    }
-
-    .lead-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--green);
-      box-shadow: 0 16px 34px rgba(15, 23, 42, 0.09);
-    }
-
-    .photo {
-      width: 100%;
-      height: 155px;
-      background: linear-gradient(135deg, #eef2f7, #e5e7eb);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 38px;
-      color: #9ca3af;
-      object-fit: cover;
-    }
-
-    .lead-body {
-      padding: 16px;
-    }
-
-    .lead-name {
-      font-size: 15px;
-      font-weight: 800;
-      margin-bottom: 8px;
-      line-height: 1.3;
-    }
-
-    .lead-address {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-      margin-bottom: 12px;
-    }
-
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      align-items: center;
-    }
-
-    .pill {
-      font-size: 12px;
-      font-weight: 800;
-      padding: 5px 9px;
-      border-radius: 999px;
-      background: #f3f4f6;
-      color: var(--muted);
-      text-decoration: none;
-    }
-
-    .pill-rating {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .pill-site {
-      background: var(--green-soft);
-      color: var(--green-dark);
-    }
-
-    .lead-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      background: #f9fafb;
-      border-top: 1px solid var(--border);
-      padding: 12px;
-    }
-
-    .btn-save {
-      border: 1.5px solid #bbf7d0;
-      background: var(--green-soft);
-      color: var(--green-dark);
-      border-radius: 10px;
-      height: 38px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .btn-map {
-      border: 1.5px solid var(--border);
-      background: #ffffff;
-      color: var(--muted);
-      border-radius: 10px;
-      height: 38px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .saved-view {
-      display: none;
-    }
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.45);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-      padding: 20px;
-    }
-
-    .modal-overlay.open {
-      display: flex;
-    }
-
-    .modal {
-      width: 100%;
-      max-width: 410px;
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.22);
-    }
-
-    .modal h2 {
-      font-size: 19px;
-      margin-bottom: 6px;
-    }
-
-    .modal p {
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 16px;
-    }
-
-    .modal select {
-      width: 100%;
-      height: 44px;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 0 12px;
-      outline: none;
-      margin-bottom: 14px;
-      font-weight: 700;
-    }
-
-    .modal-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .toast {
-      position: fixed;
-      right: 24px;
-      bottom: 24px;
-      background: #111827;
-      color: #ffffff;
-      padding: 13px 18px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 800;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
-      transform: translateY(90px);
-      opacity: 0;
-      transition: 0.25s;
-      z-index: 100;
-    }
-
-    .toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .toast.error {
-      background: var(--danger);
-    }
-
-    #map {
-      position: absolute;
-      left: -9999px;
-      width: 1px;
-      height: 1px;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    @media (max-width: 940px) {
-      .app {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-        border-right: 0;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .user {
-        display: none;
-      }
-
-      .topbar {
-        padding: 22px 20px;
-      }
-
-      .content {
-        padding: 22px 20px;
-      }
-
-      .search-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .btn {
-        width: 100%;
-      }
-
-      .results-head {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-    }
+      --bg: #f3f6fb; --card: #ffffff; --dark: #071833; --muted: #48607f; --border: #d8e0ed;
+      --green: #22c55e; --green-dark: #16a34a; --green-soft: #dcfce7; --blue-soft: #eaf2ff;
+      --yellow-soft: #fff3cd; --danger-soft: #ffe4e6; --sidebar: #064b38; --sidebar-dark: #033629;
+      --nav: #125a45; --shadow: 0 16px 40px rgba(7, 24, 51, 0.08); --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, Arial, Helvetica, sans-serif; background: var(--bg); color: var(--dark); }
+    button, input, select { font-family: inherit; }
+    .app { display: flex; min-height: 100vh; width: 100%; }
+    
+    /* SIDEBAR */
+    .sidebar { width: 267px; background: linear-gradient(180deg, var(--sidebar), var(--sidebar-dark)); color: #fff; padding: 32px 18px; position: fixed; left: 0; top: 0; bottom: 0; overflow-y: auto; z-index: 10; display: flex; flex-direction: column; }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 34px; }
+    .brand-icon { width: 43px; height: 43px; border-radius: 14px; background: var(--green); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 24px; }
+    .brand h1 { margin: 0; font-size: 18px; line-height: 1.1; }
+    .brand p { margin: 5px 0 0; font-size: 12px; color: rgba(255, 255, 255, 0.78); }
+    .menu-title { font-size: 12px; font-weight: 900; color: rgba(255, 255, 255, 0.55); letter-spacing: 1.4px; margin-bottom: 12px; }
+    .menu-item { border: 0; width: 100%; height: 46px; border-radius: 13px; background: var(--nav); color: #fff; font-weight: 900; font-size: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 0 18px; cursor: pointer; text-align: left; transition: 0.2s ease; }
+    .menu-item:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    .menu-item.active { background: var(--green); color: #061827; }
+    .logout-btn { margin-top: auto; background: rgba(220, 38, 38, 0.2); color: #fca5a5; }
+    .logout-btn:hover { background: rgba(220, 38, 38, 0.4); }
+
+    /* MAIN CONTENT */
+    .main { margin-left: 267px; width: calc(100% - 267px); padding: 36px 32px 60px; }
+    .topbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 24px; }
+    .topbar h2 { margin: 8px 0 0; font-size: 30px; font-weight: 950; letter-spacing: -0.8px; }
+    .user-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; min-width: 142px; box-shadow: var(--shadow); }
+    .user-avatar { width: 40px; height: 40px; border-radius: 14px; background: var(--green-soft); color: #059669; display: flex; align-items: center; justify-content: center; font-weight: 950; font-size: 17px; }
+    .user-card strong { font-size: 14px; }
+    .user-card span { font-size: 12px; color: var(--muted); }
+
+    /* STATS & SECTIONS */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 22px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; min-height: 102px; box-shadow: var(--shadow); }
+    .stat-card span { display: block; color: var(--muted); font-weight: 950; font-size: 13px; letter-spacing: 0.6px; margin-bottom: 12px; text-transform: uppercase; }
+    .stat-card strong { display: block; font-size: 30px; font-weight: 950; }
+    .section { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 24px; box-shadow: var(--shadow); margin-bottom: 22px; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+    .section-title { display: flex; align-items: center; gap: 12px; }
+    .section-icon { width: 42px; height: 42px; border-radius: 14px; background: var(--green-soft); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+    .section-title h3 { margin: 0; font-size: 21px; font-weight: 950; }
+    .section-title p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+    
+    /* GRIDS & FORMS */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .grid-search { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: end; }
+    .field label { display: block; font-size: 13px; font-weight: 950; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .field input, .field select { width: 100%; height: 48px; border: 1px solid #c8d4e6; border-radius: 14px; padding: 0 15px; font-weight: 800; font-size: 14px; outline: none; background: #fff; color: var(--dark); }
+    .field input:focus, .field select:focus { border-color: #22c55e; box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15); }
+    
+    /* BUTTONS */
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+    .btn { border: 0; min-height: 48px; border-radius: 12px; padding: 0 18px; font-weight: 950; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s ease; text-decoration: none; color: inherit; white-space: nowrap; }
+    .btn:hover { transform: translateY(-1px); filter: brightness(0.98); }
+    .btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+    .btn-green { background: var(--green-dark); color: #fff; }
+    .btn-dark { background: #071226; color: #fff; }
+    .btn-soft-green { background: var(--green-soft); color: #007a4c; }
+    .btn-soft-blue { background: var(--blue-soft); color: #0648c9; }
+    .btn-soft-gray { background: #f1f5f9; color: #071833; }
+    .btn-soft-yellow { background: var(--yellow-soft); color: #92400e; }
+    .btn-danger { background: var(--danger-soft); color: #be123c; }
+
+    /* RESULTS */
+    .results-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+    .bulk-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .select-all { height: 42px; display: inline-flex; align-items: center; gap: 8px; background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 0 14px; font-weight: 950; cursor: pointer; }
+    .select-all input { width: 17px; height: 17px; accent-color: var(--green-dark); }
+    .leads-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .lead-card { position: relative; border: 1px solid var(--border); border-radius: 18px; padding: 16px; background: #fff; overflow: hidden; min-height: 390px; }
+    .lead-card.selected { border-color: var(--green-dark); box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15); }
+    .lead-check { position: absolute; top: 18px; left: 18px; z-index: 2; width: 20px; height: 20px; accent-color: var(--green-dark); cursor: pointer; }
+    .lead-photo { width: 100%; height: 145px; border-radius: 14px; object-fit: cover; background: #edf2f7; display: block; margin-bottom: 14px; }
+    .lead-photo-placeholder { width: 100%; height: 145px; border-radius: 14px; background: linear-gradient(135deg, #e2e8f0, #f8fafc); display: flex; align-items: center; justify-content: center; font-size: 34px; margin-bottom: 14px; color: #94a3b8; }
+    .lead-title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+    .lead-title { margin: 0; font-size: 18px; font-weight: 950; line-height: 1.2; }
+    .badge { background: var(--green-soft); color: #00985f; border-radius: 999px; padding: 6px 10px; font-size: 11px; font-weight: 950; white-space: nowrap; }
+    .lead-info { font-size: 13px; color: #18304f; line-height: 1.45; margin: 7px 0; font-weight: 650; word-break: break-word; }
+    .lead-info a { color: #0749bd; text-decoration: none; font-weight: 850; }
+    .lead-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+    .small-btn { border: 0; min-height: 34px; border-radius: 10px; padding: 0 12px; font-size: 13px; font-weight: 950; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+    .lead-status-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    .lead-status-row select { height: 35px; min-width: 136px; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0 10px; font-weight: 850; background: #fff; }
+    .status-pill { height: 35px; border-radius: 10px; padding: 0 12px; background: #f1f5f9; display: inline-flex; align-items: center; font-size: 13px; font-weight: 950; }
+    
+    /* UTILS & MODALS */
+    .hidden { display: none !important; }
+    .empty { padding: 36px; text-align: center; color: var(--muted); font-weight: 800; background: #f8fafc; border: 1px dashed var(--border); border-radius: 16px; }
+    .toast { position: fixed; right: 24px; bottom: 24px; background: #071226; color: #fff; padding: 14px 18px; border-radius: 14px; font-weight: 850; box-shadow: 0 16px 40px rgba(0,0,0,.2); z-index: 9999; max-width: 360px; display: none; }
+    .map-hidden { width: 1px; height: 1px; opacity: 0; position: fixed; left: -9999px; bottom: -9999px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 16px; overflow: hidden; }
+    th, td { text-align: left; padding: 14px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+    th { font-weight: 950; text-transform: uppercase; color: var(--muted); background: #f8fafc; }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 10000; }
+    .modal { background: #fff; padding: 24px; border-radius: 18px; width: 400px; max-width: 90%; box-shadow: var(--shadow); }
+    .modal h3 { margin-top: 0; font-size: 20px; font-weight: 950; margin-bottom: 8px; color: var(--dark); }
+    .modal p { color: var(--muted); font-size: 13px; margin-bottom: 20px; font-weight: 600;}
+    .modal label { display: block; font-size: 12px; font-weight: 900; text-transform: uppercase; margin-bottom: 6px;}
+    .modal select, .modal input { width: 100%; height: 48px; border: 1px solid #c8d4e6; border-radius: 14px; padding: 0 15px; margin-bottom: 15px; font-family: inherit; font-size: 14px; font-weight: 700;}
+    .modal-divider { text-align: center; margin: 10px 0 20px; color: #94a3b8; font-size: 11px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;}
+    .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
+    .folder-filter-wrap { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 14px; }
+    .folder-filter-wrap select { height: 48px; border: 1px solid var(--border); border-radius: 12px; padding: 0 16px; font-weight: 800; font-size: 14px; min-width: 200px; outline: none;}
+
+    /* MEDIA QUERIES */
+    @media (max-width: 1400px) { .grid-search { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 1200px) { .leads-grid { grid-template-columns: repeat(2, 1fr); } .stats, .grid-2 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 800px) { .sidebar { position: relative; width: 100%; bottom: auto; } .app { display: block; } .main { margin-left: 0; width: 100%; padding: 22px 16px; } .topbar, .section-head { align-items: flex-start; flex-direction: column; } .stats, .grid-2, .grid-search, .leads-grid { grid-template-columns: 1fr; } }
+
+    /* ====== LOGIN ====== */
+    #loginOverlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #071833; display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; }
+    .login-box { background: #fff; max-width: 400px; width: 100%; padding: 40px; border-radius: 24px; box-shadow: 0 24px 48px rgba(0,0,0,0.2); text-align: center; }
+    .login-brand { width: 60px; height: 60px; background: #22c55e; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 32px; color: #fff; margin-bottom: 16px; margin: 0 auto 16px auto; }
+    .login-box input { width: 100%; height: 52px; padding: 0 15px; border-radius: 14px; border: 1px solid #c8d4e6; margin-bottom: 16px; font-size: 14px; box-sizing: border-box; }
+    .login-box button { width: 100%; height: 52px; border: none; border-radius: 14px; background: #22c55e; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .login-box button:disabled { opacity: 0.7; cursor: not-allowed; }
   </style>
 </head>
 
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-icon">⚡</div>
-        <div>
-          <strong>VL Hunt</strong>
-          <span>Leads</span>
-        </div>
-      </div>
 
-      <div>
-        <div class="nav-title">Menu</div>
-        <button class="nav-btn active" id="nav-search" onclick="showView('search')">
-          🔍 Buscar Leads
+  <!-- TELA DE LOGIN -->
+  <div id="loginOverlay">
+    <div class="login-box">
+      <div class="login-brand">V</div>
+      <h2>VL Hunt</h2>
+      <p>Acesso restrito. Faça login para continuar.</p>
+      
+      <form id="loginForm">
+        <input type="email" id="loginEmail" placeholder="Seu e-mail cadastrado" required autocomplete="email" />
+        <input type="password" id="loginPassword" placeholder="Sua senha" required autocomplete="current-password" />
+        <button type="submit" id="loginBtn">Entrar no Sistema</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- CONTAINER QUE ENVOLVE O SISTEMA -->
+  <div id="mainApp" style="display:none;">
+
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-icon">V</div>
+          <div>
+            <h1>VL Hunt</h1>
+            <p>Leads comerciais</p>
+          </div>
+        </div>
+
+        <div class="menu-title">MENU</div>
+
+        <button class="menu-item active" data-section="extract" onclick="showSection('extract')">
+          🔎 Extrair Leads
         </button>
-        <button class="nav-btn" id="nav-saved" onclick="showView('saved')">
-          📁 Leads Salvos
+
+        <button class="menu-item" data-section="saved" onclick="showSection('saved')">
+          💾 Leads Salvos
         </button>
-      </div>
 
-      <div>
-        <div class="nav-title">Comerciais</div>
-        <div class="folder-list" id="folder-list"></div>
-        <button class="add-folder" onclick="addFolder()">＋ Novo Comercial</button>
-      </div>
+        <button class="menu-item" data-section="pipedrive" onclick="showSection('pipedrive')">
+          📥 Pipedrive
+        </button>
 
-      <div class="user">
-        <div class="avatar">V</div>
-        <div>
-          <strong>Victor</strong>
-          <span>Administrador</span>
+        <button class="menu-item" id="navSettingsBtn" data-section="settings" onclick="showSection('settings')">
+          ⚙️ Configurações
+        </button>
+
+        <button class="menu-item logout-btn" onclick="handleSupabaseLogout()">
+          🚪 Sair do Sistema
+        </button>
+      </aside>
+
+      <main class="main">
+        <div class="topbar">
+          <div>
+            <h2>Pesquisa</h2>
+          </div>
+
+          <div class="user-card">
+            <div class="user-avatar" id="topUserInitials">...</div>
+            <div>
+              <strong id="topUserName">Carregando...</strong><br />
+              <span>Usuário logado</span>
+            </div>
+          </div>
         </div>
-      </div>
-    </aside>
 
-    <main class="main">
-      <header class="topbar">
-        <div>
-          <h1 id="page-title">Nova Busca de Leads</h1>
-          <p id="page-subtitle">Encontre empresas pelo Google Maps em segundos</p>
+        <div class="stats">
+          <div class="stat-card">
+            <span>Na Tela</span>
+            <strong id="foundCount">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Salvos</span>
+            <strong id="savedCount">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Exportados</span>
+            <strong id="exportedCount">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Pendentes</span>
+            <strong id="pendingCount">0</strong>
+          </div>
         </div>
 
-        <div class="badge" id="badge-results"></div>
-      </header>
+        <!-- ABA EXTRAIR -->
+        <section id="extractSection">
+          <div class="section">
+            <div class="section-title" style="margin-bottom: 22px;">
+              <div class="section-icon">🔎</div>
+              <div>
+                <h3>Buscar leads</h3>
+                <p>Busque pelo NOME exato, ou utilize NICHO + CIDADE para busca ampla.</p>
+              </div>
+            </div>
 
-      <section class="content">
-        <div id="search-view">
-          <div class="search-card">
-            <div class="search-title">🎯 Parâmetros da busca</div>
-
-            <div class="search-grid">
+            <div class="grid-search">
+              <!-- NOME -->
               <div class="field">
-                <label for="input-nicho">Nicho / Tipo de empresa</label>
-                <input id="input-nicho" type="text" placeholder="Ex: restaurante, clínica odontológica, padaria" value="restaurante">
+                <label for="nameInput">Nome <span style="font-weight: normal; color: var(--muted); text-transform: none;">(Pesquisa direta)</span></label>
+                <input id="nameInput" type="text" placeholder="Ex: Tempero Mineiro" />
               </div>
 
+              <!-- NICHO COM DATALIST -->
               <div class="field">
-                <label for="input-cidade">Cidade</label>
-                <input id="input-cidade" type="text" placeholder="Ex: Maringá" value="Maringá">
+                <label for="nicheInput">Nicho</label>
+                <input id="nicheInput" list="nicheList" type="text" placeholder="Ex: Restaurantes" autocomplete="off" />
+                <datalist id="nicheList">
+                  <option value="Advogados"></option>
+                  <option value="Agências de Marketing"></option>
+                  <option value="Clínicas Médicas"></option>
+                  <option value="Clínicas Odontológicas"></option>
+                  <option value="Contabilidades"></option>
+                  <option value="Corretoras de Seguros"></option>
+                  <option value="Imobiliárias"></option>
+                  <option value="Lojas de Veículos"></option>
+                  <option value="Restaurantes"></option>
+                  <option value="Tecnologia e TI"></option>
+                </datalist>
               </div>
 
+              <!-- CIDADE -->
               <div class="field">
-                <label for="input-bairro">Bairro opcional</label>
-                <input id="input-bairro" type="text" placeholder="Ex: Centro, Zona 7">
+                <label for="cityInput">Cidade</label>
+                <input id="cityInput" type="text" placeholder="Ex: Maringá" />
               </div>
 
-              <button class="btn btn-primary" id="btn-search" onclick="startSearch()">
-                ⚡ Extrair Leads
+              <!-- BAIRRO -->
+              <div class="field">
+                <label for="districtInput">Bairro <span style="font-weight: normal; color: var(--muted); text-transform: none;">(Opcional)</span></label>
+                <input id="districtInput" type="text" placeholder="Ex: Zona 7" />
+              </div>
+
+              <!-- RUA -->
+              <div class="field">
+                <label for="streetInput">Rua/Avenida <span style="font-weight: normal; color: var(--muted); text-transform: none;">(Opcional)</span></label>
+                <input id="streetInput" type="text" placeholder="Ex: Av. Colombo" />
+              </div>
+
+              <!-- BOTÃO -->
+              <div class="field">
+                <button class="btn btn-green" onclick="searchLeads()" id="searchBtn" style="height: 48px; width: 100%;">
+                  Extrair Leads
+                </button>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-soft-yellow" onclick="clearResults()">
+                Limpar resultados e pesquisa
               </button>
             </div>
           </div>
 
-          <div class="state-card" id="empty-state">
-            <div class="state-icon">🎯</div>
-            <h2>Pronto para caçar leads?</h2>
-            <p>Digite o nicho, cidade e clique em “Extrair Leads”.</p>
-          </div>
-
-          <div class="state-card loading" id="loading-state">
-            <div class="spinner"></div>
-            <h2 id="loading-title">Buscando leads...</h2>
-            <p id="loading-subtitle">Consultando Google Places.</p>
-          </div>
-
-          <div class="results" id="results-section">
-            <div class="results-head">
-              <h2 id="results-title">0 leads encontrados</h2>
-
-              <div class="actions">
-                <button class="btn-outline" onclick="exportCSV()">📥 Exportar CSV</button>
-                <button class="btn-outline" onclick="resetSearch()">🔄 Nova Busca</button>
+          <div class="section">
+            <div class="section-head">
+              <div class="section-title">
+                <div class="section-icon">📍</div>
+                <div>
+                  <h3>Resultados</h3>
+                  <p>Lista carregada do Google Maps.</p>
+                </div>
               </div>
             </div>
 
-            <div class="grid" id="leads-grid"></div>
+            <div class="results-toolbar">
+              <div class="bulk-actions">
+                <label class="select-all">
+                  <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this.checked)" />
+                  Selecionar todos
+                </label>
+
+                <button class="btn btn-soft-green" onclick="saveSelectedLeads()">
+                  Salvar selecionados
+                </button>
+
+                <button class="btn btn-soft-gray" onclick="clearSelected()">
+                  Limpar seleção
+                </button>
+              </div>
+            </div>
+
+            <div id="resultsEmpty" class="empty">
+              Nenhum lead pesquisado ainda.
+            </div>
+
+            <div id="leadsGrid" class="leads-grid"></div>
           </div>
-        </div>
+        </section>
 
-        <div class="saved-view" id="saved-view">
-          <div class="results-head">
-            <h2 id="saved-title">📁 Leads Salvos</h2>
+        <!-- ABA SALVOS -->
+        <section id="savedSection" class="hidden">
+          <div class="section">
+            <div class="section-head">
+              <div class="section-title">
+                <div class="section-icon">💾</div>
+                <div>
+                  <h3>Leads Salvos</h3>
+                  <p>Empresas salvas organizadas por pastas para prospecção.</p>
+                </div>
+              </div>
 
-            <div class="actions">
-              <button class="btn-outline" onclick="exportSavedCSV()">📥 Exportar Pasta</button>
+              <div class="actions" style="margin-top:0; align-items: center;">
+                
+                <div class="folder-filter-wrap">
+                  <select id="savedFolderFilter" onchange="renderSavedLeads()">
+                    <option value="Todas">Todas as pastas</option>
+                  </select>
+                </div>
+
+                <button class="btn btn-dark" onclick="sendSavedToPipedrive()">
+                  Exportar Pipedrive
+                </button>
+
+                <button class="btn btn-soft-green" onclick="exportSavedToCSV()">
+                  Exportar CSV
+                </button>
+
+                <button class="btn btn-danger" onclick="clearSavedLeads()">
+                  Limpar salvos
+                </button>
+              </div>
+            </div>
+
+            <div id="savedEmpty" class="empty">
+              Nenhum lead salvo ainda.
+            </div>
+
+            <div id="savedGrid" class="leads-grid"></div>
+          </div>
+        </section>
+
+        <!-- ABA PIPEDRIVE -->
+        <section id="pipedriveSection" class="hidden">
+          <div class="section">
+            <div class="section-title" style="margin-bottom: 22px;">
+              <div class="section-icon">📥</div>
+              <div>
+                <h3>Pipedrive</h3>
+                <p>Histórico local de leads enviados para o Pipedrive.</p>
+              </div>
+            </div>
+
+            <div id="exportedEmpty" class="empty">
+              Nenhum lead exportado ainda.
+            </div>
+
+            <div id="exportedTableWrap" class="table-wrap hidden">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Empresa</th>
+                    <th>Telefone</th>
+                    <th>Site</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="exportedTableBody"></tbody>
+              </table>
             </div>
           </div>
+        </section>
 
-          <div id="saved-content"></div>
+        <!-- ABA CONFIGURAÇÕES -->
+        <section id="settingsSection" class="hidden">
+          <div class="section">
+            <div class="section-title" style="margin-bottom: 22px;">
+              <div class="section-icon">⚙️</div>
+              <div>
+                <h3>Configurações do Administrador</h3>
+                <p>Configure as chaves de API. Estas chaves valem para todos os usuários.</p>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="googleApiKeyInput">API Key Google Maps</label>
+                <input id="googleApiKeyInput" type="password" autocomplete="new-password" placeholder="Chave carregada do banco de dados..." />
+              </div>
+
+              <div class="field">
+                <label for="pipedriveTokenInput">Token Pipedrive</label>
+                <input id="pipedriveTokenInput" type="password" autocomplete="new-password" placeholder="Token do Pipedrive (opcional)..." />
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-soft-green" onclick="saveSettings()">
+                Salvar configurações
+              </button>
+
+              <button class="btn btn-soft-yellow" onclick="clearSettings()">
+                Limpar configurações
+              </button>
+
+              <button class="btn btn-dark" onclick="reloadGoogleMapsScript()">
+                Recarregar Google Maps
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- MODAL DE ESCOLHA DE PASTA -->
+    <div id="folderModal" class="modal-overlay">
+      <div class="modal">
+        <h3>Salvar Leads</h3>
+        <p>Em qual pasta deseja guardar estes leads?</p>
+        
+        <label>Selecionar pasta existente</label>
+        <select id="folderSelect">
+          <option value="">-- Selecione --</option>
+        </select>
+        
+        <div class="modal-divider">OU CRIAR NOVA</div>
+        
+        <label>Nova pasta</label>
+        <input type="text" id="newFolderInput" placeholder="Ex: Contatos - Março">
+        
+        <div class="modal-buttons">
+          <button class="btn btn-soft-gray" onclick="closeFolderModal()">Cancelar</button>
+          <button class="btn btn-green" onclick="confirmFolderSave()">Confirmar e Salvar</button>
         </div>
-      </section>
-    </main>
-  </div>
-
-  <div id="map"></div>
-
-  <div class="modal-overlay" id="modal-overlay">
-    <div class="modal">
-      <h2>💾 Salvar Lead</h2>
-      <p id="modal-lead-name">Selecione a pasta do comercial.</p>
-
-      <select id="modal-folder"></select>
-
-      <div class="modal-actions">
-        <button class="btn-outline" onclick="closeModal()">Cancelar</button>
-        <button class="btn btn-primary" onclick="confirmSave()">Salvar</button>
       </div>
     </div>
-  </div>
 
-  <div class="toast" id="toast"></div>
+    <div id="map" class="map-hidden"></div>
+    <div id="toast" class="toast"></div>
 
-  <script>
-    let map;
-    let placesService;
-    let googleReady = false;
+    <!-- BIBLIOTECA SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    let allLeads = [];
-    let currentLeadIndex = null;
-    let currentFolder = null;
+    <!-- SCRIPT ÚNICO E INTEGRADO DO SISTEMA -->
+    <script>
+      // ============================================
+      // CONFIGURAÇÕES SUPABASE E VARIÁVEIS GLOBAIS
+      // ============================================
+      const supabaseUrl = 'https://sowbnurzaukkxybqbtxa.supabase.co';
+      const supabaseKey = 'sb_publishable_36PhUy-41qXKbCXG7OQkrA_fOiKgUOK';
+      const supa = window.supabase.createClient(supabaseUrl, supabaseKey);
+      const ADMIN_EMAILS = ['leonvquadros@gmail.com']; 
 
-    let folders = JSON.parse(localStorage.getItem("vl_folders") || '["Geral"]');
-    let savedLeads = JSON.parse(localStorage.getItem("vl_leads") || "{}");
+      // Variável Global para armazenar as chaves lidas do Banco de Dados
+      let configSupabase = { googleApiKey: '', pipedriveToken: '' };
 
-    function initGooglePlaces() {
-      map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: -23.4205, lng: -51.9331 },
-        zoom: 13
+      let map = null;
+      let placesService = null;
+      let detailsQueue = [];
+      let isProcessingQueue = false;
+      let leads = [];
+      let savedLeads = [];
+      let exportedLeads = [];
+      let selectedLeadIds = new Set();
+      let isSearching = false;
+      let pendingLeadsToSave = []; 
+      
+      let currentUserEmail = ''; 
+      let currentUserFullName = ''; 
+      let isUserAdmin = false; 
+
+      const STORAGE_KEYS = {
+        saved: 'vlhunt_saved_leads_v2',
+        exported: 'vlhunt_exported_leads_v2'
+      };
+
+      // ============================================
+      // FUNÇÕES DE AUTENTICAÇÃO E INICIALIZAÇÃO
+      // ============================================
+
+      function formatUserNameFromEmail(email) {
+        let namePart = email.split('@')[0].replace(/[._-]/g, ' '); 
+        let words = namePart.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+        let fullName = words.join(' ');
+        let initials = words.length > 1 ? words[0].charAt(0) + words[1].charAt(0) : words[0].charAt(0);
+        return { fullName, initials };
+      }
+
+      async function iniciarSistemaApp(email) {
+        currentUserEmail = email;
+        isUserAdmin = ADMIN_EMAILS.includes(email.toLowerCase());
+
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'block';
+
+        const userInfo = formatUserNameFromEmail(email);
+        currentUserFullName = userInfo.fullName; 
+        document.getElementById('topUserName').textContent = userInfo.fullName;
+        document.getElementById('topUserInitials').textContent = userInfo.initials;
+
+        const navSettingsBtn = document.getElementById('navSettingsBtn');
+        if (isUserAdmin) {
+            navSettingsBtn.style.display = 'flex';
+        } else {
+            navSettingsBtn.style.display = 'none';
+        }
+
+        showSection('extract');
+
+        // BUSCA AS CHAVES DO SUPABASE AO ENTRAR NO SISTEMA
+        await carregarConfiguracoesDoSupabase();
+      }
+
+      document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault(); 
+        
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        const btn = document.getElementById('loginBtn');
+        
+        btn.textContent = "Validando acesso..."; 
+        btn.disabled = true;
+
+        try {
+          const { data, error } = await supa.auth.signInWithPassword({ email: email, password: password });
+          if (error) {
+            alert('Erro no login: E-mail ou senha incorretos.');
+            btn.textContent = "Entrar no Sistema"; 
+            btn.disabled = false;
+          } else {
+            iniciarSistemaApp(data.user.email);
+          }
+        } catch(err) {
+            alert('Erro de conexão com o servidor.');
+            btn.textContent = "Entrar no Sistema"; 
+            btn.disabled = false;
+        }
       });
 
-      placesService = new google.maps.places.PlacesService(map);
-      googleReady = true;
-      console.log("Google Places carregado.");
-    }
-
-    function startSearch() {
-      if (!googleReady || !placesService) {
-        showToast("Google Places ainda não carregou. Aguarde alguns segundos.", "error");
-        return;
+      async function handleSupabaseLogout() {
+        if(confirm('Tem certeza que deseja sair?')) {
+            await supa.auth.signOut();
+            window.location.reload(); 
+        }
       }
 
-      const nicho = document.getElementById("input-nicho").value.trim();
-      const cidade = document.getElementById("input-cidade").value.trim();
-      const bairro = document.getElementById("input-bairro").value.trim();
+      document.addEventListener('DOMContentLoaded', async () => {
+        loadLocalData();
+        updateCounters();
+        updateFolderFilterDropdown();
+        renderSavedLeads();
+        renderExportedLeads();
 
-      if (!nicho) {
-        showToast("Informe o nicho/tipo de empresa.", "error");
-        return;
+        const savedName = localStorage.getItem('vlhunt_last_name') || '';
+        const savedNiche = localStorage.getItem('vlhunt_last_niche') || '';
+        const savedCity = localStorage.getItem('vlhunt_last_city') || '';
+        const savedDistrict = localStorage.getItem('vlhunt_last_district') || '';
+        const savedStreet = localStorage.getItem('vlhunt_last_street') || '';
+
+        document.getElementById('nameInput').value = savedName;
+        document.getElementById('nicheInput').value = savedNiche;
+        document.getElementById('cityInput').value = savedCity;
+        document.getElementById('districtInput').value = savedDistrict;
+        document.getElementById('streetInput').value = savedStreet;
+
+        const searchFields = document.querySelectorAll('#nameInput, #nicheInput, #cityInput, #districtInput, #streetInput');
+        searchFields.forEach(field => {
+          field.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              document.getElementById('searchBtn').click();
+            }
+          });
+        });
+
+        // Verifica se usuário já está logado
+        const { data: { session } } = await supa.auth.getSession();
+        if (session) {
+           iniciarSistemaApp(session.user.email);
+        }
+      });
+
+      // ============================================
+      // FUNÇÕES DE CONFIGURAÇÃO (AGORA INTEGRADAS AO SUPABASE)
+      // ============================================
+
+      async function carregarConfiguracoesDoSupabase() {
+        try {
+          const { data, error } = await supa.from('configuracoes').select('*').limit(1);
+          if (error) {
+             console.error('Erro ao buscar configs:', error);
+             return;
+          }
+          
+          if (data && data.length > 0) {
+             configSupabase.googleApiKey = data[0].google_api_key || '';
+             configSupabase.pipedriveToken = data[0].pipedrive_token || '';
+             
+             // Se tiver a chave do Google, já injeta no mapa
+             if (configSupabase.googleApiKey) {
+                 loadGoogleMapsScript(configSupabase.googleApiKey);
+             }
+             
+             // Preenche os campos da aba de configurações visualmente
+             const gKeyInput = document.getElementById('googleApiKeyInput');
+             const pKeyInput = document.getElementById('pipedriveTokenInput');
+             if(gKeyInput) gKeyInput.value = configSupabase.googleApiKey;
+             if(pKeyInput) pKeyInput.value = configSupabase.pipedriveToken;
+          }
+        } catch (err) {
+          console.error('Erro geral ao carregar config:', err);
+        }
       }
 
-      if (!cidade) {
-        showToast("Informe a cidade.", "error");
-        return;
+      // Função reescrita: agora ela apenas retorna o que já foi lido do Supabase
+      function getSettings() {
+        return {
+          googleApiKey: configSupabase.googleApiKey,
+          pipedriveToken: configSupabase.pipedriveToken
+        };
       }
 
-      const query = bairro ? `${nicho} ${bairro} ${cidade}` : `${nicho} ${cidade}`;
+      // Função reescrita: salva diretamente no Supabase em vez de salvar no localStorage
+      async function saveSettings() {
+        const gKey = document.getElementById('googleApiKeyInput').value.trim();
+        const pToken = document.getElementById('pipedriveTokenInput').value.trim();
 
-      allLeads = [];
+        const btn = document.querySelector('button[onclick="saveSettings()"]');
+        const oldText = btn.textContent;
+        btn.textContent = 'Salvando no banco...';
+        btn.disabled = true;
 
-      document.getElementById("empty-state").style.display = "none";
-      document.getElementById("results-section").style.display = "none";
-      document.getElementById("loading-state").style.display = "block";
-      document.getElementById("btn-search").disabled = true;
-      document.getElementById("badge-results").style.display = "none";
+        try {
+          // Verifica se já existe uma linha para atualizar, ou se precisa inserir
+          const { data: existe } = await supa.from('configuracoes').select('id').limit(1);
+          let error;
+          
+          if (existe && existe.length > 0) {
+              const res = await supa.from('configuracoes').update({ 
+                  google_api_key: gKey, pipedrive_token: pToken 
+              }).eq('id', existe[0].id);
+              error = res.error;
+          } else {
+              const res = await supa.from('configuracoes').insert([{ 
+                  google_api_key: gKey, pipedrive_token: pToken 
+              }]);
+              error = res.error;
+          }
 
-      document.getElementById("loading-title").textContent = "Buscando leads...";
-      document.getElementById("loading-subtitle").textContent = `Pesquisa: ${query}`;
+          if (error) throw error;
 
-      placesService.textSearch(
-        {
-          query: query,
-          language: "pt-BR",
-          region: "br"
-        },
-        handleTextSearchResults
-      );
-    }
+          // Atualiza as chaves na memória
+          configSupabase.googleApiKey = gKey;
+          configSupabase.pipedriveToken = pToken;
 
-    function handleTextSearchResults(results, status, pagination) {
-      if (status !== google.maps.places.PlacesServiceStatus.OK || !results || !results.length) {
-        finishSearch();
-        return;
+          toast('Configurações salvas para todos os usuários!');
+          if (gKey) loadGoogleMapsScript(gKey);
+
+        } catch (err) {
+          console.error(err);
+          toast('Erro ao salvar no banco de dados!');
+        } finally {
+          btn.textContent = oldText;
+          btn.disabled = false;
+        }
       }
 
-      const pageLeads = results.map(normalizeLead);
-      allLeads.push(...pageLeads);
-
-      document.getElementById("loading-title").textContent = `Buscando leads... ${allLeads.length} encontrados`;
-      document.getElementById("loading-subtitle").textContent = "Carregando próximas páginas do Google Maps.";
-
-      if (pagination && pagination.hasNextPage && allLeads.length < 60) {
-        setTimeout(function () {
-          pagination.nextPage();
-        }, 2200);
-      } else {
-        loadLeadDetails();
+      async function clearSettings() {
+        if (!confirm('Deseja limpar as chaves de acesso para TODOS os usuários?')) return;
+        document.getElementById('googleApiKeyInput').value = '';
+        document.getElementById('pipedriveTokenInput').value = '';
+        await saveSettings();
+        toast('Configurações limpas.');
       }
-    }
 
-    function normalizeLead(place) {
-      return {
-        place_id: place.place_id || "",
-        name: place.name || "Nome não disponível",
-        formatted_address: place.formatted_address || "Endereço não disponível",
-        rating: place.rating || "",
-        user_ratings_total: place.user_ratings_total || "",
-        formatted_phone_number: "",
-        website: "",
-        photo_url: getPhotoUrl(place)
-      };
-    }
+      function reloadGoogleMapsScript() {
+        const settings = getSettings();
+        if (!settings.googleApiKey) {
+          toast('Nenhuma API Key do Google encontrada no banco de dados.');
+          return;
+        }
+        loadGoogleMapsScript(settings.googleApiKey, true);
+      }
 
-    function getPhotoUrl(place) {
-      try {
-        if (place.photos && place.photos[0] && typeof place.photos[0].getUrl === "function") {
-          return place.photos[0].getUrl({
-            maxWidth: 700,
-            maxHeight: 350
+      // ============================================
+      // RESTANTE DO CÓDIGO DO SISTEMA (MAPS, LEADS, PIPEDRIVE, ETC)
+      // ============================================
+
+      function showSection(section) {
+        if (section === 'settings' && !isUserAdmin) {
+            toast('Acesso negado. Apenas o administrador tem acesso.');
+            return;
+        }
+
+        const sections = {
+          extract: document.getElementById('extractSection'),
+          saved: document.getElementById('savedSection'),
+          pipedrive: document.getElementById('pipedriveSection'),
+          settings: document.getElementById('settingsSection')
+        };
+
+        Object.values(sections).forEach(el => el.classList.add('hidden'));
+        if (sections[section]) sections[section].classList.remove('hidden');
+
+        document.querySelectorAll('.menu-item').forEach(btn => btn.classList.remove('active'));
+        const activeButton = document.querySelector(`.menu-item[data-section="${section}"]`);
+        if (activeButton) activeButton.classList.add('active');
+
+        if (section === 'saved') {
+            updateFolderFilterDropdown();
+            renderSavedLeads();
+        }
+        if (section === 'pipedrive') renderExportedLeads();
+      }
+
+      function toast(message) {
+        const el = document.getElementById('toast');
+        el.textContent = message;
+        el.style.display = 'block';
+        clearTimeout(window.__toastTimer);
+        window.__toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3500); 
+      }
+
+      function loadLocalData() {
+        try { savedLeads = JSON.parse(localStorage.getItem(STORAGE_KEYS.saved) || '[]'); } catch { savedLeads = []; }
+        try { exportedLeads = JSON.parse(localStorage.getItem(STORAGE_KEYS.exported) || '[]'); } catch { exportedLeads = []; }
+      }
+
+      function loadGoogleMapsScript(apiKey, forceReload = false) {
+        if (window.google && window.google.maps && window.google.maps.places && !forceReload) {
+          initGoogleMaps();
+          return;
+        }
+        const oldScript = document.getElementById('googleMapsScript');
+        if (oldScript) oldScript.remove();
+
+        window.initVLHuntGoogleMaps = function () { initGoogleMaps(); };
+
+        const script = document.createElement('script');
+        script.id = 'googleMapsScript';
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&libraries=places&callback=initVLHuntGoogleMaps`;
+        script.async = true;
+        script.defer = true;
+        script.onerror = function () { toast('Erro ao carregar Google Maps. Verifique sua API Key.'); };
+        document.body.appendChild(script);
+      }
+
+      function initGoogleMaps() {
+        const mapEl = document.getElementById('map');
+        map = new google.maps.Map(mapEl, { center: { lat: -23.4205, lng: -51.9333 }, zoom: 13 });
+        placesService = new google.maps.places.PlacesService(map);
+        toast('Google Maps conectado com sucesso!');
+      }
+
+      function updateCounters() {
+        document.getElementById('foundCount').textContent = leads.length;
+        document.getElementById('savedCount').textContent = savedLeads.length;
+        document.getElementById('exportedCount').textContent = exportedLeads.length;
+        document.getElementById('pendingCount').textContent = leads.length; 
+      }
+
+      function normalizeString(str) {
+        return (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      }
+
+      function isStrictMatch(place, district, street) {
+        if (!district && !street) return true; 
+        const addr = normalizeString(place.formatted_address || place.vicinity || place.name || '');
+        let matchDistrict = true;
+        let matchStreet = true;
+        if (district) matchDistrict = addr.includes(normalizeString(district));
+        if (street) matchStreet = addr.includes(normalizeString(street).replace(/^(rua|av|avenida|trav|travessa|alameda|rodovia|rod)\.?\s+/g, ''));
+        return matchDistrict && matchStreet;
+      }
+
+      function searchLeads() {
+        if (isSearching) return;
+        const name = document.getElementById('nameInput').value.trim();
+        const niche = document.getElementById('nicheInput').value.trim();
+        const city = document.getElementById('cityInput').value.trim();
+        const district = document.getElementById('districtInput').value.trim();
+        const street = document.getElementById('streetInput').value.trim();
+
+        if (!name && (!niche || !city)) { toast('Digite o NOME ou NICHO+CIDADE.'); return; }
+        const settings = getSettings();
+        if (!settings.googleApiKey) {
+          toast('O Administrador precisa configurar a API do Google Maps.');
+          if (isUserAdmin) showSection('settings');
+          return;
+        }
+        if (!placesService) { toast('Google Maps carregando...'); return; }
+
+        localStorage.setItem('vlhunt_last_name', name);
+        localStorage.setItem('vlhunt_last_niche', niche);
+        localStorage.setItem('vlhunt_last_city', city);
+        localStorage.setItem('vlhunt_last_district', district);
+        localStorage.setItem('vlhunt_last_street', street);
+
+        let queryParts = [];
+        if (name) queryParts.push(name);
+        if (niche) queryParts.push(niche);
+        if (street) queryParts.push(`na rua ${street}`);
+        if (district) queryParts.push(`bairro ${district}`);
+        if (city) queryParts.push(`em ${city}`);
+        
+        leads = []; detailsQueue = []; selectedLeadIds.clear(); isProcessingQueue = false; isSearching = true;
+        document.getElementById('selectAllCheckbox').checked = false;
+        const btn = document.getElementById('searchBtn');
+        btn.disabled = true; btn.textContent = 'Buscando...';
+
+        renderLeads();
+        placesService.textSearch({ query: queryParts.join(' '), type: 'establishment' }, handlePlacesResults);
+      }
+
+      function handlePlacesResults(results, status, pagination) {
+        if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
+           setTimeout(() => { if (pagination && pagination.hasNextPage) pagination.nextPage(); }, 2000);
+           return; 
+        }
+
+        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+          const district = document.getElementById('districtInput').value.trim();
+          const street = document.getElementById('streetInput').value.trim();
+          results.forEach(place => {
+            if (isStrictMatch(place, district, street)) {
+               const normalized = normalizePlace(place);
+               if (!leads.some(l => l.place_id === normalized.place_id) && !savedLeads.some(s => s.place_id === normalized.place_id)) {
+                 leads.push(normalized);
+                 fetchPlaceDetailsQueue(normalized.place_id);
+               }
+            }
           });
         }
-      } catch (e) {
-        return "";
+
+        renderLeads(); updateCounters();
+        const btn = document.getElementById('searchBtn');
+        
+        if (pagination && pagination.hasNextPage) {
+          btn.textContent = `Buscando... (${leads.length})`;
+          setTimeout(() => { pagination.nextPage(); }, 2000);
+        } else {
+          isSearching = false; btn.disabled = false; btn.textContent = 'Extrair Leads';
+          toast(leads.length === 0 ? 'Nenhum lead exato encontrado.' : `${leads.length} leads na tela.`);
+        }
       }
 
-      return "";
-    }
-
-    function loadLeadDetails() {
-      if (!allLeads.length) {
-        finishSearch();
-        return;
+      function normalizePlace(place) {
+        const photoUrl = place.photos && place.photos.length ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 }) : '';
+        return {
+          place_id: place.place_id, name: place.name || '', address: place.formatted_address || place.vicinity || '',
+          phone: '', website: '', url: place.url || '', rating: place.rating || '', user_ratings_total: place.user_ratings_total || '',
+          photo: photoUrl, status: 'Novo', exported: false, savedAt: null, exportedAt: null
+        };
       }
 
-      document.getElementById("loading-title").textContent = "Coletando detalhes...";
-      document.getElementById("loading-subtitle").textContent = "Buscando telefone e site quando disponíveis.";
+      function fetchPlaceDetailsQueue(placeId) {
+        if (!detailsQueue.includes(placeId)) detailsQueue.push(placeId);
+        processQueue();
+      }
 
-      let index = 0;
+      function processQueue() {
+        if (isProcessingQueue || detailsQueue.length === 0 || !placesService) return;
+        isProcessingQueue = true;
+        const placeId = detailsQueue.shift();
 
-      function next() {
-        if (index >= allLeads.length) {
-          finishSearch();
-          return;
-        }
-
-        const lead = allLeads[index];
-
-        if (!lead.place_id) {
-          index++;
-          next();
-          return;
-        }
-
-        placesService.getDetails(
-          {
-            placeId: lead.place_id,
-            fields: [
-              "name",
-              "formatted_address",
-              "formatted_phone_number",
-              "international_phone_number",
-              "rating",
-              "user_ratings_total",
-              "website",
-              "photos",
-              "place_id"
-            ],
-            language: "pt-BR"
-          },
-          function (details, status) {
-            if (status === google.maps.places.PlacesServiceStatus.OK && details) {
-              allLeads[index] = {
-                place_id: details.place_id || lead.place_id,
-                name: details.name || lead.name,
-                formatted_address: details.formatted_address || lead.formatted_address,
-                rating: details.rating || lead.rating,
-                user_ratings_total: details.user_ratings_total || lead.user_ratings_total,
-                formatted_phone_number: details.formatted_phone_number || details.international_phone_number || "",
-                website: details.website || "",
-                photo_url: getPhotoUrl(details) || lead.photo_url || ""
-              };
+        placesService.getDetails({ placeId: placeId, fields: ['name', 'formatted_address', 'formatted_phone_number', 'international_phone_number', 'website', 'url', 'rating', 'user_ratings_total', 'photos'] },
+          (place, status) => {
+            if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
+               detailsQueue.unshift(placeId); 
+               setTimeout(() => { isProcessingQueue = false; processQueue(); }, 2000); 
+               return;
             }
-
-            index++;
-            document.getElementById("loading-subtitle").textContent = `Detalhes carregados: ${index}/${allLeads.length}`;
-            setTimeout(next, 120);
+            if (status === google.maps.places.PlacesServiceStatus.OK && place) {
+              const index = leads.findIndex(lead => lead.place_id === placeId);
+              if (index !== -1) {
+                leads[index] = { ...leads[index], name: place.name || leads[index].name, address: place.formatted_address || leads[index].address, phone: place.formatted_phone_number || place.international_phone_number || leads[index].phone, website: place.website || leads[index].website, url: place.url || leads[index].url, rating: place.rating || leads[index].rating, user_ratings_total: place.user_ratings_total || leads[index].user_ratings_total, photo: place.photos && place.photos.length ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 }) : leads[index].photo };
+                renderLeads();
+              }
+            }
+            setTimeout(() => { isProcessingQueue = false; processQueue(); }, 500);
           }
         );
       }
 
-      next();
-    }
-
-    function finishSearch() {
-      document.getElementById("loading-state").style.display = "none";
-      document.getElementById("btn-search").disabled = false;
-
-      if (!allLeads.length) {
-        document.getElementById("empty-state").style.display = "block";
-        document.getElementById("empty-state").innerHTML = `
-          <div class="state-icon">🔎</div>
-          <h2>Nenhum lead encontrado</h2>
-          <p>Tente mudar o nicho, a cidade ou remover o bairro.</p>
-        `;
-        return;
+      function renderLeads() {
+        const grid = document.getElementById('leadsGrid');
+        const empty = document.getElementById('resultsEmpty');
+        grid.innerHTML = '';
+        if (!leads.length) {
+          empty.innerHTML = isSearching ? 'Processando...' : 'Nenhum lead pesquisado.';
+          empty.classList.remove('hidden'); return;
+        }
+        empty.classList.add('hidden');
+        leads.forEach(lead => grid.appendChild(createLeadCard(lead, 'current')));
       }
 
-      const badge = document.getElementById("badge-results");
-      badge.textContent = `${allLeads.length} leads`;
-      badge.style.display = "block";
+      function createLeadCard(lead, source) {
+        const card = document.createElement('div');
+        card.className = 'lead-card';
+        if (source === 'current' && selectedLeadIds.has(lead.place_id)) card.classList.add('selected');
 
-      document.getElementById("results-title").textContent = `${allLeads.length} leads encontrados`;
-      document.getElementById("results-section").style.display = "block";
+        const websiteLabel = lead.website ? lead.website : 'Site não encontrado';
+        const phoneLabel = lead.phone ? lead.phone : 'Telefone não encontrado';
+        const mapsUrl = lead.url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lead.name + ' ' + lead.address)}`;
+        const whatsappUrl = lead.phone ? makeWhatsAppUrl(lead.phone, lead.name) : '';
+        const folderBadge = source === 'saved' ? `<div style="margin-bottom:14px;"><span style="background:#e0f2fe; color:#0369a1; padding:5px 10px; border-radius:8px; font-size:11px; font-weight:900;">📁 PASTA: ${escapeHtml(lead.folder || 'Geral')}</span></div>` : '';
 
-      renderLeads();
-    }
-
-    function renderLeads() {
-      const grid = document.getElementById("leads-grid");
-      grid.innerHTML = allLeads.map(function (lead, index) {
-        return buildLeadCard(lead, index, false);
-      }).join("");
-    }
-
-    function buildLeadCard(lead, index, isSavedView) {
-      const name = escapeHtml(lead.name || "Lead");
-      const address = escapeHtml(lead.formatted_address || "Endereço não disponível");
-      const phone = lead.formatted_phone_number || "";
-      const website = lead.website || "";
-      const rating = lead.rating || "";
-      const totalRatings = lead.user_ratings_total || "";
-      const placeId = lead.place_id || "";
-
-      const photoHtml = lead.photo_url
-        ? `<img class="photo" src="${escapeAttr(lead.photo_url)}" alt="${name}" onerror="this.outerHTML='<div class=&quot;photo&quot;>🏢</div>'">`
-        : `<div class="photo">🏢</div>`;
-
-      const ratingHtml = rating
-        ? `<span class="pill pill-rating">⭐ ${escapeHtml(rating)}${totalRatings ? ` (${escapeHtml(totalRatings)})` : ""}</span>`
-        : `<span class="pill">⭐ Sem avaliação</span>`;
-
-      const phoneHtml = phone
-        ? `<span class="pill">📞 ${escapeHtml(phone)}</span>`
-        : `<span class="pill">📞 Sem telefone</span>`;
-
-      const siteHtml = website
-        ? `<a class="pill pill-site" href="${escapeAttr(website)}" target="_blank" rel="noopener">🌐 Site</a>`
-        : `<span class="pill">🌐 Sem site</span>`;
-
-      const mapsUrl = placeId
-        ? `https://www.google.com/maps/place/?q=place_id:${encodeURIComponent(placeId)}`
-        : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((lead.name || "") + " " + (lead.formatted_address || ""))}`;
-
-      const saveButton = isSavedView
-        ? `<button class="btn-save" disabled>✅ Salvo</button>`
-        : `<button class="btn-save" onclick="openModal(${index})">💾 Salvar</button>`;
-
-      return `
-        <article class="lead-card">
-          ${photoHtml}
-
-          <div class="lead-body">
-            <div class="lead-name">${name}</div>
-            <div class="lead-address">📍 ${address}</div>
-
-            <div class="meta">
-              ${ratingHtml}
-              ${phoneHtml}
-              ${siteHtml}
-            </div>
+        card.innerHTML = `
+          ${source === 'current' ? `<input type="checkbox" class="lead-check" ${selectedLeadIds.has(lead.place_id) ? 'checked' : ''} onchange="toggleLeadSelection('${escapeAttr(lead.place_id)}', this.checked)" />` : ''}
+          ${lead.photo ? `<img class="lead-photo" src="${escapeAttr(lead.photo)}" onerror="this.outerHTML='<div class=\\'lead-photo-placeholder\\'>🏢</div>';" />` : `<div class="lead-photo-placeholder">🏢</div>`}
+          ${folderBadge}
+          <div class="lead-title-row"><h4 class="lead-title">${escapeHtml(lead.name)}</h4><span class="badge">${escapeHtml(lead.status || 'Novo')}</span></div>
+          <p class="lead-info">📍 ${escapeHtml(lead.address || 'Endereço não encontrado')}</p>
+          <p class="lead-info">📞 ${escapeHtml(phoneLabel)}</p>
+          <p class="lead-info">🌐 ${lead.website ? `<a href="${escapeAttr(lead.website)}" target="_blank">${escapeHtml(lead.website)}</a>` : 'Site não encontrado'}</p>
+          <p class="lead-info">⭐ ${lead.rating ? `${escapeHtml(String(lead.rating))} (${escapeHtml(String(lead.user_ratings_total || 0))} avaliações)` : 'Sem avaliações'}</p>
+          <div class="lead-buttons">
+            ${whatsappUrl ? `<a class="small-btn btn-soft-green" href="${escapeAttr(whatsappUrl)}" target="_blank">WhatsApp</a>` : ''}
+            ${lead.website ? `<a class="small-btn btn-soft-blue" href="${escapeAttr(lead.website)}" target="_blank">Site</a>` : ''}
+            <a class="small-btn btn-soft-gray" href="${escapeAttr(mapsUrl)}" target="_blank">Maps</a>
+            ${source === 'current' ? `<button class="small-btn btn-soft-green" onclick="saveLeadById('${escapeAttr(lead.place_id)}')">Salvar</button>` : ''}
           </div>
-
-          <div class="lead-actions">
-            ${saveButton}
-            <button class="btn-map" onclick="window.open('${escapeAttr(mapsUrl)}', '_blank')">🗺️ Maps</button>
-          </div>
-        </article>
-      `;
-    }
-
-    function resetSearch() {
-      allLeads = [];
-
-      document.getElementById("results-section").style.display = "none";
-      document.getElementById("loading-state").style.display = "none";
-      document.getElementById("badge-results").style.display = "none";
-
-      document.getElementById("empty-state").style.display = "block";
-      document.getElementById("empty-state").innerHTML = `
-        <div class="state-icon">🎯</div>
-        <h2>Pronto para caçar leads?</h2>
-        <p>Digite o nicho, cidade e clique em “Extrair Leads”.</p>
-      `;
-    }
-
-    function showView(view) {
-      const isSearch = view === "search";
-
-      document.getElementById("search-view").style.display = isSearch ? "block" : "none";
-      document.getElementById("saved-view").style.display = isSearch ? "none" : "block";
-
-      document.getElementById("nav-search").classList.toggle("active", isSearch);
-      document.getElementById("nav-saved").classList.toggle("active", !isSearch);
-
-      document.getElementById("page-title").textContent = isSearch ? "Nova Busca de Leads" : "Leads Salvos";
-      document.getElementById("page-subtitle").textContent = isSearch
-        ? "Encontre empresas pelo Google Maps em segundos"
-        : "Gerencie seus leads por comercial";
-
-      if (!isSearch) {
-        renderSaved();
-      }
-    }
-
-    function renderFolders() {
-      const list = document.getElementById("folder-list");
-      list.innerHTML = "";
-
-      folders.forEach(function (folder) {
-        const count = savedLeads[folder] ? savedLeads[folder].length : 0;
-        const active = currentFolder === folder ? "active" : "";
-
-        list.innerHTML += `
-          <div class="folder-item ${active}" onclick="selectFolder('${escapeJs(folder)}')">
-            📂 <span>${escapeHtml(folder)}</span>
-            <span class="folder-count">${count}</span>
+          <div class="lead-status-row">
+            <select onchange="changeLeadStatus('${escapeAttr(lead.place_id)}', this.value)">
+              <option value="Novo" ${lead.status === 'Novo' ? 'selected' : ''}>Novo</option>
+              <option value="Contato feito" ${lead.status === 'Contato feito' ? 'selected' : ''}>Contato feito</option>
+              <option value="Interessado" ${lead.status === 'Interessado' ? 'selected' : ''}>Interessado</option>
+              <option value="Sem interesse" ${lead.status === 'Sem interesse' ? 'selected' : ''}>Sem interesse</option>
+              <option value="Fechado" ${lead.status === 'Fechado' ? 'selected' : ''}>Fechado</option>
+            </select>
+            <span class="status-pill">${lead.exported ? 'Exportado' : 'Pendente'}</span>
           </div>
         `;
-      });
-    }
-
-    function selectFolder(folder) {
-      currentFolder = folder;
-      renderFolders();
-      showView("saved");
-    }
-
-    function addFolder() {
-      const name = prompt("Nome do comercial:");
-      if (!name || !name.trim()) return;
-
-      const folderName = name.trim();
-
-      if (folders.includes(folderName)) {
-        showToast("Essa pasta já existe.", "error");
-        return;
+        return card;
       }
 
-      folders.push(folderName);
-      localStorage.setItem("vl_folders", JSON.stringify(folders));
-
-      renderFolders();
-      showToast("Pasta criada com sucesso.");
-    }
-
-    function renderSaved() {
-      const folder = currentFolder || folders[0];
-      currentFolder = folder;
-
-      const leads = savedLeads[folder] || [];
-
-      document.getElementById("saved-title").textContent = `📂 ${folder}`;
-
-      if (!leads.length) {
-        document.getElementById("saved-content").innerHTML = `
-          <div class="state-card">
-            <div class="state-icon">📭</div>
-            <h2>Pasta vazia</h2>
-            <p>Nenhum lead salvo em “${escapeHtml(folder)}”.</p>
-          </div>
-        `;
-        renderFolders();
-        return;
+      function toggleLeadSelection(placeId, checked) {
+        checked ? selectedLeadIds.add(placeId) : selectedLeadIds.delete(placeId);
+        renderLeads();
       }
 
-      document.getElementById("saved-content").innerHTML = `
-        <div class="grid">
-          ${leads.map(function (lead, index) {
-            return buildLeadCard(lead, index, true);
-          }).join("")}
-        </div>
-      `;
-
-      renderFolders();
-    }
-
-    function openModal(index) {
-      currentLeadIndex = index;
-
-      const lead = allLeads[index];
-      document.getElementById("modal-lead-name").textContent = `Salvando: ${lead.name}`;
-
-      const select = document.getElementById("modal-folder");
-      select.innerHTML = folders.map(function (folder) {
-        return `<option value="${escapeAttr(folder)}">${escapeHtml(folder)}</option>`;
-      }).join("");
-
-      document.getElementById("modal-overlay").classList.add("open");
-    }
-
-    function closeModal() {
-      document.getElementById("modal-overlay").classList.remove("open");
-      currentLeadIndex = null;
-    }
-
-    function confirmSave() {
-      if (currentLeadIndex === null) return;
-
-      const folder = document.getElementById("modal-folder").value;
-      const lead = allLeads[currentLeadIndex];
-
-      if (!savedLeads[folder]) {
-        savedLeads[folder] = [];
+      function toggleSelectAll(checked) {
+        checked ? leads.forEach(l => selectedLeadIds.add(l.place_id)) : selectedLeadIds.clear();
+        renderLeads();
       }
 
-      const exists = savedLeads[folder].some(function (item) {
-        return item.place_id === lead.place_id;
-      });
+      function clearSelected() { selectedLeadIds.clear(); document.getElementById('selectAllCheckbox').checked = false; renderLeads(); toast('Seleção limpa.'); }
+      function getSelectedLeads() { return leads.filter(l => selectedLeadIds.has(l.place_id)); }
 
-      if (exists) {
-        showToast("Esse lead já está salvo nessa pasta.", "error");
-        return;
+      function openFolderModal() {
+        const select = document.getElementById('folderSelect');
+        const uniqueFolders = [...new Set(savedLeads.map(l => l.folder || 'Geral'))];
+        select.innerHTML = '<option value="">-- Selecione uma pasta --</option>';
+        uniqueFolders.forEach(f => select.innerHTML += `<option value="${escapeAttr(f)}">${escapeHtml(f)}</option>`);
+        document.getElementById('newFolderInput').value = '';
+        document.getElementById('folderModal').style.display = 'flex';
       }
 
-      savedLeads[folder].push(lead);
-      localStorage.setItem("vl_leads", JSON.stringify(savedLeads));
+      function closeFolderModal() { document.getElementById('folderModal').style.display = 'none'; pendingLeadsToSave = []; }
 
-      closeModal();
-      renderFolders();
-      showToast(`Lead salvo em ${folder}.`);
-    }
-
-    function exportCSV() {
-      if (!allLeads.length) {
-        showToast("Nenhum lead para exportar.", "error");
-        return;
+      function confirmFolderSave() {
+        const folderName = document.getElementById('newFolderInput').value.trim() || document.getElementById('folderSelect').value || 'Geral';
+        let count = 0;
+        pendingLeadsToSave.forEach(lead => {
+           savedLeads.push({ ...lead, folder: folderName, savedAt: new Date().toISOString() });
+           leads = leads.filter(i => i.place_id !== lead.place_id);
+           selectedLeadIds.delete(lead.place_id);
+           count++;
+        });
+        localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
+        updateFolderFilterDropdown(); renderSavedLeads(); renderLeads(); updateCounters(); closeFolderModal();
+        toast(`✅ ${count} lead(s) salvo(s).`);
       }
 
-      downloadCSV(allLeads, "vl_busca_leads");
-    }
-
-    function exportSavedCSV() {
-      const folder = currentFolder || folders[0];
-      const leads = savedLeads[folder] || [];
-
-      if (!leads.length) {
-        showToast("Pasta vazia.", "error");
-        return;
-      }
-
-      downloadCSV(leads, `vl_${folder}`);
-    }
-
-    function downloadCSV(leads, filename) {
-      const rows = [
-        ["Nome", "Endereço", "Telefone", "Avaliação", "Total de Avaliações", "Site", "Google Maps"]
-      ];
-
-      leads.forEach(function (lead) {
-        const mapsUrl = lead.place_id
-          ? `https://www.google.com/maps/place/?q=place_id:${lead.place_id}`
-          : "";
-
-        rows.push([
-          lead.name || "",
-          lead.formatted_address || "",
-          lead.formatted_phone_number || "",
-          lead.rating || "",
-          lead.user_ratings_total || "",
-          lead.website || "",
-          mapsUrl
-        ]);
-      });
-
-      const csv = rows
-        .map(function (row) {
-          return row.map(function (cell) {
-            return `"${String(cell).replace(/"/g, '""')}"`;
-          }).join(",");
-        })
-        .join("\n");
-
-      const blob = new Blob(["\uFEFF" + csv], {
-        type: "text/csv;charset=utf-8;"
-      });
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-
-      const date = new Date().toLocaleDateString("pt-BR").replace(/\//g, "-");
-
-      a.href = url;
-      a.download = `${filename}_${date}.csv`;
-      a.click();
-
-      URL.revokeObjectURL(url);
-
-      showToast("CSV exportado.");
-    }
-
-    function showToast(message, type = "success") {
-      const toast = document.getElementById("toast");
-
-      toast.textContent = message;
-      toast.className = `toast show ${type === "error" ? "error" : ""}`;
-
-      setTimeout(function () {
-        toast.classList.remove("show");
-      }, 3000);
-    }
-
-    function escapeHtml(value) {
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function escapeAttr(value) {
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/"/g, "&quot;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-    }
-
-    function escapeJs(value) {
-      return String(value)
-        .replace(/\\/g, "\\\\")
-        .replace(/'/g, "\\'");
-    }
-
-    document.addEventListener("keydown", function (event) {
-      if (event.key === "Enter") {
-        const active = document.activeElement;
-        if (active && ["input-nicho", "input-cidade", "input-bairro"].includes(active.id)) {
-          startSearch();
+      function saveLeadById(id) {
+        const lead = leads.find(i => i.place_id === id);
+        if (lead) {
+           if (savedLeads.some(i => i.place_id === lead.place_id)) { toast('Já está salvo.'); return; }
+           pendingLeadsToSave = [lead]; openFolderModal();
         }
       }
-    });
 
-    renderFolders();
-  </script>
+      function saveSelectedLeads() {
+        const selected = getSelectedLeads();
+        if (!selected.length) { toast('Selecione leads.'); return; }
+        pendingLeadsToSave = selected.filter(l => !savedLeads.some(s => s.place_id === l.place_id));
+        if (!pendingLeadsToSave.length) { toast('Leads selecionados já estão salvos.'); return; }
+        openFolderModal();
+      }
 
-  <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRd4KUJR3Rk4k98OOJVDtSfExn4ENVq0U&libraries=places&callback=initGooglePlaces"
-    async
-    defer>
-  </script>
+      function updateFolderFilterDropdown() {
+        const filter = document.getElementById('savedFolderFilter');
+        if(!filter) return;
+        const currentVal = filter.value;
+        const uniqueFolders = [...new Set(savedLeads.map(l => l.folder || 'Geral'))];
+        filter.innerHTML = '<option value="Todas">Todas as pastas</option>';
+        uniqueFolders.forEach(f => filter.innerHTML += `<option value="${escapeAttr(f)}">${escapeHtml(f)}</option>`);
+        if (uniqueFolders.includes(currentVal) || currentVal === 'Todas') filter.value = currentVal;
+      }
+
+      function renderSavedLeads() {
+        const grid = document.getElementById('savedGrid');
+        const empty = document.getElementById('savedEmpty');
+        grid.innerHTML = '';
+        const filterVal = document.getElementById('savedFolderFilter').value;
+        const list = filterVal === 'Todas' ? savedLeads : savedLeads.filter(l => (l.folder || 'Geral') === filterVal);
+        
+        if (!list.length) { empty.classList.remove('hidden'); updateCounters(); return; }
+        empty.classList.add('hidden');
+        list.forEach(lead => grid.appendChild(createLeadCard(lead, 'saved')));
+        updateCounters();
+      }
+
+      function clearSavedLeads() {
+        const filterVal = document.getElementById('savedFolderFilter').value;
+        if (filterVal === 'Todas') {
+           if (!confirm('Apagar TODOS os leads de TODAS as pastas?')) return;
+           savedLeads = [];
+        } else {
+           if (!confirm(`Apagar TODOS os leads da pasta "${filterVal}"?`)) return;
+           savedLeads = savedLeads.filter(l => (l.folder || 'Geral') !== filterVal);
+        }
+        localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
+        updateFolderFilterDropdown(); renderSavedLeads(); updateCounters(); toast('Apagados com sucesso.');
+      }
+
+      function changeLeadStatus(id, status) {
+        leads = leads.map(l => l.place_id === id ? { ...l, status } : l);
+        savedLeads = savedLeads.map(l => l.place_id === id ? { ...l, status } : l);
+        localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
+        renderLeads(); renderSavedLeads();
+      }
+
+      async function sendSavedToPipedrive() {
+        const filterVal = document.getElementById('savedFolderFilter').value;
+        const list = filterVal === 'Todas' ? savedLeads : savedLeads.filter(l => (l.folder || 'Geral') === filterVal);
+        if (!list.length) { toast('Nenhum lead para exportar.'); return; }
+
+        const settings = getSettings();
+        if (!settings.pipedriveToken) {
+          toast('O token do Pipedrive não está configurado.');
+          if (isUserAdmin) showSection('settings');
+          return;
+        }
+
+        let success = 0; let failed = 0;
+        toast(`Enviando ${list.length} lead(s)...`);
+
+        for (const lead of list) {
+          if(lead.exported) continue; 
+          try {
+            const token = encodeURIComponent(settings.pipedriveToken);
+            
+            const orgRes = await fetch(`https://api.pipedrive.com/v1/organizations?api_token=${token}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: lead.name, address: lead.address }) });
+            const orgData = await orgRes.json();
+            if (!orgRes.ok || !orgData.success) throw new Error('Erro Org');
+            const orgId = orgData.data.id;
+
+            const dealRes = await fetch(`https://api.pipedrive.com/v1/deals?api_token=${token}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: `${lead.name} - ${currentUserFullName}`, org_id: orgId, status: 'open' }) });
+            const dealData = await dealRes.json();
+            if (!dealRes.ok || !dealData.success) throw new Error('Erro Deal');
+
+            const noteContent = `Empresa: ${lead.name}\nTelefone: ${lead.phone || '-'}\nSite: ${lead.website || '-'}\nEndereço: ${lead.address || '-'}\nMaps: ${lead.url || '-'}\nAvaliação: ${lead.rating || '-'}\nPasta: ${lead.folder || 'Geral'}\nComercial Responsável: ${currentUserFullName}`;
+            await fetch(`https://api.pipedrive.com/v1/notes?api_token=${token}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: noteContent, deal_id: dealData.data.id, org_id: orgId }) });
+
+            const expRecord = { ...lead, exported: true, exportedAt: new Date().toISOString() };
+            if (!exportedLeads.some(i => i.place_id === lead.place_id)) exportedLeads.push(expRecord);
+            leads = leads.map(i => i.place_id === lead.place_id ? { ...i, exported: true, exportedAt: expRecord.exportedAt } : i);
+            savedLeads = savedLeads.map(i => i.place_id === lead.place_id ? { ...i, exported: true, exportedAt: expRecord.exportedAt } : i);
+            success++;
+          } catch (e) { failed++; }
+        }
+
+        localStorage.setItem(STORAGE_KEYS.exported, JSON.stringify(exportedLeads));
+        localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
+        renderLeads(); renderSavedLeads(); renderExportedLeads(); updateCounters();
+        toast(failed ? `${success} enviados, ${failed} falhas.` : `${success} lead(s) enviados.`);
+      }
+
+      function renderExportedLeads() {
+        const empty = document.getElementById('exportedEmpty');
+        const wrap = document.getElementById('exportedTableWrap');
+        const tbody = document.getElementById('exportedTableBody');
+        tbody.innerHTML = '';
+        if (!exportedLeads.length) { empty.classList.remove('hidden'); wrap.classList.add('hidden'); return; }
+        empty.classList.add('hidden'); wrap.classList.remove('hidden');
+        exportedLeads.forEach(l => tbody.innerHTML += `<tr><td><strong>${escapeHtml(l.name)}</strong><br>${escapeHtml(l.address || '')}</td><td>${escapeHtml(l.phone || '-')}</td><td>${l.website ? `<a href="${escapeAttr(l.website)}" target="_blank">Site</a>` : '-'}</td><td>${l.exportedAt ? new Date(l.exportedAt).toLocaleDateString('pt-BR') : '-'}</td><td><span class="badge">Exportado</span></td></tr>`);
+      }
+
+      function clearResults() {
+        ['nameInput', 'nicheInput', 'cityInput', 'districtInput', 'streetInput'].forEach(id => document.getElementById(id).value = '');
+        detailsQueue = []; isProcessingQueue = false; isSearching = false; leads = []; selectedLeadIds.clear();
+        document.getElementById('selectAllCheckbox').checked = false;
+        document.getElementById('searchBtn').disabled = false; document.getElementById('searchBtn').textContent = 'Extrair Leads';
+        renderLeads(); updateCounters(); toast('Pesquisa limpa.');
+      }
+
+      function exportSavedToCSV() {
+        const filterVal = document.getElementById('savedFolderFilter').value;
+        const list = filterVal === 'Todas' ? savedLeads : savedLeads.filter(l => (l.folder || 'Geral') === filterVal);
+        if (!list.length) { toast('Nenhum lead para exportar.'); return; }
+        
+        const csv = [['Empresa', 'Telefone', 'Site', 'Endereço', 'Avaliação', 'Pasta', 'Status', 'Google Maps'], ...list.map(l => [l.name || '', l.phone || '', l.website || '', l.address || '', l.rating || '', l.folder || 'Geral', l.status || '', l.url || ''])].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')).join('\n');
+        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }));
+        a.download = `leads-${filterVal}-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click(); toast('CSV exportado.');
+      }
+
+      function makeWhatsAppUrl(phone, name) {
+        const d = String(phone).replace(/\D/g, ''); if (!d) return '';
+        return `https://wa.me/${d.startsWith('55') ? d : `55${d}`}?text=${encodeURIComponent(`Olá, tudo bem? Falo com o responsável pela empresa ${name}?`)}`;
+      }
+      function escapeHtml(v) { return String(v || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+      function escapeAttr(v) { return escapeHtml(v).replace(/`/g, '&#096;'); }
+    </script>
+  </div>
 </body>
 </html>
 
