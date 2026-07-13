@@ -348,10 +348,7 @@
               </div>
             </div>
 
-            <!-- FASE 9 a 12: Toolbar Inteligente com Filtros e Exportação -->
             <div class="results-toolbar">
-              
-              <!-- Primeira linha: Ações em Massa -->
               <div class="toolbar-row">
                 <div class="bulk-actions">
                   <label class="select-all">
@@ -374,7 +371,6 @@
                   </button>
                 </div>
 
-                <!-- Botão de Exportar CSV da tela -->
                 <div>
                   <button class="btn btn-main" style="height: 40px; font-size: 13px;" onclick="exportCurrentToCSV()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -383,7 +379,6 @@
                 </div>
               </div>
 
-              <!-- Segunda linha: Filtro Interno e Ordenação -->
               <div class="toolbar-filters">
                 <div class="field" style="flex: 1; margin: 0;">
                   <input type="text" id="filterResultsInput" placeholder="🔍 Filtrar resultados (ex: nome, clínica, av brasil...)" oninput="renderLeads()" style="height: 40px;" />
@@ -398,7 +393,6 @@
                   </select>
                 </div>
               </div>
-              
             </div>
 
             <div id="resultsEmpty" class="empty">
@@ -424,7 +418,6 @@
               </div>
 
               <div class="actions" style="margin-top:0; align-items: center;">
-                
                 <div class="folder-filter-wrap">
                   <select id="savedFolderFilter" onchange="renderSavedLeads()">
                     <option value="Todas">Todas as pastas</option>
@@ -500,7 +493,8 @@
               </div>
             </div>
 
-            <div class="grid-2">
+            <!-- Adicionado o campo de controle de páginas (limite da API) -->
+            <div class="grid-search" style="margin-bottom: 24px;">
               <div class="field">
                 <label for="googleApiKeyInput">Google Maps API Key</label>
                 <input id="googleApiKeyInput" type="password" autocomplete="new-password" placeholder="Chave do banco de dados..." />
@@ -509,6 +503,11 @@
               <div class="field">
                 <label for="pipedriveTokenInput">Token CRM (Pipedrive)</label>
                 <input id="pipedriveTokenInput" type="password" autocomplete="new-password" placeholder="Token do CRM (opcional)" />
+              </div>
+
+              <div class="field">
+                <label for="maxPagesInput">Limite de Páginas (Plano)</label>
+                <input id="maxPagesInput" type="number" min="1" max="10" placeholder="Ex: 3 (1 = ~20 leads)" />
               </div>
             </div>
 
@@ -574,7 +573,7 @@
       const supa = window.supabase.createClient(supabaseUrl, supabaseKey);
       const ADMIN_EMAILS = ['leonvquadros@gmail.com']; 
 
-      let configSupabase = { googleApiKey: '', pipedriveToken: '' };
+      let configSupabase = { googleApiKey: '', pipedriveToken: '', maxPages: 3 }; // Adicionado limite de páginas
       let map = null, placesService = null;
       let detailsQueue = [], isProcessingQueue = false;
       let leads = [], savedLeads = [], exportedLeads = [];
@@ -670,21 +669,28 @@
           if (data && data.length > 0) {
              configSupabase.googleApiKey = data[0].google_api_key || '';
              configSupabase.pipedriveToken = data[0].pipedrive_token || '';
+             // Carrega o limite (se não existir na base de dados, usa 3 por padrão)
+             configSupabase.maxPages = data[0].limite_paginas || 3; 
+
              if (configSupabase.googleApiKey) { loadGoogleMapsScript(configSupabase.googleApiKey); }
              
              const gKeyInput = document.getElementById('googleApiKeyInput');
              const pKeyInput = document.getElementById('pipedriveTokenInput');
+             const mPagesInput = document.getElementById('maxPagesInput');
+
              if(gKeyInput) gKeyInput.value = configSupabase.googleApiKey;
              if(pKeyInput) pKeyInput.value = configSupabase.pipedriveToken;
+             if(mPagesInput) mPagesInput.value = configSupabase.maxPages;
           }
         } catch (err) { console.error(err); }
       }
 
-      function getSettings() { return { googleApiKey: configSupabase.googleApiKey, pipedriveToken: configSupabase.pipedriveToken }; }
+      function getSettings() { return { googleApiKey: configSupabase.googleApiKey, pipedriveToken: configSupabase.pipedriveToken, maxPages: configSupabase.maxPages }; }
 
       async function saveSettings() {
         const gKey = document.getElementById('googleApiKeyInput').value.trim();
         const pToken = document.getElementById('pipedriveTokenInput').value.trim();
+        const mPages = parseInt(document.getElementById('maxPagesInput').value.trim()) || 3;
 
         const btn = document.querySelector('button[onclick="saveSettings()"]');
         const oldText = btn.textContent; btn.textContent = 'Salvando...'; btn.disabled = true;
@@ -693,24 +699,40 @@
           const { data: existe } = await supa.from('configuracoes').select('id').limit(1);
           let error;
           
+          const payload = { 
+            google_api_key: gKey, 
+            pipedrive_token: pToken,
+            limite_paginas: mPages // <- ATENÇÃO: você precisará criar essa coluna no seu banco Supabase
+          };
+
           if (existe && existe.length > 0) {
-              const res = await supa.from('configuracoes').update({ google_api_key: gKey, pipedrive_token: pToken }).eq('id', existe[0].id);
+              const res = await supa.from('configuracoes').update(payload).eq('id', existe[0].id);
               error = res.error;
           } else {
-              const res = await supa.from('configuracoes').insert([{ google_api_key: gKey, pipedrive_token: pToken }]);
+              const res = await supa.from('configuracoes').insert([payload]);
               error = res.error;
           }
           if (error) throw error;
 
-          configSupabase.googleApiKey = gKey; configSupabase.pipedriveToken = pToken;
+          configSupabase.googleApiKey = gKey; 
+          configSupabase.pipedriveToken = pToken;
+          configSupabase.maxPages = mPages;
+
           toast('Configurações salvas!');
           if (gKey) loadGoogleMapsScript(gKey);
-        } catch (err) { toast('Erro ao salvar no banco!'); } finally { btn.textContent = oldText; btn.disabled = false; }
+        } catch (err) { 
+          console.error(err);
+          toast('Erro ao salvar! (Você criou a coluna "limite_paginas" no Supabase?)'); 
+        } finally { 
+          btn.textContent = oldText; btn.disabled = false; 
+        }
       }
 
       async function clearSettings() {
         if (!confirm('Deseja limpar as chaves de acesso para TODOS os usuários?')) return;
-        document.getElementById('googleApiKeyInput').value = ''; document.getElementById('pipedriveTokenInput').value = '';
+        document.getElementById('googleApiKeyInput').value = ''; 
+        document.getElementById('pipedriveTokenInput').value = '';
+        document.getElementById('maxPagesInput').value = '3';
         await saveSettings(); toast('Configurações limpas.');
       }
 
@@ -843,7 +865,6 @@
         document.getElementById('savedCount').textContent = savedLeads.length;
         document.getElementById('exportedCount').textContent = exportedLeads.length;
         document.getElementById('pendingCount').textContent = leads.length; 
-        // O foundCount é atualizado direto na função renderLeads para refletir os filtros
       }
 
       function normalizeString(str) { return (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
@@ -886,11 +907,10 @@
         placesService.textSearch({ query: queryParts.join(' '), type: 'establishment' }, handlePlacesResults);
       }
 
-      // MOTOR DE BUSCA EM LOOP ATÉ O LIMITE DO GOOGLE
+      // MOTOR DE BUSCA EM LOOP ATÉ O LIMITE DO GOOGLE E DO PLANO (ADMIN)
       function handlePlacesResults(results, status, pagination) {
         const btn = document.getElementById('searchBtn');
         
-        // Se o Google bloquear por rapidez, espera 3 segundos e tenta a próxima página
         if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
            setTimeout(() => { if (pagination && pagination.hasNextPage) pagination.nextPage(); }, 3000); 
            return; 
@@ -916,13 +936,16 @@
         
         renderLeads(); updateCounters();
 
-        // Agora o 'motor V8': dá uma descansada de 3 segundos antes de buscar a próxima página
-        if (pagination && pagination.hasNextPage) {
+        // 🚨 A MÁGICA ACONTECE AQUI: Delay de 3 segundos + Trava de Planos
+        const limiteMaximoAdmin = configSupabase.maxPages || 3;
+
+        if (pagination && pagination.hasNextPage && currentApiPage < limiteMaximoAdmin) {
           currentApiPage++;
-          btn.textContent = `Buscando página ${currentApiPage}... (${leads.length})`;
+          btn.textContent = `Buscando página ${currentApiPage}/${limiteMaximoAdmin}... (${leads.length})`;
+          
           setTimeout(() => { 
               pagination.nextPage(); 
-          }, 3000); // Aumentei o tempo para 3000ms (3 segundos)
+          }, 3000); 
         } else {
           isSearching = false; 
           btn.disabled = false; 
@@ -963,12 +986,10 @@
         );
       }
 
-      // RENDERIZADOR INTELIGENTE COM FILTROS E ORDENAÇÃO
       function renderLeads() {
         const grid = document.getElementById('leadsGrid'), empty = document.getElementById('resultsEmpty');
         grid.innerHTML = '';
 
-        // 1. Aplicar Filtro de Pesquisa
         const filterText = (document.getElementById('filterResultsInput')?.value || '').toLowerCase();
         let displayLeads = leads.filter(l => 
           l.name.toLowerCase().includes(filterText) || 
@@ -976,14 +997,12 @@
           (l.phone && l.phone.includes(filterText))
         );
 
-        // 2. Aplicar Ordenação
         const sortVal = document.getElementById('sortResultsSelect')?.value || 'default';
         if (sortVal === 'az') displayLeads.sort((a, b) => a.name.localeCompare(b.name));
         else if (sortVal === 'za') displayLeads.sort((a, b) => b.name.localeCompare(a.name));
         else if (sortVal === 'rating_desc') displayLeads.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         else if (sortVal === 'rating_asc') displayLeads.sort((a, b) => (a.rating || 0) - (b.rating || 0));
 
-        // 3. Atualizar Contador da Tela
         const foundEl = document.getElementById('foundCount');
         if (filterText && displayLeads.length !== leads.length) {
             foundEl.textContent = `${displayLeads.length} / ${leads.length}`;
@@ -1186,7 +1205,6 @@
         renderLeads(); updateCounters(); toast('Pesquisa limpa.');
       }
 
-      // EXPORTAR PARA CSV OS LEADS SALVOS (Aba Salvos)
       function exportSavedToCSV() {
         const filterVal = document.getElementById('savedFolderFilter').value;
         const list = filterVal === 'Todas' ? savedLeads : savedLeads.filter(l => (l.folder || 'Geral') === filterVal);
@@ -1197,7 +1215,6 @@
         a.download = `leads-salvos-${filterVal}-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); toast('CSV exportado.');
       }
 
-      // EXPORTAR PARA CSV OS LEADS DA TELA ATUAL (Aba Extrair)
       function exportCurrentToCSV() {
         if (!leads.length) { toast('Nenhum lead na tela para exportar.'); return; }
         
@@ -1225,15 +1242,11 @@
       function escapeHtml(v) { return String(v || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
       function escapeAttr(v) { return escapeHtml(v).replace(/`/g, '&#096;'); }
 
-      // ============================================
-      // SELEÇÃO INTELIGENTE
-      // ============================================
       function selectWithPhone() {
         let count = 0;
         const filterText = (document.getElementById('filterResultsInput')?.value || '').toLowerCase();
         
         leads.forEach(lead => {
-          // Respeitar o filtro da tela, se houver
           const matchesFilter = lead.name.toLowerCase().includes(filterText) || lead.address.toLowerCase().includes(filterText) || (lead.phone && lead.phone.includes(filterText));
           
           if (matchesFilter && lead.phone && lead.phone.trim() !== '') {
@@ -1263,9 +1276,6 @@
         else toast('Nenhum lead com site na tela.');
       }
 
-      // ============================================
-      // VOLTAR AO TOPO
-      // ============================================
       window.addEventListener('scroll', () => {
         const btn = document.getElementById('backToTopBtn');
         if (btn) {
