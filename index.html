@@ -888,13 +888,18 @@
 
       // MOTOR DE BUSCA EM LOOP ATÉ O LIMITE DO GOOGLE
       function handlePlacesResults(results, status, pagination) {
+        const btn = document.getElementById('searchBtn');
+        
+        // Se o Google bloquear por rapidez, espera 3 segundos e tenta a próxima página
         if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-           setTimeout(() => { if (pagination && pagination.hasNextPage) pagination.nextPage(); }, 2000); return; 
+           setTimeout(() => { if (pagination && pagination.hasNextPage) pagination.nextPage(); }, 3000); 
+           return; 
         }
         
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-          const district = document.getElementById('districtInput').value.trim(), street = document.getElementById('streetInput').value.trim();
-          
+          const district = document.getElementById('districtInput').value.trim(), 
+                street = document.getElementById('streetInput').value.trim();
+                
           results.forEach(place => {
             if (isStrictMatch(place, district, street)) {
                const normalized = normalizePlace(place);
@@ -910,15 +915,19 @@
         }
         
         renderLeads(); updateCounters();
-        const btn = document.getElementById('searchBtn');
-        
+
+        // Agora o 'motor V8': dá uma descansada de 3 segundos antes de buscar a próxima página
         if (pagination && pagination.hasNextPage) {
           currentApiPage++;
-          btn.textContent = `Buscando página ${currentApiPage}... (${leads.length})`; 
-          setTimeout(() => { pagination.nextPage(); }, 2000);
+          btn.textContent = `Buscando página ${currentApiPage}... (${leads.length})`;
+          setTimeout(() => { 
+              pagination.nextPage(); 
+          }, 3000); // Aumentei o tempo para 3000ms (3 segundos)
         } else {
-          isSearching = false; btn.disabled = false; btn.textContent = 'Extrair Leads';
-          
+          isSearching = false; 
+          btn.disabled = false; 
+          btn.textContent = 'Extrair Leads';
+
           let finalMsg = leads.length === 0 ? 'Nenhum lead novo retornado.' : `${leads.length} encontrados.`;
           if (ignoredLeadsCount > 0) {
               finalMsg += ` (${ignoredLeadsCount} ocultados pois já estão salvos)`;
@@ -1272,4 +1281,3 @@
   </div>
 </body>
 </html>
-
