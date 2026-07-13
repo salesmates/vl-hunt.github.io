@@ -49,6 +49,7 @@
     .main { margin-left: 267px; width: calc(100% - 267px); padding: 36px 32px 60px; }
     .topbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 24px; }
     .topbar h2 { margin: 8px 0 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+    .topbar p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
     .user-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; display: flex; align-items: center; gap: 12px; min-width: 142px; }
     .user-avatar { width: 36px; height: 36px; border-radius: 10px; background: var(--border); color: var(--dark); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; }
     .user-card strong { font-size: 13px; font-weight: 600;}
@@ -56,9 +57,10 @@
 
     /* STATS & SECTIONS */
     .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; min-height: 90px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; min-height: 90px; position: relative; overflow: hidden; }
     .stat-card span { display: block; color: var(--muted); font-weight: 600; font-size: 12px; letter-spacing: 0.5px; margin-bottom: 8px; text-transform: uppercase; }
     .stat-card strong { display: block; font-size: 28px; font-weight: 800; }
+    .stat-card svg { position: absolute; right: -10px; bottom: -10px; width: 80px; height: 80px; opacity: 0.05; color: var(--primary); }
     
     .section { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; }
     .section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
@@ -93,6 +95,24 @@
     .btn-danger { color: #f87171; border-color: #7f1d1d; }
     .btn-danger:hover { background: #7f1d1d; color: #fca5a5; }
 
+    /* TABS (CONFIGURAÇÕES) */
+    .settings-nav { display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 0; overflow-x: auto; }
+    .tab-btn { background: transparent; border: none; color: var(--muted); padding: 12px 16px; font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s; margin-bottom: -1px; white-space: nowrap; }
+    .tab-btn:hover { color: var(--dark); }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab-content { display: none; animation: fadeIn 0.3s ease; }
+    .tab-content.active { display: block; }
+    
+    /* TOGGLE SWITCH (FILTROS) */
+    .switch-wrap { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; }
+    .switch-wrap span { font-size: 14px; font-weight: 600; }
+    .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); transition: .3s; border-radius: 26px; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: var(--muted); transition: .3s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--primary); }
+    input:checked + .slider:before { transform: translateX(20px); background-color: var(--primary-inv); }
+
     /* RESULTS */
     .results-toolbar { display: flex; flex-direction: column; gap: 16px; margin-bottom: 22px; }
     .toolbar-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
@@ -106,7 +126,7 @@
     /* LEADS GRID & CARDS */
     .leads-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
     .lead-card { position: relative; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; background: var(--bg); overflow: hidden; display: flex; flex-direction: column; }
-    .lead-card.selected { border-color: var(--primary); }
+    .lead-card.selected { border-color: var(--primary); background: rgba(255,255,255,0.02); }
     .lead-check { position: absolute; top: 16px; left: 16px; z-index: 2; width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
     .lead-photo { width: 100%; height: 130px; border-radius: 8px; object-fit: cover; background: var(--border); display: block; margin-bottom: 16px; }
     .lead-photo-placeholder { width: 100%; height: 130px; border-radius: 8px; background: var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: var(--muted); }
@@ -131,7 +151,7 @@
     /* UTILS & MODALS */
     .hidden { display: none !important; }
     .empty { padding: 40px; text-align: center; color: var(--muted); font-weight: 500; font-size: 14px; background: transparent; border: 1px dashed var(--border); border-radius: var(--radius); }
-    .toast { position: fixed; right: 24px; bottom: 24px; background: var(--dark); color: var(--bg); padding: 14px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; box-shadow: var(--shadow); z-index: 9999; max-width: 400px; display: none; }
+    .toast { position: fixed; right: 24px; bottom: 24px; background: var(--dark); color: var(--bg); padding: 14px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; box-shadow: var(--shadow); z-index: 9999; max-width: 400px; display: none; animation: fadeIn 0.3s ease; }
     .map-hidden { width: 1px; height: 1px; opacity: 0; position: fixed; left: -9999px; bottom: -9999px; }
     
     .table-wrap { overflow-x: auto; }
@@ -140,15 +160,20 @@
     th { font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); background: var(--card); font-size: 11px; }
     td { color: var(--dark); }
     
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(4px); }
-    .modal { background: var(--card); padding: 28px; border-radius: var(--radius); width: 400px; max-width: 90%; border: 1px solid var(--border); box-shadow: var(--shadow); }
-    .modal h3 { margin-top: 0; font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--dark); }
-    .modal p { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+    /* MODAL PREMIUM (COM BLUR E ANIMAÇÃO) */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 10000; animation: fadeIn 0.2s ease; }
+    .modal { background: var(--card); padding: 32px; border-radius: var(--radius); width: 420px; max-width: 90%; border: 1px solid var(--border); box-shadow: var(--shadow); transform: scale(0.95); animation: scaleUp 0.2s ease forwards; }
+    .modal h3 { margin-top: 0; font-size: 20px; font-weight: 800; margin-bottom: 8px; color: var(--dark); }
+    .modal p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
     .modal label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; color: var(--muted); }
-    .modal select, .modal input { width: 100%; height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; margin-bottom: 16px; font-size: 14px; background: var(--bg); color: var(--dark); outline: none; }
+    .modal select, .modal input { width: 100%; height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; margin-bottom: 16px; font-size: 14px; background: var(--bg); color: var(--dark); outline: none; transition: 0.2s; }
     .modal select:focus, .modal input:focus { border-color: var(--primary); }
-    .modal-divider { text-align: center; margin: 10px 0 20px; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-    .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+    .modal-divider { text-align: center; margin: 10px 0 20px; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; display: flex; align-items: center; }
+    .modal-divider::before, .modal-divider::after { content: ""; flex: 1; border-bottom: 1px solid var(--border); margin: 0 10px; }
+    .modal-buttons { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+    
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scaleUp { from { transform: scale(0.95); } to { transform: scale(1); } }
     
     .folder-filter-wrap { display: flex; align-items: center; font-size: 14px; }
     .folder-filter-wrap select { height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; font-size: 13px; font-weight: 500; min-width: 200px; outline: none; background: transparent; color: var(--dark); cursor: pointer; transition: 0.2s; }
@@ -210,7 +235,13 @@
 
         <div class="menu-title">Menu Principal</div>
 
-        <button class="menu-item active" data-section="extract" onclick="showSection('extract')">
+        <!-- ABA DASHBOARD INSERIDA -->
+        <button class="menu-item active" data-section="dashboard" onclick="showSection('dashboard')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          Dashboard
+        </button>
+
+        <button class="menu-item" data-section="extract" onclick="showSection('extract')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           Extrair Leads
         </button>
@@ -230,7 +261,8 @@
           Configurações
         </button>
 
-        <button class="menu-item logout-btn" onclick="handleSupabaseLogout()">
+        <!-- ESCONDIDO PARA APARECER APENAS NA ABA DE CONTA -->
+        <button class="menu-item logout-btn hidden" id="sideLogoutBtn" onclick="handleSupabaseLogout()">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
           Sair do Sistema
         </button>
@@ -239,7 +271,8 @@
       <main class="main">
         <div class="topbar">
           <div>
-            <h2>Pesquisa</h2>
+            <h2 id="topTitle">Visão Geral</h2>
+            <p id="topSubtitle">Acompanhe as métricas de prospecção</p>
           </div>
 
           <div class="user-card">
@@ -251,27 +284,76 @@
           </div>
         </div>
 
-        <div class="stats">
-          <div class="stat-card">
-            <span>Na Tela</span>
-            <strong id="foundCount">0</strong>
+        <!-- ABA DASHBOARD (NOVA VIEW) -->
+        <section id="dashboardSection">
+          
+          <div class="stats">
+            <div class="stat-card">
+              <span>Leads na Tela</span>
+              <strong id="foundCount">0</strong>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+            <div class="stat-card">
+              <span>Leads Salvos</span>
+              <strong id="savedCount">0</strong>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            </div>
+            <div class="stat-card">
+              <span>Exportados Pipedrive</span>
+              <strong id="exportedCount">0</strong>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+            </div>
+            <div class="stat-card">
+              <span>Aguardando Triagem</span>
+              <strong id="pendingCount">0</strong>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
           </div>
-          <div class="stat-card">
-            <span>Salvos</span>
-            <strong id="savedCount">0</strong>
+
+          <div class="grid-2">
+            <div class="section">
+              <div class="section-title" style="margin-bottom: 22px;">
+                <div class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg></div>
+                <div>
+                  <h3>Acesso Rápido</h3>
+                  <p>Atalhos para as principais funções do sistema.</p>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:12px;">
+                <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('extract')">🔍 Iniciar nova Extração de Leads</button>
+                <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('saved')">📁 Ver Pastas e Leads Salvos</button>
+                <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('pipedrive')">🚀 Enviar Lote para o Pipedrive</button>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-title" style="margin-bottom: 22px;">
+                <div class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
+                <div>
+                  <h3>Status Geral</h3>
+                  <p>Resumo das atividades da conta.</p>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:16px;">
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:8px;">
+                  <span style="color:var(--muted); font-size:14px;">Conexão Google Maps</span>
+                  <span style="color:#4ade80; font-size:14px; font-weight:600;">Ativa</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:8px;">
+                  <span style="color:var(--muted); font-size:14px;">Conexão Pipedrive</span>
+                  <span id="dashPipeStatus" style="color:var(--muted); font-size:14px; font-weight:600;">Verificando...</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:8px;">
+                  <span style="color:var(--muted); font-size:14px;">Limite Extração (Páginas)</span>
+                  <span id="dashPagesLimit" style="color:var(--primary); font-size:14px; font-weight:600;">-</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="stat-card">
-            <span>Exportados</span>
-            <strong id="exportedCount">0</strong>
-          </div>
-          <div class="stat-card">
-            <span>Pendentes</span>
-            <strong id="pendingCount">0</strong>
-          </div>
-        </div>
+        </section>
 
         <!-- ABA EXTRAIR -->
-        <section id="extractSection">
+        <section id="extractSection" class="hidden">
           <div class="section">
             <div class="section-title" style="margin-bottom: 22px;">
               <div class="section-icon">
@@ -363,16 +445,16 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                     Com Site
                   </button>
-                  <button class="btn" style="height: 40px; font-size: 13px;" onclick="saveSelectedLeads()">
-                    Salvar selecionados
+                  <button class="btn btn-main" style="height: 40px; font-size: 13px;" onclick="saveSelectedLeads()">
+                    Salvar Selecionados
                   </button>
                   <button class="btn" style="height: 40px; font-size: 13px;" onclick="clearSelected()">
-                    Limpar seleção
+                    Limpar
                   </button>
                 </div>
 
                 <div>
-                  <button class="btn btn-main" style="height: 40px; font-size: 13px;" onclick="exportCurrentToCSV()">
+                  <button class="btn" style="height: 40px; font-size: 13px; border-color:var(--border);" onclick="exportCurrentToCSV()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                     Exportar (CSV)
                   </button>
@@ -424,7 +506,7 @@
                   </select>
                 </div>
 
-                <button class="btn" onclick="sendSavedToPipedrive()">
+                <button class="btn btn-main" onclick="sendSavedToPipedrive()">
                   Exportar CRM
                 </button>
 
@@ -433,7 +515,7 @@
                 </button>
 
                 <button class="btn btn-danger" onclick="clearSavedLeads()">
-                  Limpar salvos
+                  Limpar Salvamento
                 </button>
               </div>
             </div>
@@ -454,8 +536,8 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
               </div>
               <div>
-                <h3>Histórico CRM</h3>
-                <p>Histórico local de leads enviados para o Pipedrive.</p>
+                <h3>Histórico CRM (Pipedrive)</h3>
+                <p>Histórico local de leads enviados com sucesso para o Pipedrive.</p>
               </div>
             </div>
 
@@ -470,8 +552,8 @@
                     <th>Empresa</th>
                     <th>Telefone</th>
                     <th>Site</th>
-                    <th>Data</th>
-                    <th>Status</th>
+                    <th>Data de Envio</th>
+                    <th>Status no CRM</th>
                   </tr>
                 </thead>
                 <tbody id="exportedTableBody"></tbody>
@@ -480,74 +562,133 @@
           </div>
         </section>
 
-        <!-- ABA CONFIGURAÇÕES -->
+        <!-- ABA CONFIGURAÇÕES (NOVA ESTRUTURA COM TABS) -->
         <section id="settingsSection" class="hidden">
           <div class="section">
-            <div class="section-title" style="margin-bottom: 22px;">
+            <div class="section-title" style="margin-bottom: 16px;">
               <div class="section-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-2.82.33 1.65 1.65 0 0 0-.1 1.51v.1a2 2 0 0 1-3.91 0v-.1a1.65 1.65 0 0 0-1.82-1.33 1.65 1.65 0 0 0-1.51.1l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-2.82 1.65 1.65 0 0 0-1.51-.1h-.1a2 2 0 0 1 0-3.91h.1a1.65 1.65 0 0 0 1.33-1.82 1.65 1.65 0 0 0-.1-1.51l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 2.82-.33 1.65 1.65 0 0 0 .1-1.51v-.1a2 2 0 0 1 3.91 0v.1a1.65 1.65 0 0 0 1.82 1.33 1.65 1.65 0 0 0 1.51-.1l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 2.82 1.65 1.65 0 0 0 1.51.1h.1a2 2 0 0 1 0 3.91h-.1a1.65 1.65 0 0 0-1.33 1.82z"></path></svg>
               </div>
               <div>
-                <h3>Configurações de Sistema</h3>
-                <p>Configure as credenciais de API. Estas chaves valem para toda a equipe.</p>
+                <h3>Painel de Controle</h3>
+                <p>Gerencie as integrações, filtros do sistema e seu perfil.</p>
               </div>
             </div>
 
-            <!-- Adicionado o campo de controle de páginas (limite da API) -->
-            <div class="grid-search" style="margin-bottom: 24px;">
-              <div class="field">
-                <label for="googleApiKeyInput">Google Maps API Key</label>
-                <input id="googleApiKeyInput" type="password" autocomplete="new-password" placeholder="Chave do banco de dados..." />
+            <!-- NAVEGAÇÃO DAS ABAS DE CONFIGURAÇÃO -->
+            <div class="settings-nav">
+              <button class="tab-btn active" onclick="switchSettingsTab('tab-integra', this)">🔌 Integrações & API</button>
+              <button class="tab-btn" onclick="switchSettingsTab('tab-filtros', this)">🛡️ Filtros de Qualidade</button>
+              <button class="tab-btn" onclick="switchSettingsTab('tab-conta', this)">👤 Minha Conta</button>
+            </div>
+
+            <!-- CONTEÚDO TAB 1: INTEGRAÇÕES -->
+            <div id="tab-integra" class="tab-content active">
+              <p style="color:var(--muted); font-size:13px; margin-bottom: 20px;">Configurações sensíveis (aplicam-se a toda a equipe). Modifique com cautela.</p>
+              
+              <div class="grid-search" style="margin-bottom: 24px;">
+                <div class="field">
+                  <label for="googleApiKeyInput">Google Maps API Key</label>
+                  <input id="googleApiKeyInput" type="password" autocomplete="new-password" placeholder="Chave de acesso à API do Google..." />
+                </div>
+                <div class="field">
+                  <label for="pipedriveTokenInput">Token CRM (Pipedrive)</label>
+                  <input id="pipedriveTokenInput" type="password" autocomplete="new-password" placeholder="Token do Pipedrive (opcional)" />
+                </div>
+                <div class="field">
+                  <label for="maxPagesInput">Limite de Páginas (Plano)</label>
+                  <input id="maxPagesInput" type="number" min="1" max="10" placeholder="Ex: 3 (1 pág = ~20 leads)" />
+                </div>
               </div>
 
-              <div class="field">
-                <label for="pipedriveTokenInput">Token CRM (Pipedrive)</label>
-                <input id="pipedriveTokenInput" type="password" autocomplete="new-password" placeholder="Token do CRM (opcional)" />
-              </div>
-
-              <div class="field">
-                <label for="maxPagesInput">Limite de Páginas (Plano)</label>
-                <input id="maxPagesInput" type="number" min="1" max="10" placeholder="Ex: 3 (1 = ~20 leads)" />
+              <div class="actions">
+                <button class="btn btn-main" onclick="saveSettings()">Salvar Configurações</button>
+                <button class="btn" onclick="clearSettings()">Limpar Tudo</button>
+                <button class="btn" onclick="reloadGoogleMapsScript()">Recarregar Conexão de Mapa</button>
               </div>
             </div>
 
-            <div class="actions">
-              <button class="btn btn-main" onclick="saveSettings()">
-                Salvar configurações
-              </button>
-
-              <button class="btn" onclick="clearSettings()">
-                Limpar configurações
-              </button>
-
-              <button class="btn" onclick="reloadGoogleMapsScript()">
-                Recarregar Conexão
-              </button>
+            <!-- CONTEÚDO TAB 2: FILTROS DE QUALIDADE -->
+            <div id="tab-filtros" class="tab-content">
+              <p style="color:var(--muted); font-size:13px; margin-bottom: 20px;">Ative para ocultar automaticamente os leads que não atendem aos critérios durante a pesquisa.</p>
+              
+              <div class="grid-2">
+                <div>
+                  <div class="switch-wrap">
+                    <span>Exigir Telefone</span>
+                    <label class="switch">
+                      <input type="checkbox" id="filterReqPhone" onchange="toggleQualityFilter()">
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <p style="font-size:12px; color:var(--muted); margin-top:-6px; margin-bottom:16px;">Esconde leads que não possuem telefone cadastrado no Google.</p>
+                </div>
+                
+                <div>
+                  <div class="switch-wrap">
+                    <span>Exigir Website</span>
+                    <label class="switch">
+                      <input type="checkbox" id="filterReqSite" onchange="toggleQualityFilter()">
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <p style="font-size:12px; color:var(--muted); margin-top:-6px; margin-bottom:16px;">Esconde leads que não possuem um site configurado.</p>
+                </div>
+              </div>
             </div>
+
+            <!-- CONTEÚDO TAB 3: MINHA CONTA -->
+            <div id="tab-conta" class="tab-content">
+              <p style="color:var(--muted); font-size:13px; margin-bottom: 20px;">Informações do seu perfil ativo na plataforma.</p>
+              
+              <div class="grid-2" style="max-width: 600px; margin-bottom: 30px;">
+                <div class="field">
+                  <label>Nome Completo Identificado</label>
+                  <input type="text" id="accFullName" readonly style="background:rgba(255,255,255,0.02); color:var(--muted); cursor:not-allowed;" />
+                </div>
+                <div class="field">
+                  <label>E-mail da Conta</label>
+                  <input type="text" id="accEmail" readonly style="background:rgba(255,255,255,0.02); color:var(--muted); cursor:not-allowed;" />
+                </div>
+                <div class="field">
+                  <label>Nível de Acesso</label>
+                  <input type="text" id="accRole" readonly style="background:rgba(255,255,255,0.02); color:var(--muted); cursor:not-allowed;" />
+                </div>
+              </div>
+
+              <div class="actions" style="border-top: 1px solid var(--border); padding-top: 24px;">
+                <button class="btn btn-danger" onclick="handleSupabaseLogout()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                  Encerrar Sessão (Logout)
+                </button>
+              </div>
+            </div>
+
           </div>
         </section>
+
       </main>
     </div>
 
-    <!-- MODAL DE ESCOLHA DE PASTA -->
+    <!-- MODAL PREMIUM DE ESCOLHA DE PASTA -->
     <div id="folderModal" class="modal-overlay">
       <div class="modal">
-        <h3>Salvar Leads</h3>
-        <p>Em qual pasta deseja guardar estes leads?</p>
+        <h3>Salvar Leads Selecionados</h3>
+        <p>Em qual pasta deseja guardar os contatos para prospecção?</p>
         
-        <label>Selecionar pasta existente</label>
+        <label>Selecione uma pasta existente</label>
         <select id="folderSelect">
-          <option value="">-- Selecione --</option>
+          <option value="">-- Nenhuma selecionada --</option>
         </select>
         
-        <div class="modal-divider">OU CRIAR NOVA</div>
+        <div class="modal-divider">OU CRIE UMA NOVA</div>
         
         <label>Nova pasta</label>
-        <input type="text" id="newFolderInput" placeholder="Ex: Contatos - Março">
+        <input type="text" id="newFolderInput" placeholder="Ex: Dentistas - Março / SP">
         
         <div class="modal-buttons">
-          <button class="btn" onclick="closeFolderModal()">Cancelar</button>
-          <button class="btn btn-main" onclick="confirmFolderSave()">Salvar</button>
+          <button class="btn" style="border-color:transparent;" onclick="closeFolderModal()">Cancelar</button>
+          <button class="btn btn-main" onclick="confirmFolderSave()">Confirmar e Salvar</button>
         </div>
       </div>
     </div>
@@ -586,7 +727,10 @@
       
       let currentUserEmail = '', currentUserFullName = '', isUserAdmin = false; 
 
-      const STORAGE_KEYS = { saved: 'vlhunt_saved_leads_v2', exported: 'vlhunt_exported_leads_v2' };
+      // Configuração Local de Filtros de Qualidade
+      let qualityFilters = { reqPhone: false, reqSite: false };
+
+      const STORAGE_KEYS = { saved: 'vlhunt_saved_leads_v2', exported: 'vlhunt_exported_leads_v2', filters: 'vlhunt_quality_filters' };
 
       // ============================================
       // FUNÇÕES DE AUTENTICAÇÃO E INICIALIZAÇÃO
@@ -612,10 +756,16 @@
         document.getElementById('topUserName').textContent = userInfo.fullName;
         document.getElementById('topUserInitials').textContent = userInfo.initials;
 
+        // Preenche dados da aba Minha Conta
+        document.getElementById('accFullName').value = userInfo.fullName;
+        document.getElementById('accEmail').value = email;
+        document.getElementById('accRole').value = isUserAdmin ? "Administrador" : "Usuário Comum";
+
         const navSettingsBtn = document.getElementById('navSettingsBtn');
         if (isUserAdmin) { navSettingsBtn.style.display = 'flex'; } else { navSettingsBtn.style.display = 'none'; }
 
-        showSection('extract');
+        // Iniciar direto na Dashboard
+        showSection('dashboard');
         await carregarConfiguracoesDoSupabase();
       }
 
@@ -635,17 +785,16 @@
       });
 
       async function handleSupabaseLogout() {
-        if(confirm('Tem certeza que deseja sair?')) { await supa.auth.signOut(); window.location.reload(); }
+        if(confirm('Tem certeza que deseja encerrar a sessão?')) { await supa.auth.signOut(); window.location.reload(); }
       }
 
       document.addEventListener('DOMContentLoaded', async () => {
-        loadLocalData(); updateCounters(); updateFolderFilterDropdown(); renderSavedLeads(); renderExportedLeads();
-
-        localStorage.removeItem('vlhunt_last_name');
-        localStorage.removeItem('vlhunt_last_niche');
-        localStorage.removeItem('vlhunt_last_city');
-        localStorage.removeItem('vlhunt_last_district');
-        localStorage.removeItem('vlhunt_last_street');
+        loadLocalData(); 
+        updateCounters(); 
+        updateFolderFilterDropdown(); 
+        renderSavedLeads(); 
+        renderExportedLeads();
+        loadQualityFilters(); // Carrega os filtros salvos do Switch
 
         const searchFields = document.querySelectorAll('#nameInput, #nicheInput, #districtInput, #streetInput'); 
         searchFields.forEach(field => {
@@ -659,8 +808,37 @@
       });
 
       // ============================================
-      // FUNÇÕES DE CONFIGURAÇÃO (SUPABASE)
+      // FUNÇÕES DE CONFIGURAÇÃO E TABS
       // ============================================
+
+      function switchSettingsTab(tabId, btnElement) {
+        // Remove active dos botões e esconde abas
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        
+        // Ativa o clicado
+        btnElement.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+      }
+
+      function loadQualityFilters() {
+        try { 
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.filters));
+          if(saved) {
+             qualityFilters = saved;
+             document.getElementById('filterReqPhone').checked = qualityFilters.reqPhone;
+             document.getElementById('filterReqSite').checked = qualityFilters.reqSite;
+          }
+        } catch(e) {}
+      }
+
+      function toggleQualityFilter() {
+        qualityFilters.reqPhone = document.getElementById('filterReqPhone').checked;
+        qualityFilters.reqSite = document.getElementById('filterReqSite').checked;
+        localStorage.setItem(STORAGE_KEYS.filters, JSON.stringify(qualityFilters));
+        toast('Filtros de qualidade atualizados!');
+        if(leads.length > 0) renderLeads(); // re-renderiza aplicando a máscara se estiver extraindo
+      }
 
       async function carregarConfiguracoesDoSupabase() {
         try {
@@ -680,6 +858,9 @@
              if(gKeyInput) gKeyInput.value = configSupabase.googleApiKey;
              if(pKeyInput) pKeyInput.value = configSupabase.pipedriveToken;
              if(mPagesInput) mPagesInput.value = configSupabase.maxPages;
+
+             document.getElementById('dashPipeStatus').textContent = configSupabase.pipedriveToken ? "Configurado" : "Pendente";
+             document.getElementById('dashPagesLimit').textContent = `${configSupabase.maxPages} páginas (~${configSupabase.maxPages * 20} leads)`;
           }
         } catch (err) { console.error(err); }
       }
@@ -691,7 +872,7 @@
         const pToken = document.getElementById('pipedriveTokenInput').value.trim();
         const mPages = parseInt(document.getElementById('maxPagesInput').value.trim()) || 3;
 
-        const btn = document.querySelector('button[onclick="saveSettings()"]');
+        const btn = document.querySelector('#tab-integra button.btn-main');
         const oldText = btn.textContent; btn.textContent = 'Salvando...'; btn.disabled = true;
 
         try {
@@ -717,7 +898,10 @@
           configSupabase.pipedriveToken = pToken;
           configSupabase.maxPages = mPages;
 
-          toast('Configurações salvas!');
+          document.getElementById('dashPipeStatus').textContent = pToken ? "Configurado" : "Pendente";
+          document.getElementById('dashPagesLimit').textContent = `${mPages} páginas (~${mPages * 20} leads)`;
+
+          toast('Configurações da API salvas com sucesso!');
           if (gKey) loadGoogleMapsScript(gKey);
         } catch (err) { 
           console.error(err);
@@ -728,32 +912,43 @@
       }
 
       async function clearSettings() {
-        if (!confirm('Deseja limpar as chaves de acesso para TODOS os usuários?')) return;
+        if (!confirm('ATENÇÃO: Deseja limpar as chaves de acesso para TODOS os usuários?')) return;
         document.getElementById('googleApiKeyInput').value = ''; 
         document.getElementById('pipedriveTokenInput').value = '';
         document.getElementById('maxPagesInput').value = '3';
-        await saveSettings(); toast('Configurações limpas.');
+        await saveSettings(); toast('Chaves de API limpas.');
       }
 
       function reloadGoogleMapsScript() {
         const settings = getSettings();
-        if (!settings.googleApiKey) { toast('Nenhuma API Key encontrada no banco.'); return; }
+        if (!settings.googleApiKey) { toast('Nenhuma API Key encontrada.'); return; }
         loadGoogleMapsScript(settings.googleApiKey, true);
       }
 
       // ============================================
-      // RESTANTE DO CÓDIGO (MAPS, LEADS, PIPEDRIVE)
+      // RESTANTE DO CÓDIGO (Navegação, Maps, Leads)
       // ============================================
 
       function showSection(section) {
-        if (section === 'settings' && !isUserAdmin) { toast('Acesso negado.'); return; }
-        const sections = { extract: document.getElementById('extractSection'), saved: document.getElementById('savedSection'), pipedrive: document.getElementById('pipedriveSection'), settings: document.getElementById('settingsSection') };
+        if (section === 'settings' && !isUserAdmin) { toast('Acesso negado. Apenas administradores.'); return; }
+        
+        const sections = { dashboard: document.getElementById('dashboardSection'), extract: document.getElementById('extractSection'), saved: document.getElementById('savedSection'), pipedrive: document.getElementById('pipedriveSection'), settings: document.getElementById('settingsSection') };
+        
         Object.values(sections).forEach(el => el.classList.add('hidden'));
         if (sections[section]) sections[section].classList.remove('hidden');
 
         document.querySelectorAll('.menu-item').forEach(btn => btn.classList.remove('active'));
         const activeButton = document.querySelector(`.menu-item[data-section="${section}"]`);
         if (activeButton) activeButton.classList.add('active');
+
+        // Mudar Título do Topo Dinamicamente
+        const topTitle = document.getElementById('topTitle');
+        const topSubtitle = document.getElementById('topSubtitle');
+        if(section === 'dashboard') { topTitle.textContent = "Dashboard"; topSubtitle.textContent = "Visão geral do seu funil."; }
+        else if(section === 'extract') { topTitle.textContent = "Prospecção Ativa"; topSubtitle.textContent = "Encontre novos clientes no Maps."; }
+        else if(section === 'saved') { topTitle.textContent = "Leads Salvos"; topSubtitle.textContent = "Sua base de contatos curados."; }
+        else if(section === 'pipedrive') { topTitle.textContent = "Histórico CRM"; topSubtitle.textContent = "Log de envios para o Pipedrive."; }
+        else if(section === 'settings') { topTitle.textContent = "Painel Master"; topSubtitle.textContent = "Controle das chaves e parâmetros."; }
 
         if (section === 'saved') { updateFolderFilterDropdown(); renderSavedLeads(); }
         if (section === 'pipedrive') renderExportedLeads();
@@ -811,59 +1006,15 @@
                     types: ['address'], componentRestrictions: { country: 'br' }, fields: ['name', 'address_components', 'geometry']
                 });
             }
-
-            if (autoCity) {
-                autoCity.addListener('place_changed', () => {
-                    const place = autoCity.getPlace();
-                    if (place && place.name) {
-                        let formatted = place.name;
-                        if(place.address_components) {
-                            const state = place.address_components.find(c => c.types.includes("administrative_area_level_1"));
-                            if(state) formatted += `, ${state.short_name}`;
-                        }
-                        cityInput.value = formatted;
-
-                        if (place.geometry && place.geometry.viewport) {
-                            if (autoDistrict) { autoDistrict.setBounds(place.geometry.viewport); autoDistrict.setOptions({ strictBounds: true }); }
-                            if (autoStreet) { autoStreet.setBounds(place.geometry.viewport); autoStreet.setOptions({ strictBounds: true }); }
-                        }
-                    }
-                });
-                cityInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
-            }
-
-            if (autoDistrict) {
-                autoDistrict.addListener('place_changed', () => {
-                    const place = autoDistrict.getPlace();
-                    if (place && place.name) {
-                        districtInput.value = place.name; 
-                        if (place.geometry && place.geometry.viewport) {
-                            if (autoStreet) { autoStreet.setBounds(place.geometry.viewport); autoStreet.setOptions({ strictBounds: true }); }
-                        }
-                    }
-                });
-                districtInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
-            }
-
-            if (autoStreet) {
-                autoStreet.addListener('place_changed', () => {
-                    const place = autoStreet.getPlace();
-                    if (place && place.address_components) {
-                        const route = place.address_components.find(c => c.types.includes('route'));
-                        if (route) streetInput.value = route.long_name;
-                        else if (place.name) streetInput.value = place.name;
-                    } else if (place && place.name) streetInput.value = place.name;
-                });
-                streetInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
-            }
         }
-        toast('Sistema geográfico conectado!');
+        toast('Conectado à Base do Google!');
       }
 
       function updateCounters() {
         document.getElementById('savedCount').textContent = savedLeads.length;
         document.getElementById('exportedCount').textContent = exportedLeads.length;
-        document.getElementById('pendingCount').textContent = leads.length; 
+        document.getElementById('pendingCount').textContent = leads.length; // Aqui representa leads extraídos nesta sessão
+        document.getElementById('foundCount').textContent = leads.length; // Se houver filtro visual, alteramos em renderLeads
       }
 
       function normalizeString(str) { return (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
@@ -883,8 +1034,8 @@
 
         if (!name && (!niche || !city)) { toast('Digite o NOME ou NICHO + CIDADE.'); return; }
         const settings = getSettings();
-        if (!settings.googleApiKey) { toast('O Admin precisa configurar a API.'); if (isUserAdmin) showSection('settings'); return; }
-        if (!placesService) { toast('Carregando base de dados...'); return; }
+        if (!settings.googleApiKey) { toast('Configuração de API pendente.'); return; }
+        if (!placesService) { toast('Conectando ao banco de dados geográfico...'); return; }
 
         let queryParts = [];
         if (name) queryParts.push(name);
@@ -900,19 +1051,17 @@
         document.getElementById('filterResultsInput').value = '';
         document.getElementById('sortResultsSelect').value = 'default';
 
-        const btn = document.getElementById('searchBtn'); btn.disabled = true; btn.textContent = 'Extraindo...';
+        const btn = document.getElementById('searchBtn'); btn.disabled = true; btn.textContent = 'Minerando...';
 
         renderLeads();
         placesService.textSearch({ query: queryParts.join(' '), type: 'establishment' }, handlePlacesResults);
       }
 
-      // NOVO MOTOR CORRIGIDO E OTIMIZADO CONTRA BLOQUEIOS
       function handlePlacesResults(results, status, pagination) {
         const btn = document.getElementById('searchBtn');
         
-        // Se a API for muito rápida e o Google bloquear, nós damos uma pausa visível no botão.
         if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-           btn.textContent = `Pausa anti-bloqueio... (${leads.length})`;
+           btn.textContent = `Delay Anti-Bloqueio... (${leads.length})`;
            setTimeout(() => { 
                if (pagination && pagination.hasNextPage) pagination.nextPage(); 
                else finalizarBusca();
@@ -942,28 +1091,18 @@
 
         const limiteMaximoAdmin = parseInt(configSupabase.maxPages, 10) || 3;
 
-        // Se tem página e está dentro do limite do plano, avança
         if (pagination && pagination.hasNextPage && currentApiPage < limiteMaximoAdmin) {
           currentApiPage++;
-          btn.textContent = `Buscando página ${currentApiPage}/${limiteMaximoAdmin}... (${leads.length})`;
-          
-          // Delay seguro de 3.5s para não causar "engarrafamento" com a extração de detalhes
-          setTimeout(() => { 
-              pagination.nextPage(); 
-          }, 3500); 
+          btn.textContent = `Buscando página ${currentApiPage}/${limiteMaximoAdmin}...`;
+          setTimeout(() => { pagination.nextPage(); }, 3500); 
         } else {
           finalizarBusca();
         }
 
         function finalizarBusca() {
-          isSearching = false; 
-          btn.disabled = false; 
-          btn.textContent = 'Extrair Leads';
-
+          isSearching = false; btn.disabled = false; btn.textContent = 'Extrair Leads';
           let finalMsg = leads.length === 0 ? 'Nenhum lead novo retornado.' : `${leads.length} encontrados.`;
-          if (ignoredLeadsCount > 0) {
-              finalMsg += ` (${ignoredLeadsCount} ocultados pois já estão salvos)`;
-          }
+          if (ignoredLeadsCount > 0) finalMsg += ` (${ignoredLeadsCount} ocultados pois já estão salvos)`;
           toast(finalMsg);
         }
       }
@@ -982,7 +1121,6 @@
 
         placesService.getDetails({ placeId: placeId, fields: ['name', 'formatted_address', 'formatted_phone_number', 'international_phone_number', 'website', 'url', 'rating', 'user_ratings_total', 'photos'] },
           (place, status) => {
-            // Em caso de limite de dados pesados, espera 3s
             if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) { 
                 detailsQueue.unshift(placeId); 
                 setTimeout(() => { isProcessingQueue = false; processQueue(); }, 3000); 
@@ -995,7 +1133,6 @@
                 renderLeads();
               }
             }
-            // Aumentado o delay de extração (de 500 para 800ms) para proteger a busca por páginas
             setTimeout(() => { isProcessingQueue = false; processQueue(); }, 800);
           }
         );
@@ -1006,11 +1143,16 @@
         grid.innerHTML = '';
 
         const filterText = (document.getElementById('filterResultsInput')?.value || '').toLowerCase();
+        
         let displayLeads = leads.filter(l => 
           l.name.toLowerCase().includes(filterText) || 
           l.address.toLowerCase().includes(filterText) ||
           (l.phone && l.phone.includes(filterText))
         );
+
+        // Aplicando Filtros de Qualidade (Aba Configurações)
+        if (qualityFilters.reqPhone) { displayLeads = displayLeads.filter(l => l.phone && l.phone.trim() !== ''); }
+        if (qualityFilters.reqSite) { displayLeads = displayLeads.filter(l => l.website && l.website.trim() !== ''); }
 
         const sortVal = document.getElementById('sortResultsSelect')?.value || 'default';
         if (sortVal === 'az') displayLeads.sort((a, b) => a.name.localeCompare(b.name));
@@ -1018,15 +1160,11 @@
         else if (sortVal === 'rating_desc') displayLeads.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         else if (sortVal === 'rating_asc') displayLeads.sort((a, b) => (a.rating || 0) - (b.rating || 0));
 
-        const foundEl = document.getElementById('foundCount');
-        if (filterText && displayLeads.length !== leads.length) {
-            foundEl.textContent = `${displayLeads.length} / ${leads.length}`;
-        } else {
-            foundEl.textContent = leads.length;
-        }
+        const foundEl = document.getElementById('foundCount'); // Na Dashboard
+        foundEl.textContent = displayLeads.length;
 
         if (!displayLeads.length) { 
-            empty.innerHTML = isSearching ? 'Pesquisando...' : (leads.length ? 'Nenhum lead corresponde ao filtro digitado.' : 'Nenhum lead pesquisado.'); 
+            empty.innerHTML = isSearching ? 'Pesquisando...' : (leads.length ? 'Nenhum lead corresponde aos filtros.' : 'Inicie uma pesquisa acima.'); 
             empty.classList.remove('hidden'); 
             return; 
         }
@@ -1065,7 +1203,7 @@
           <div class="lead-buttons">
             ${whatsappUrl ? `<a class="small-btn" href="${escapeAttr(whatsappUrl)}" target="_blank">WhatsApp</a>` : ''}
             ${lead.website ? `<a class="small-btn" href="${escapeAttr(lead.website)}" target="_blank">Site</a>` : ''}
-            <a class="small-btn" href="${escapeAttr(mapsUrl)}" target="_blank">Ver Mapa</a>
+            <a class="small-btn" href="${escapeAttr(mapsUrl)}" target="_blank">Mapa</a>
             ${source === 'current' ? `<button class="small-btn" style="border-color: var(--dark);" onclick="saveLeadById('${escapeAttr(lead.place_id)}')">Salvar</button>` : ''}
           </div>
           <div class="lead-status-row">
@@ -1083,14 +1221,31 @@
       }
 
       function toggleLeadSelection(placeId, checked) { checked ? selectedLeadIds.add(placeId) : selectedLeadIds.delete(placeId); renderLeads(); }
-      function toggleSelectAll(checked) { checked ? leads.forEach(l => selectedLeadIds.add(l.place_id)) : selectedLeadIds.clear(); renderLeads(); }
+      
+      function toggleSelectAll(checked) { 
+        if(checked) {
+            // Selecionar apenas os que estão visíveis na tela (respeita o filtro)
+            const filterText = (document.getElementById('filterResultsInput')?.value || '').toLowerCase();
+            leads.forEach(l => {
+              const matchesFilter = l.name.toLowerCase().includes(filterText) || l.address.toLowerCase().includes(filterText) || (l.phone && l.phone.includes(filterText));
+              const reqPhone = !qualityFilters.reqPhone || (l.phone && l.phone.trim() !== '');
+              const reqSite = !qualityFilters.reqSite || (l.website && l.website.trim() !== '');
+              
+              if(matchesFilter && reqPhone && reqSite) selectedLeadIds.add(l.place_id);
+            });
+        } else {
+            selectedLeadIds.clear(); 
+        }
+        renderLeads(); 
+      }
+      
       function clearSelected() { selectedLeadIds.clear(); document.getElementById('selectAllCheckbox').checked = false; renderLeads(); toast('Seleção limpa.'); }
       function getSelectedLeads() { return leads.filter(l => selectedLeadIds.has(l.place_id)); }
 
       function openFolderModal() {
         const select = document.getElementById('folderSelect');
         const uniqueFolders = [...new Set(savedLeads.map(l => l.folder || 'Geral'))];
-        select.innerHTML = '<option value="">-- Selecione uma pasta --</option>';
+        select.innerHTML = '<option value="">-- Nenhuma selecionada --</option>';
         uniqueFolders.forEach(f => select.innerHTML += `<option value="${escapeAttr(f)}">${escapeHtml(f)}</option>`);
         document.getElementById('newFolderInput').value = '';
         document.getElementById('folderModal').style.display = 'flex';
@@ -1109,7 +1264,7 @@
         });
         localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
         updateFolderFilterDropdown(); renderSavedLeads(); renderLeads(); updateCounters(); closeFolderModal();
-        toast(`✅ ${count} lead(s) salvo(s).`);
+        toast(`✅ ${count} lead(s) salvo(s) na pasta "${folderName}".`);
       }
 
       function saveLeadById(id) {
@@ -1122,9 +1277,9 @@
 
       function saveSelectedLeads() {
         const selected = getSelectedLeads();
-        if (!selected.length) { toast('Selecione leads.'); return; }
+        if (!selected.length) { toast('Marque as caixinhas dos leads que deseja salvar.'); return; }
         pendingLeadsToSave = selected.filter(l => !savedLeads.some(s => s.place_id === l.place_id));
-        if (!pendingLeadsToSave.length) { toast('Leads selecionados já estão salvos.'); return; }
+        if (!pendingLeadsToSave.length) { toast('Todos os selecionados já foram salvos anteriormente.'); return; }
         openFolderModal();
       }
 
@@ -1151,10 +1306,10 @@
 
       function clearSavedLeads() {
         const filterVal = document.getElementById('savedFolderFilter').value;
-        if (filterVal === 'Todas') { if (!confirm('Apagar TODOS os leads de TODAS as pastas?')) return; savedLeads = []; } 
+        if (filterVal === 'Todas') { if (!confirm('Isso apagará TODOS os leads de TODAS as pastas. Continuar?')) return; savedLeads = []; } 
         else { if (!confirm(`Apagar TODOS os leads da pasta "${filterVal}"?`)) return; savedLeads = savedLeads.filter(l => (l.folder || 'Geral') !== filterVal); }
         localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
-        updateFolderFilterDropdown(); renderSavedLeads(); updateCounters(); toast('Apagados com sucesso.');
+        updateFolderFilterDropdown(); renderSavedLeads(); updateCounters(); toast('Leads apagados com sucesso.');
       }
 
       function changeLeadStatus(id, status) {
@@ -1167,12 +1322,12 @@
       async function sendSavedToPipedrive() {
         const filterVal = document.getElementById('savedFolderFilter').value;
         const list = filterVal === 'Todas' ? savedLeads : savedLeads.filter(l => (l.folder || 'Geral') === filterVal);
-        if (!list.length) { toast('Nenhum lead para exportar.'); return; }
+        if (!list.length) { toast('Nenhum lead nesta pasta para exportar.'); return; }
 
         const settings = getSettings();
-        if (!settings.pipedriveToken) { toast('O token do CRM não está configurado.'); if (isUserAdmin) showSection('settings'); return; }
+        if (!settings.pipedriveToken) { toast('Vá em Configurações e insira o Token do CRM.'); return; }
 
-        let success = 0, failed = 0; toast(`Enviando ${list.length} lead(s)...`);
+        let success = 0, failed = 0; toast(`Enviando ${list.length} lead(s) para Pipedrive...`);
 
         for (const lead of list) {
           if(lead.exported) continue; 
@@ -1199,7 +1354,7 @@
         }
         localStorage.setItem(STORAGE_KEYS.exported, JSON.stringify(exportedLeads)); localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
         renderLeads(); renderSavedLeads(); renderExportedLeads(); updateCounters();
-        toast(failed ? `${success} enviados, ${failed} falhas.` : `${success} lead(s) enviados.`);
+        toast(failed ? `${success} enviados, ${failed} falharam.` : `${success} lead(s) exportados com sucesso.`);
       }
 
       function renderExportedLeads() {
@@ -1217,7 +1372,7 @@
         document.getElementById('filterResultsInput').value = '';
         document.getElementById('sortResultsSelect').value = 'default';
         document.getElementById('searchBtn').disabled = false; document.getElementById('searchBtn').textContent = 'Extrair Leads';
-        renderLeads(); updateCounters(); toast('Pesquisa limpa.');
+        renderLeads(); updateCounters(); toast('Pesquisa apagada.');
       }
 
       function exportSavedToCSV() {
@@ -1227,7 +1382,7 @@
         
         const csv = [['Empresa', 'Telefone', 'Site', 'Endereço', 'Avaliação', 'Pasta', 'Status', 'Google Maps'], ...list.map(l => [l.name || '', l.phone || '', l.website || '', l.address || '', l.rating || '', l.folder || 'Geral', l.status || '', l.url || ''])].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')).join('\n');
         const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }));
-        a.download = `leads-salvos-${filterVal}-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); toast('CSV exportado.');
+        a.download = `leads-salvos-${filterVal}-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); toast('CSV Exportado!');
       }
 
       function exportCurrentToCSV() {
@@ -1240,14 +1395,14 @@
           (l.phone && l.phone.includes(filterText))
         );
 
-        if (!exportData.length) { toast('Nenhum lead corresponde ao filtro para exportar.'); return; }
+        if (!exportData.length) { toast('Nenhum lead corresponde ao filtro.'); return; }
 
         const csv = [['Empresa', 'Telefone', 'Site', 'Endereço', 'Avaliação', 'Status', 'Google Maps'], 
           ...exportData.map(l => [l.name || '', l.phone || '', l.website || '', l.address || '', l.rating || '', l.status || '', l.url || ''])
         ].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')).join('\n');
         
         const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }));
-        a.download = `extracao-leads-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); toast(`${exportData.length} leads exportados.`);
+        a.download = `extracao-leads-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); toast(`${exportData.length} leads baixados.`);
       }
 
       function makeWhatsAppUrl(phone, name) {
@@ -1263,15 +1418,16 @@
         
         leads.forEach(lead => {
           const matchesFilter = lead.name.toLowerCase().includes(filterText) || lead.address.toLowerCase().includes(filterText) || (lead.phone && lead.phone.includes(filterText));
-          
-          if (matchesFilter && lead.phone && lead.phone.trim() !== '') {
+          const reqSite = !qualityFilters.reqSite || (lead.website && lead.website.trim() !== ''); // Respeita o filtro de site
+
+          if (matchesFilter && reqSite && lead.phone && lead.phone.trim() !== '') {
             selectedLeadIds.add(lead.place_id);
             count++;
           }
         });
         renderLeads();
         if(count > 0) toast(`✅ ${count} leads com telefone selecionados!`);
-        else toast('Nenhum lead com telefone na tela.');
+        else toast('Nenhum lead válido com telefone na tela.');
       }
 
       function selectWithWebsite() {
@@ -1280,15 +1436,16 @@
 
         leads.forEach(lead => {
           const matchesFilter = lead.name.toLowerCase().includes(filterText) || lead.address.toLowerCase().includes(filterText) || (lead.phone && lead.phone.includes(filterText));
-          
-          if (matchesFilter && lead.website && lead.website.trim() !== '') {
+          const reqPhone = !qualityFilters.reqPhone || (lead.phone && lead.phone.trim() !== ''); // Respeita o filtro de telefone
+
+          if (matchesFilter && reqPhone && lead.website && lead.website.trim() !== '') {
             selectedLeadIds.add(lead.place_id);
             count++;
           }
         });
         renderLeads();
         if(count > 0) toast(`✅ ${count} leads com site selecionados!`);
-        else toast('Nenhum lead com site na tela.');
+        else toast('Nenhum lead válido com site na tela.');
       }
 
       window.addEventListener('scroll', () => {
