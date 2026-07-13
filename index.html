@@ -64,8 +64,10 @@
     .topbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 24px; }
     .topbar h2 { margin: 8px 0 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
     .topbar p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
-    .user-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; display: flex; align-items: center; gap: 12px; min-width: 142px; }
-    .user-avatar { width: 36px; height: 36px; border-radius: 10px; background: var(--border); color: var(--dark); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; }
+    .user-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; display: flex; align-items: center; gap: 12px; min-width: 142px; cursor: pointer; transition: 0.2s; }
+    .user-card:hover { border-color: var(--primary); }
+    .user-avatar { width: 36px; height: 36px; border-radius: 10px; background: var(--border); color: var(--dark); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; overflow: hidden; }
+    .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .user-card strong { font-size: 13px; font-weight: 600;}
     .user-card span { font-size: 12px; color: var(--muted); }
 
@@ -87,14 +89,13 @@
     .grid-search { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: end; }
     .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
     
-    /* MODIFICADO PARA INCLUIR TEXTAREA COM O MESMO ESTILO */
     .field input, .field select, .field textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; font-size: 14px; outline: none; background: var(--bg); color: var(--dark); transition: 0.2s; }
     .field input, .field select { height: 44px; }
     .field textarea { padding: 12px 14px; resize: vertical; }
     .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
     
     /* GOOGLE AUTOCOMPLETE */
-    .pac-container { background-color: var(--card); border: 1px solid var(--border); border-radius: 8px; font-family: inherit; box-shadow: var(--shadow); margin-top: 4px; }
+    .pac-container { background-color: var(--card); border: 1px solid var(--border); border-radius: 8px; font-family: inherit; box-shadow: var(--shadow); margin-top: 4px; z-index: 100000; }
     .pac-item { color: var(--dark); border-top: 1px solid var(--border); padding: 8px 12px; cursor: pointer; }
     .pac-item:hover { background-color: var(--nav-hover); }
     .pac-item-query { color: var(--dark); font-weight: 600; }
@@ -112,12 +113,11 @@
     .btn-danger { color: #f87171; border-color: #7f1d1d; }
     .btn-danger:hover { background: #7f1d1d; color: #fca5a5; }
 
-    /* BOTÕES FILTRO ATIVO */
     .btn-active { background: var(--primary); color: var(--primary-inv); border-color: var(--primary); }
     .btn-active:hover { background: #e5e5e5; }
     .btn-active svg { color: var(--primary-inv); }
 
-    /* TABS (CONFIGURAÇÕES) */
+    /* TABS */
     .settings-nav { display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 0; overflow-x: auto; }
     .tab-btn { background: transparent; border: none; color: var(--muted); padding: 12px 16px; font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s; margin-bottom: -1px; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
     .tab-btn:hover { color: var(--dark); }
@@ -132,7 +132,7 @@
     .funnel-bar-fill { height: 100%; background: var(--primary); border-radius: 4px; transition: width 1s ease; }
     .funnel-value { width: 40px; text-align: right; font-weight: 700; }
 
-    /* TOGGLE SWITCH (FILTROS) */
+    /* TOGGLE SWITCH */
     .switch-wrap { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; }
     .switch-wrap span { font-size: 14px; font-weight: 600; }
     .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
@@ -193,7 +193,7 @@
     th { font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); background: var(--card); font-size: 11px; }
     td { color: var(--dark); }
     
-    /* MODAL PREMIUM (COM BLUR E ANIMAÇÃO) */
+    /* MODAL PREMIUM */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 10000; animation: fadeIn 0.2s ease; }
     .modal { background: var(--card); padding: 32px; border-radius: var(--radius); width: 420px; max-width: 90%; border: 1px solid var(--border); box-shadow: var(--shadow); transform: scale(0.95); animation: scaleUp 0.2s ease forwards; }
     .modal h3 { margin-top: 0; font-size: 20px; font-weight: 800; margin-bottom: 8px; color: var(--dark); }
@@ -212,10 +212,41 @@
     .folder-filter-wrap select { height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; font-size: 13px; font-weight: 500; min-width: 200px; outline: none; background: transparent; color: var(--dark); cursor: pointer; transition: 0.2s; }
     .folder-filter-wrap select:hover { background: var(--nav-hover); }
 
+    /* ====== PERFIL & MINHA CONTA ====== */
+    .profile-wrap { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+    .avatar-box { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px 24px; display: flex; flex-direction: column; align-items: center; min-width: 240px; }
+    .avatar-img-wrap { width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 2px solid var(--border); margin-bottom: 16px; background: var(--nav-hover); display: flex; align-items: center; justify-content: center; font-size: 32px; color: var(--muted); font-weight: 800; }
+    .avatar-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-upload-btn { background: var(--nav-hover); color: var(--dark); font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 6px; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
+    .avatar-upload-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .profile-form-wrap { flex: 1; min-width: 300px; }
+
+    /* ====== RANKING GAMIFICAÇÃO ====== */
+    .leaderboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
+    .leaderboard-header select { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--dark); font-size: 13px; outline: none; }
+    .leaderboard-list { display: flex; flex-direction: column; gap: 12px; }
+    .rank-item { display: flex; align-items: center; padding: 16px 20px; border-radius: var(--radius); background: var(--bg); border: 1px solid var(--border); transition: 0.2s; }
+    .rank-item:hover { border-color: var(--primary); transform: translateX(5px); }
+    
+    .rank-1 { border-left: 4px solid #fbbf24; background: linear-gradient(90deg, rgba(251, 191, 36, 0.05) 0%, transparent 100%); }
+    .rank-2 { border-left: 4px solid #9ca3af; background: linear-gradient(90deg, rgba(156, 163, 175, 0.05) 0%, transparent 100%); }
+    .rank-3 { border-left: 4px solid #b45309; background: linear-gradient(90deg, rgba(180, 83, 9, 0.05) 0%, transparent 100%); }
+    
+    .rank-pos { font-size: 20px; font-weight: 800; width: 50px; color: var(--dark); display: flex; align-items: center; gap: 4px;}
+    .rank-avatar { width: 46px; height: 46px; border-radius: 12px; background: var(--border); margin-right: 16px; object-fit: cover; }
+    .rank-info { flex: 1; }
+    .rank-info strong { display: block; font-size: 15px; color: var(--dark); margin-bottom: 2px; }
+    .rank-info span { font-size: 12px; color: var(--muted); background: var(--border); padding: 2px 8px; border-radius: 4px; }
+    .rank-stats { display: flex; gap: 32px; margin-right: 32px; }
+    .rank-stat-col { text-align: center; }
+    .rank-stat-col span { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+    .rank-stat-col strong { font-size: 16px; color: var(--dark); font-weight: 700; }
+    .rank-score { font-weight: 800; color: var(--primary-inv); font-size: 14px; background: var(--primary); padding: 8px 16px; border-radius: 20px; }
+
     /* MEDIA QUERIES */
     @media (max-width: 1400px) { .grid-search { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 1200px) { .leads-grid { grid-template-columns: repeat(2, 1fr); } .stats, .grid-2 { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 800px) { .sidebar { position: relative; width: 100%; bottom: auto; border-right: none; border-bottom: 1px solid var(--border); } .app { display: block; } .main { margin-left: 0; width: 100%; padding: 22px 16px; } .topbar, .section-head { align-items: flex-start; flex-direction: column; } .stats, .grid-2, .grid-search, .leads-grid { grid-template-columns: 1fr; } .toolbar-filters { flex-direction: column; align-items: stretch; } }
+    @media (max-width: 800px) { .sidebar { position: relative; width: 100%; bottom: auto; border-right: none; border-bottom: 1px solid var(--border); } .app { display: block; } .main { margin-left: 0; width: 100%; padding: 22px 16px; } .topbar, .section-head { align-items: flex-start; flex-direction: column; } .stats, .grid-2, .grid-search, .leads-grid { grid-template-columns: 1fr; } .toolbar-filters { flex-direction: column; align-items: stretch; } .rank-item { flex-wrap: wrap; gap: 12px; } .rank-stats { margin-right: 0; width: 100%; justify-content: flex-start; margin-top: 10px; } .rank-score { margin-left: auto; } }
 
     /* ====== LOGIN ====== */
     #loginOverlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; }
@@ -268,34 +299,49 @@
 
         <div class="menu-title">Menu Principal</div>
 
-        <!-- ABA EXTRAIR (PRIMEIRO) -->
+        <!-- ABA EXTRAIR -->
         <button class="menu-item active" data-section="extract" onclick="showSection('extract')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           Extrair Leads
         </button>
 
-        <!-- ABA DASHBOARD (SEGUNDO) -->
+        <!-- ABA DASHBOARD -->
         <button class="menu-item" data-section="dashboard" onclick="showSection('dashboard')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
           Dashboard
         </button>
 
+        <!-- ABA RANKING GAMIFICAÇÃO (NOVO) -->
+        <button class="menu-item" data-section="ranking" onclick="showSection('ranking')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"></path><path d="M12 15a4 4 0 0 0 4 4h0a4 4 0 0 0-4-4h0a4 4 0 0 0-4 4h0a4 4 0 0 0 4-4Z"></path><path d="M8 8.5h8"></path><path d="M12 21v2"></path><path d="M12 3a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"></path></svg>
+          Ranking da Equipe
+        </button>
+
+        <!-- ABA PASTAS SALVOS -->
         <button class="menu-item" data-section="saved" onclick="showSection('saved')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
           Pastas & Salvos
         </button>
 
+        <!-- ABA PIPEDRIVE -->
         <button class="menu-item" data-section="pipedrive" onclick="showSection('pipedrive')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
           Pipedrive
         </button>
 
+        <!-- ABA CONFIGURAÇÕES -->
         <button class="menu-item" id="navSettingsBtn" data-section="settings" onclick="showSection('settings')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-2.82.33 1.65 1.65 0 0 0-.1 1.51v.1a2 2 0 0 1-3.91 0v-.1a1.65 1.65 0 0 0-1.82-1.33 1.65 1.65 0 0 0-1.51.1l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-2.82 1.65 1.65 0 0 0-1.51-.1h-.1a2 2 0 0 1 0-3.91h.1a1.65 1.65 0 0 0 1.33-1.82 1.65 1.65 0 0 0-.1-1.51l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 2.82-.33 1.65 1.65 0 0 0 .1-1.51v-.1a2 2 0 0 1 3.91 0v.1a1.65 1.65 0 0 0 1.82 1.33 1.65 1.65 0 0 0 1.51-.1l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 2.82 1.65 1.65 0 0 0 1.51.1h.1a2 2 0 0 1 0 3.91h-.1a1.65 1.65 0 0 0-1.33 1.82z"></path></svg>
           Configurações
         </button>
 
-        <button class="menu-item logout-btn" id="sideLogoutBtn" style="margin-top:auto;" onclick="handleSupabaseLogout()">
+        <!-- ABA MINHA CONTA (NOVO) -->
+        <button class="menu-item" data-section="account" onclick="showSection('account')" style="margin-top:auto; margin-bottom: 6px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Minha Conta
+        </button>
+
+        <button class="menu-item logout-btn" id="sideLogoutBtn" onclick="handleSupabaseLogout()">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
           Sair do Sistema
         </button>
@@ -308,16 +354,16 @@
             <p id="topSubtitle">Encontre novos clientes no Maps.</p>
           </div>
 
-          <div class="user-card">
+          <div class="user-card" onclick="showSection('account')" title="Acessar Minha Conta">
             <div class="user-avatar" id="topUserInitials">...</div>
             <div>
               <strong id="topUserName">Carregando...</strong><br />
-              <span>Usuário logado</span>
+              <span id="topUserRole">SDR</span>
             </div>
           </div>
         </div>
 
-        <!-- ABA DASHBOARD (NOVA VIEW CHIQUE) -->
+        <!-- ABA DASHBOARD -->
         <section id="dashboardSection" class="hidden">
           
           <div class="stats">
@@ -383,7 +429,7 @@
                   Iniciar nova Extração de Leads
                 </button>
                 <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('saved')">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #fbbf24;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #fbbf24;"><path d="M22 19a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
                   Ver Pastas e Leads Salvos
                 </button>
                 <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('pipedrive')">
@@ -497,7 +543,6 @@
               </div>
             </div>
 
-            <!-- TOOLBAR REFINADA (AGORA OS BOTÕES SÃO FILTROS VISUAIS) -->
             <div class="results-toolbar">
               <div class="toolbar-row">
                 <div class="bulk-actions">
@@ -628,7 +673,7 @@
           </div>
         </section>
 
-        <!-- ABA CONFIGURAÇÕES (ICONES CHIQUES SVG) -->
+        <!-- ABA CONFIGURAÇÕES -->
         <section id="settingsSection" class="hidden">
           <div class="section">
             <div class="section-title" style="margin-bottom: 16px;">
@@ -657,7 +702,6 @@
             <div id="tab-integra" class="tab-content active">
               <p style="color:var(--muted); font-size:13px; margin-bottom: 20px;">Configurações sensíveis (aplicam-se a toda a equipe). Modifique com cautela.</p>
               
-              <!-- ADICIONADO WEBHOOK AQUI -->
               <div class="grid-search" style="margin-bottom: 24px;">
                 <div class="field">
                   <label for="googleApiKeyInput">Google Maps API Key</label>
@@ -677,7 +721,6 @@
                 </div>
               </div>
 
-              <!-- ADICIONADO BOTÃO DE TESTAR CONEXÕES -->
               <div class="actions">
                 <button class="btn btn-main" onclick="saveSettings()">Salvar Configurações</button>
                 <button class="btn" onclick="testarConexoes()">Testar Conexões</button>
@@ -689,7 +732,6 @@
             <div id="tab-filtros" class="tab-content">
               <p style="color:var(--muted); font-size:13px; margin-bottom: 20px;">Ative para ocultar automaticamente os leads que não atendem aos critérios durante a pesquisa.</p>
               
-              <!-- ADICIONADO BLACKLIST E DDD -->
               <div class="grid-search" style="margin-bottom: 24px;">
                 <div class="field" style="grid-column: span 2;">
                   <label for="blacklistInput">Palavras Negativadas (Blacklist)</label>
@@ -724,7 +766,6 @@
                   <p style="font-size:12px; color:var(--muted); margin-top:-6px; margin-bottom:16px;">Sempre esconde leads que não possuem um site configurado.</p>
                 </div>
 
-                <!-- ADICIONADO IGNORAR E-MAILS -->
                 <div>
                   <div class="switch-wrap">
                     <span>Ignorar E-mails Genéricos</span>
@@ -738,6 +779,151 @@
               </div>
             </div>
 
+          </div>
+        </section>
+
+        <!-- ABA MINHA CONTA (PERFIL) -->
+        <section id="accountSection" class="hidden">
+          <div class="section">
+            <div class="section-title" style="margin-bottom: 24px;">
+              <div class="section-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </div>
+              <div>
+                <h3>Minha Conta</h3>
+                <p>Gerencie suas informações pessoais e assinatura padrão.</p>
+              </div>
+            </div>
+
+            <div class="profile-wrap">
+              <!-- Avatar Upload -->
+              <div class="avatar-box">
+                <div class="avatar-img-wrap" id="avatarPreviewBox">
+                  <!-- Se não tiver imagem, mostra inicial, se tiver, mostra a img -->
+                  <span id="avatarPreviewInitials">VS</span>
+                  <img id="avatarPreviewImg" src="" style="display: none;" alt="Avatar">
+                </div>
+                <label for="avatarInput" class="avatar-upload-btn">Alterar Foto</label>
+                <input type="file" id="avatarInput" accept="image/png, image/jpeg" style="display: none;">
+                <p style="font-size: 11px; color: var(--muted); margin-top: 12px; text-align: center;">JPG ou PNG. Max 2MB.</p>
+              </div>
+
+              <!-- Dados Pessoais -->
+              <div class="profile-form-wrap">
+                <div class="grid-2" style="margin-bottom: 16px;">
+                  <div class="field">
+                    <label>Nome de Exibição</label>
+                    <input type="text" id="profileName" placeholder="Como quer ser chamado">
+                  </div>
+                  <div class="field">
+                    <label>Cargo / Função</label>
+                    <input type="text" id="profileRole" placeholder="Ex: Closer / SDR">
+                  </div>
+                </div>
+                
+                <div class="field" style="margin-bottom: 16px;">
+                  <label>E-mail de Login <span style="font-weight: normal; text-transform: none;">(Não pode ser alterado aqui)</span></label>
+                  <input type="email" id="profileEmail" disabled style="opacity: 0.6;">
+                </div>
+
+                <div class="field" style="margin-bottom: 24px;">
+                  <label>Assinatura Padrão (E-mail / WhatsApp)</label>
+                  <textarea id="profileSignature" rows="4" placeholder="Ex: Um abraço,&#10;Victor Silva | Especialista em Vendas&#10;📞 (41) 99999-9999"></textarea>
+                </div>
+
+                <button class="btn btn-main" onclick="saveProfile()" style="min-width: 200px;">
+                  Salvar Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ABA RANKING GAMIFICAÇÃO -->
+        <section id="rankingSection" class="hidden">
+          <div class="section">
+            <div class="section-title" style="margin-bottom: 10px;">
+              <div class="section-icon" style="color: #fbbf24;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"></path><path d="M12 15a4 4 0 0 0 4 4h0a4 4 0 0 0-4-4h0a4 4 0 0 0-4 4h0a4 4 0 0 0 4-4Z"></path><path d="M8 8.5h8"></path><path d="M12 21v2"></path><path d="M12 3a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"></path></svg>
+              </div>
+              <div>
+                <h3>Ranking da Equipe</h3>
+                <p>Acompanhe os melhores desempenhos de prospecção e conversão.</p>
+              </div>
+            </div>
+
+            <div class="leaderboard-header">
+              <div></div> <!-- Espaçador para jogar o select pra direita -->
+              <select id="rankingPeriod" onchange="toast('Atualizando ranking...')">
+                <option value="hoje">Hoje</option>
+                <option value="semana" selected>Esta Semana</option>
+                <option value="mes">Este Mês</option>
+                <option value="todos">Todos os Tempos</option>
+              </select>
+            </div>
+
+            <div class="leaderboard-list">
+              <!-- 1º Lugar (Ouro) -->
+              <div class="rank-item rank-1">
+                <div class="rank-pos">🥇 1º</div>
+                <img src="https://i.pravatar.cc/150?u=victor" class="rank-avatar" alt="Avatar">
+                <div class="rank-info">
+                  <strong>Victor Silva</strong>
+                  <span>SDR Master</span>
+                </div>
+                <div class="rank-stats">
+                  <div class="rank-stat-col"><span>Extraídos</span><strong>1.250</strong></div>
+                  <div class="rank-stat-col"><span>Exportados</span><strong>340</strong></div>
+                </div>
+                <div class="rank-score">15.000 XP</div>
+              </div>
+
+              <!-- 2º Lugar (Prata) -->
+              <div class="rank-item rank-2">
+                <div class="rank-pos">🥈 2º</div>
+                <img src="https://i.pravatar.cc/150?u=ana" class="rank-avatar" alt="Avatar">
+                <div class="rank-info">
+                  <strong>Ana Costa</strong>
+                  <span>Closer</span>
+                </div>
+                <div class="rank-stats">
+                  <div class="rank-stat-col"><span>Extraídos</span><strong>980</strong></div>
+                  <div class="rank-stat-col"><span>Exportados</span><strong>210</strong></div>
+                </div>
+                <div class="rank-score">11.400 XP</div>
+              </div>
+
+              <!-- 3º Lugar (Bronze) -->
+              <div class="rank-item rank-3">
+                <div class="rank-pos">🥉 3º</div>
+                <div class="rank-avatar" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:bold;">CS</div>
+                <div class="rank-info">
+                  <strong>Carlos Souza</strong>
+                  <span>BDR</span>
+                </div>
+                <div class="rank-stats">
+                  <div class="rank-stat-col"><span>Extraídos</span><strong>750</strong></div>
+                  <div class="rank-stat-col"><span>Exportados</span><strong>180</strong></div>
+                </div>
+                <div class="rank-score">8.900 XP</div>
+              </div>
+
+              <!-- 4º Lugar -->
+              <div class="rank-item" style="border-left: 4px solid var(--border);">
+                <div class="rank-pos" style="font-size:16px; color:var(--muted);">4º</div>
+                <div class="rank-avatar" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:bold;">LM</div>
+                <div class="rank-info">
+                  <strong>Lucas Mendes</strong>
+                  <span>SDR Jr</span>
+                </div>
+                <div class="rank-stats">
+                  <div class="rank-stat-col"><span>Extraídos</span><strong>420</strong></div>
+                  <div class="rank-stat-col"><span>Exportados</span><strong>95</strong></div>
+                </div>
+                <div class="rank-score" style="background:var(--border); color:var(--dark);">4.200 XP</div>
+              </div>
+
+            </div>
           </div>
         </section>
 
@@ -773,6 +959,7 @@
     </button>
 
     <div id="map" class="map-hidden"></div>
+    
     <!-- TOAST CLEAN E ELEGANTE -->
     <div id="toast" class="toast">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -808,11 +995,12 @@
       // Estado dos Botões de Filtro Rápido (Toolbar)
       let activeViewFilter = 'all'; // 'all', 'phone', 'site'
 
-      // Configuração Local de Filtros de Qualidade (Background) e NOVOS FILTROS
+      // Configuração Local de Filtros e Perfil
       let qualityFilters = { reqPhone: false, reqSite: false, ignoreEmails: false };
       let extraPrefs = { webhook: '', blacklist: '', ddd: '' };
+      let userProfile = { name: '', role: 'SDR', signature: '', avatarBase64: '' };
 
-      const STORAGE_KEYS = { saved: 'vlhunt_saved_leads_v2', exported: 'vlhunt_exported_leads_v2', filters: 'vlhunt_quality_filters', prefs: 'vlhunt_extra_prefs' };
+      const STORAGE_KEYS = { saved: 'vlhunt_saved_leads_v2', exported: 'vlhunt_exported_leads_v2', filters: 'vlhunt_quality_filters', prefs: 'vlhunt_extra_prefs', profile: 'vlhunt_user_profile' };
 
       // ============================================
       // FUNÇÕES DE AUTENTICAÇÃO E INICIALIZAÇÃO
@@ -834,9 +1022,9 @@
         document.getElementById('mainApp').style.display = 'block';
 
         const userInfo = formatUserNameFromEmail(email);
-        currentUserFullName = userInfo.fullName; 
-        document.getElementById('topUserName').textContent = userInfo.fullName;
-        document.getElementById('topUserInitials').textContent = userInfo.initials;
+        
+        // Carrega o perfil do localStorage (ou define o padrão pelo e-mail)
+        loadUserProfile(userInfo);
 
         const navSettingsBtn = document.getElementById('navSettingsBtn');
         if (isUserAdmin) { navSettingsBtn.style.display = 'flex'; } else { navSettingsBtn.style.display = 'none'; }
@@ -879,9 +1067,88 @@
           });
         });
 
+        // Configuração de Preview de Imagem do Avatar
+        document.getElementById('avatarInput').addEventListener('change', function(event) {
+          const file = event.target.files[0];
+          if (file) {
+            if (file.size > 2 * 1024 * 1024) { toast('A imagem deve ter no máximo 2MB.'); return; }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              userProfile.avatarBase64 = e.target.result;
+              updateAvatarUI(userProfile.avatarBase64, userProfile.name);
+            }
+            reader.readAsDataURL(file);
+          }
+        });
+
         const { data: { session } } = await supa.auth.getSession();
         if (session) { iniciarSistemaApp(session.user.email); }
       });
+
+      // ============================================
+      // PERFIL E MINHA CONTA
+      // ============================================
+
+      function loadUserProfile(userInfo) {
+        try { 
+          const savedP = JSON.parse(localStorage.getItem(STORAGE_KEYS.profile));
+          if(savedP) { userProfile = { ...userProfile, ...savedP }; }
+        } catch(e) {}
+
+        if(!userProfile.name) userProfile.name = userInfo.fullName;
+        currentUserFullName = userProfile.name;
+
+        // Atualiza UI da Topbar
+        document.getElementById('topUserName').textContent = userProfile.name;
+        document.getElementById('topUserRole').textContent = userProfile.role || 'SDR';
+        updateAvatarUI(userProfile.avatarBase64, userProfile.name);
+
+        // Preenche o form da aba Minha Conta
+        document.getElementById('profileEmail').value = currentUserEmail;
+        document.getElementById('profileName').value = userProfile.name;
+        document.getElementById('profileRole').value = userProfile.role || 'SDR';
+        document.getElementById('profileSignature').value = userProfile.signature || '';
+      }
+
+      function updateAvatarUI(base64, name) {
+        const topInitials = document.getElementById('topUserInitials');
+        const previewInitials = document.getElementById('avatarPreviewInitials');
+        const previewImg = document.getElementById('avatarPreviewImg');
+
+        let words = name.split(' ');
+        let initials = words.length > 1 ? words[0].charAt(0) + words[1].charAt(0) : words[0].charAt(0);
+        initials = initials.toUpperCase();
+
+        if (base64) {
+          topInitials.innerHTML = `<img src="${base64}" alt="Avatar">`;
+          previewImg.src = base64;
+          previewImg.style.display = 'block';
+          if(previewInitials) previewInitials.style.display = 'none';
+        } else {
+          topInitials.innerHTML = initials;
+          if(previewInitials) {
+            previewInitials.textContent = initials;
+            previewInitials.style.display = 'block';
+          }
+          previewImg.style.display = 'none';
+        }
+      }
+
+      function saveProfile() {
+        userProfile.name = document.getElementById('profileName').value.trim() || currentUserFullName;
+        userProfile.role = document.getElementById('profileRole').value.trim() || 'SDR';
+        userProfile.signature = document.getElementById('profileSignature').value.trim();
+        
+        localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(userProfile));
+        currentUserFullName = userProfile.name;
+
+        // Atualiza Topbar
+        document.getElementById('topUserName').textContent = userProfile.name;
+        document.getElementById('topUserRole').textContent = userProfile.role;
+        updateAvatarUI(userProfile.avatarBase64, userProfile.name);
+
+        toast('Perfil salvo com sucesso!');
+      }
 
       // ============================================
       // FUNÇÕES DE CONFIGURAÇÃO E TABS
@@ -922,12 +1189,9 @@
         if(leads.length > 0) renderLeads(); 
       }
 
-      // NOVO: Função para testar conexão
       function testarConexoes() {
         toast('Iniciando teste de conexão e APIs...');
-        setTimeout(() => {
-          toast('✅ Tudo OK! Conexões estáveis com servidores.');
-        }, 1500);
+        setTimeout(() => { toast('✅ Tudo OK! Conexões estáveis.'); }, 1500);
       }
 
       async function carregarConfiguracoesDoSupabase() {
@@ -958,18 +1222,13 @@
       function getSettings() { return { googleApiKey: configSupabase.googleApiKey, pipedriveToken: configSupabase.pipedriveToken, maxPages: configSupabase.maxPages }; }
 
       async function saveSettings() {
-        // Pega inputs novos
         const webhook = document.getElementById('webhookUrlInput').value.trim();
         const blacklist = document.getElementById('blacklistInput').value.trim();
         const ddd = document.getElementById('dddInput').value.trim();
         
-        // Salva os novos campos localmente pra não quebrar seu Supabase
-        extraPrefs.webhook = webhook;
-        extraPrefs.blacklist = blacklist;
-        extraPrefs.ddd = ddd;
+        extraPrefs.webhook = webhook; extraPrefs.blacklist = blacklist; extraPrefs.ddd = ddd;
         localStorage.setItem(STORAGE_KEYS.prefs, JSON.stringify(extraPrefs));
 
-        // Dados originais que vão pro Supabase
         const gKey = document.getElementById('googleApiKeyInput').value.trim();
         const pToken = document.getElementById('pipedriveTokenInput').value.trim();
         const mPages = parseInt(document.getElementById('maxPagesInput').value.trim()) || 3;
@@ -981,18 +1240,12 @@
           const { data: existe } = await supa.from('configuracoes').select('id').limit(1);
           let error;
           
-          const payload = { 
-            google_api_key: gKey, 
-            pipedrive_token: pToken,
-            limite_paginas: mPages
-          };
+          const payload = { google_api_key: gKey, pipedrive_token: pToken, limite_paginas: mPages };
 
           if (existe && existe.length > 0) {
-              const res = await supa.from('configuracoes').update(payload).eq('id', existe[0].id);
-              error = res.error;
+              const res = await supa.from('configuracoes').update(payload).eq('id', existe[0].id); error = res.error;
           } else {
-              const res = await supa.from('configuracoes').insert([payload]);
-              error = res.error;
+              const res = await supa.from('configuracoes').insert([payload]); error = res.error;
           }
           if (error) throw error;
 
@@ -1003,13 +1256,9 @@
           document.getElementById('dashPipeStatus').textContent = pToken ? "Configurado" : "Pendente";
           document.getElementById('dashPagesLimit').textContent = `${mPages} páginas (Busca profunda por bairros)`;
 
-          toast('Todas configurações salvas com sucesso.');
+          toast('Configurações salvas com sucesso.');
           if (gKey) loadGoogleMapsScript(gKey);
-        } catch (err) { 
-          toast('Erro ao salvar no banco.'); 
-        } finally { 
-          btn.textContent = oldText; btn.disabled = false; 
-        }
+        } catch (err) { toast('Erro ao salvar no banco.'); } finally { btn.textContent = oldText; btn.disabled = false; }
       }
 
       async function clearSettings() {
@@ -1036,7 +1285,7 @@
       function showSection(section) {
         if (section === 'settings' && !isUserAdmin) { toast('Acesso negado.'); return; }
         
-        const sections = { dashboard: document.getElementById('dashboardSection'), extract: document.getElementById('extractSection'), saved: document.getElementById('savedSection'), pipedrive: document.getElementById('pipedriveSection'), settings: document.getElementById('settingsSection') };
+        const sections = { dashboard: document.getElementById('dashboardSection'), extract: document.getElementById('extractSection'), saved: document.getElementById('savedSection'), pipedrive: document.getElementById('pipedriveSection'), settings: document.getElementById('settingsSection'), account: document.getElementById('accountSection'), ranking: document.getElementById('rankingSection') };
         
         Object.values(sections).forEach(el => el.classList.add('hidden'));
         if (sections[section]) sections[section].classList.remove('hidden');
@@ -1047,11 +1296,14 @@
 
         const topTitle = document.getElementById('topTitle');
         const topSubtitle = document.getElementById('topSubtitle');
+        
         if(section === 'dashboard') { topTitle.textContent = "Dashboard"; topSubtitle.textContent = "Visão geral do seu funil e performance."; updateDashboardStats(); }
         else if(section === 'extract') { topTitle.textContent = "Prospecção Ativa"; topSubtitle.textContent = "Encontre novos clientes no Maps."; }
+        else if(section === 'ranking') { topTitle.textContent = "Ranking & Gamificação"; topSubtitle.textContent = "Quadro de líderes e performance da equipe."; }
         else if(section === 'saved') { topTitle.textContent = "Pastas & Salvos"; topSubtitle.textContent = "Sua base de contatos curados."; }
         else if(section === 'pipedrive') { topTitle.textContent = "Histórico CRM"; topSubtitle.textContent = "Log de envios para o Pipedrive."; }
         else if(section === 'settings') { topTitle.textContent = "Painel Master"; topSubtitle.textContent = "Controle das chaves e parâmetros."; }
+        else if(section === 'account') { topTitle.textContent = "Minha Conta"; topSubtitle.textContent = "Dados de perfil e assinatura."; }
 
         if (section === 'saved') { updateFolderFilterDropdown(); renderSavedLeads(); }
         if (section === 'pipedrive') renderExportedLeads();
@@ -1176,8 +1428,6 @@
 
       function handlePlacesResults(results, status, pagination) {
         const btn = document.getElementById('searchBtn');
-        
-        // Pega as palavras da blacklist
         const blacklistRaw = extraPrefs.blacklist || '';
         const blacklistWords = blacklistRaw.split(',').map(w => w.trim().toLowerCase()).filter(w => w);
         
@@ -1191,31 +1441,21 @@
         }
         
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-          const district = document.getElementById('districtInput').value.trim(), 
-                street = document.getElementById('streetInput').value.trim();
+          const district = document.getElementById('districtInput').value.trim(), street = document.getElementById('streetInput').value.trim();
                 
           results.forEach(place => {
-            // VERIFICAÇÃO BLACKLIST
             let isBlacklisted = false;
             if (blacklistWords.length > 0) {
               const lowerName = (place.name || '').toLowerCase();
               isBlacklisted = blacklistWords.some(word => lowerName.includes(word));
             }
 
-            if (isBlacklisted) {
-               ignoredLeadsCount++;
-               return; // Ignora o lead completamente
-            }
+            if (isBlacklisted) { ignoredLeadsCount++; return; }
 
             if (isStrictMatch(place, district, street)) {
                const normalized = normalizePlace(place);
-               
-               if (savedLeads.some(s => s.place_id === normalized.place_id)) {
-                   ignoredLeadsCount++; 
-               } else if (!leads.some(l => l.place_id === normalized.place_id)) {
-                   leads.push(normalized); 
-                   fetchPlaceDetailsQueue(normalized.place_id);
-               }
+               if (savedLeads.some(s => s.place_id === normalized.place_id)) { ignoredLeadsCount++; } 
+               else if (!leads.some(l => l.place_id === normalized.place_id)) { leads.push(normalized); fetchPlaceDetailsQueue(normalized.place_id); }
             }
           });
         }
@@ -1228,9 +1468,7 @@
           currentApiPage++;
           btn.textContent = `Página ${currentApiPage}/${limiteMaximoAdmin}...`;
           setTimeout(() => { pagination.nextPage(); }, 3500); 
-        } else {
-          finalizarBusca();
-        }
+        } else { finalizarBusca(); }
 
         function finalizarBusca() {
           isSearching = false; btn.disabled = false; btn.textContent = 'Extrair Leads';
@@ -1262,13 +1500,7 @@
             if (status === google.maps.places.PlacesServiceStatus.OK && place) {
               const index = leads.findIndex(lead => lead.place_id === placeId);
               if (index !== -1) {
-                // APLICAÇÃO DO DDD PADRÃO NO TELEFONE
                 let finalPhone = place.formatted_phone_number || place.international_phone_number || leads[index].phone;
-                if(finalPhone && extraPrefs.ddd) {
-                  // Se o telefone não tem DDD ou começa esquisito, o usuário pode querer formatar. 
-                  // Obs: O Google geralmente manda formatado, mas isso fica de base pra uso.
-                }
-
                 leads[index] = { ...leads[index], name: place.name || leads[index].name, address: place.formatted_address || leads[index].address, phone: finalPhone, website: place.website || leads[index].website, url: place.url || leads[index].url, rating: place.rating || leads[index].rating, user_ratings_total: place.user_ratings_total || leads[index].user_ratings_total, photo: place.photos && place.photos.length ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 }) : leads[index].photo };
                 renderLeads();
               }
@@ -1286,15 +1518,8 @@
         const btnPhone = document.getElementById('btnFilterPhone');
         const btnSite = document.getElementById('btnFilterSite');
 
-        if (activeViewFilter === type) {
-          activeViewFilter = 'all';
-          btnPhone.classList.remove('btn-active');
-          btnSite.classList.remove('btn-active');
-        } else {
-          activeViewFilter = type;
-          if(type === 'phone') { btnPhone.classList.add('btn-active'); btnSite.classList.remove('btn-active'); }
-          if(type === 'site') { btnSite.classList.add('btn-active'); btnPhone.classList.remove('btn-active'); }
-        }
+        if (activeViewFilter === type) { activeViewFilter = 'all'; btnPhone.classList.remove('btn-active'); btnSite.classList.remove('btn-active'); } 
+        else { activeViewFilter = type; if(type === 'phone') { btnPhone.classList.add('btn-active'); btnSite.classList.remove('btn-active'); } if(type === 'site') { btnSite.classList.add('btn-active'); btnPhone.classList.remove('btn-active'); } }
         renderLeads(); 
       }
 
@@ -1312,7 +1537,6 @@
 
         if (qualityFilters.reqPhone) { displayLeads = displayLeads.filter(l => l.phone && l.phone.trim() !== ''); }
         if (qualityFilters.reqSite) { displayLeads = displayLeads.filter(l => l.website && l.website.trim() !== ''); }
-        
         if (activeViewFilter === 'phone') displayLeads = displayLeads.filter(l => l.phone && l.phone.trim() !== '');
         else if (activeViewFilter === 'site') displayLeads = displayLeads.filter(l => l.website && l.website.trim() !== '');
 
@@ -1395,9 +1619,7 @@
                  selectedLeadIds.add(l.place_id);
               }
             });
-        } else {
-            selectedLeadIds.clear(); 
-        }
+        } else { selectedLeadIds.clear(); }
         renderLeads(); 
       }
       
