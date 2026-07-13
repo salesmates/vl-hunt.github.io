@@ -94,7 +94,10 @@
     .btn-danger:hover { background: #7f1d1d; color: #fca5a5; }
 
     /* RESULTS */
-    .results-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+    .results-toolbar { display: flex; flex-direction: column; gap: 16px; margin-bottom: 22px; }
+    .toolbar-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .toolbar-filters { display: flex; gap: 16px; align-items: center; background: var(--bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border); flex-wrap: wrap; }
+    
     .bulk-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .select-all { height: 40px; display: inline-flex; align-items: center; gap: 8px; background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
     .select-all:hover { background: var(--nav-hover); }
@@ -154,7 +157,7 @@
     /* MEDIA QUERIES */
     @media (max-width: 1400px) { .grid-search { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 1200px) { .leads-grid { grid-template-columns: repeat(2, 1fr); } .stats, .grid-2 { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 800px) { .sidebar { position: relative; width: 100%; bottom: auto; border-right: none; border-bottom: 1px solid var(--border); } .app { display: block; } .main { margin-left: 0; width: 100%; padding: 22px 16px; } .topbar, .section-head { align-items: flex-start; flex-direction: column; } .stats, .grid-2, .grid-search, .leads-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 800px) { .sidebar { position: relative; width: 100%; bottom: auto; border-right: none; border-bottom: 1px solid var(--border); } .app { display: block; } .main { margin-left: 0; width: 100%; padding: 22px 16px; } .topbar, .section-head { align-items: flex-start; flex-direction: column; } .stats, .grid-2, .grid-search, .leads-grid { grid-template-columns: 1fr; } .toolbar-filters { flex-direction: column; align-items: stretch; } }
 
     /* ====== LOGIN ====== */
     #loginOverlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; }
@@ -168,7 +171,7 @@
     .login-box button:hover { background: #e5e5e5; }
     .login-box button:disabled { opacity: 0.7; cursor: not-allowed; }
 
-    /* ====== VOLTAR AO TOPO (Fase 7) ====== */
+    /* ====== VOLTAR AO TOPO ====== */
     .back-to-top { position: fixed; bottom: 30px; right: 30px; width: 44px; height: 44px; background: var(--primary); color: var(--primary-inv); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s ease; transform: translateY(10px); }
     .back-to-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
     .back-to-top:hover { background: #e5e5e5; }
@@ -281,13 +284,11 @@
             </div>
 
             <div class="grid-search">
-              <!-- NOME -->
               <div class="field">
                 <label for="nameInput">Nome <span style="font-weight: normal; text-transform: none;">(Pesquisa direta)</span></label>
                 <input id="nameInput" type="text" placeholder="Nome da empresa" />
               </div>
 
-              <!-- NICHO COM DATALIST -->
               <div class="field">
                 <label for="nicheInput">Nicho</label>
                 <input id="nicheInput" list="nicheList" type="text" placeholder="Segmento de mercado" autocomplete="off" />
@@ -305,25 +306,21 @@
                 </datalist>
               </div>
 
-              <!-- CIDADE -->
               <div class="field">
                 <label for="cityInput">Cidade</label>
                 <input id="cityInput" type="text" placeholder="Ex: Maringá, PR" />
               </div>
 
-              <!-- BAIRRO -->
               <div class="field">
                 <label for="districtInput">Bairro <span style="font-weight: normal; text-transform: none;">(Opcional)</span></label>
                 <input id="districtInput" type="text" placeholder="Nome do bairro" />
               </div>
 
-              <!-- RUA -->
               <div class="field">
                 <label for="streetInput">Rua/Avenida <span style="font-weight: normal; text-transform: none;">(Opcional)</span></label>
                 <input id="streetInput" type="text" placeholder="Ex: Avenida Brasil" />
               </div>
 
-              <!-- BOTÃO -->
               <div class="field">
                 <button class="btn btn-main" onclick="searchLeads()" id="searchBtn" style="height: 44px; width: 100%;">
                   Extrair Leads
@@ -351,31 +348,57 @@
               </div>
             </div>
 
+            <!-- FASE 9 a 12: Toolbar Inteligente com Filtros e Exportação -->
             <div class="results-toolbar">
-              <div class="bulk-actions">
-                <label class="select-all">
-                  <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this.checked)" />
-                  Selecionar todos
-                </label>
+              
+              <!-- Primeira linha: Ações em Massa -->
+              <div class="toolbar-row">
+                <div class="bulk-actions">
+                  <label class="select-all">
+                    <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this.checked)" />
+                    Selecionar todos
+                  </label>
+                  <button class="btn" style="height: 40px; font-size: 13px;" onclick="selectWithPhone()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    Com Telefone
+                  </button>
+                  <button class="btn" style="height: 40px; font-size: 13px;" onclick="selectWithWebsite()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                    Com Site
+                  </button>
+                  <button class="btn" style="height: 40px; font-size: 13px;" onclick="saveSelectedLeads()">
+                    Salvar selecionados
+                  </button>
+                  <button class="btn" style="height: 40px; font-size: 13px;" onclick="clearSelected()">
+                    Limpar seleção
+                  </button>
+                </div>
 
-                <!-- FASE 6: Botões Inteligentes -->
-                <button class="btn" style="height: 40px; font-size: 13px;" onclick="selectWithPhone()">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                  Com Telefone
-                </button>
-                <button class="btn" style="height: 40px; font-size: 13px;" onclick="selectWithWebsite()">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                  Com Site
-                </button>
-
-                <button class="btn" style="height: 40px; font-size: 13px;" onclick="saveSelectedLeads()">
-                  Salvar selecionados
-                </button>
-
-                <button class="btn" style="height: 40px; font-size: 13px;" onclick="clearSelected()">
-                  Limpar seleção
-                </button>
+                <!-- Botão de Exportar CSV da tela -->
+                <div>
+                  <button class="btn btn-main" style="height: 40px; font-size: 13px;" onclick="exportCurrentToCSV()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Exportar (CSV)
+                  </button>
+                </div>
               </div>
+
+              <!-- Segunda linha: Filtro Interno e Ordenação -->
+              <div class="toolbar-filters">
+                <div class="field" style="flex: 1; margin: 0;">
+                  <input type="text" id="filterResultsInput" placeholder="🔍 Filtrar resultados (ex: nome, clínica, av brasil...)" oninput="renderLeads()" style="height: 40px;" />
+                </div>
+                <div class="field" style="margin: 0; min-width: 200px;">
+                  <select id="sortResultsSelect" onchange="renderLeads()" style="height: 40px;">
+                    <option value="default">Ordenação Padrão</option>
+                    <option value="az">Nome: A - Z</option>
+                    <option value="za">Nome: Z - A</option>
+                    <option value="rating_desc">Maior Nota Google</option>
+                    <option value="rating_asc">Menor Nota Google</option>
+                  </select>
+                </div>
+              </div>
+              
             </div>
 
             <div id="resultsEmpty" class="empty">
@@ -530,7 +553,7 @@
       </div>
     </div>
 
-    <!-- BOTÃO VOLTAR AO TOPO (Fase 7) -->
+    <!-- BOTÃO VOLTAR AO TOPO -->
     <button id="backToTopBtn" class="back-to-top" onclick="scrollToTop()" title="Voltar ao topo">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
     </button>
@@ -560,6 +583,7 @@
       let pendingLeadsToSave = []; 
       
       let ignoredLeadsCount = 0; 
+      let currentApiPage = 1; // Para o motor de busca
       
       let currentUserEmail = '', currentUserFullName = '', isUserAdmin = false; 
 
@@ -749,33 +773,24 @@
 
             let autoCity, autoDistrict, autoStreet;
 
-            // 1. AUTOCOMPLETE CIDADE
             if (cityInput) {
                 autoCity = new google.maps.places.Autocomplete(cityInput, {
-                    types: ['(cities)'],
-                    componentRestrictions: { country: 'br' },
-                    fields: ['name', 'address_components', 'geometry'] 
+                    types: ['(cities)'], componentRestrictions: { country: 'br' }, fields: ['name', 'address_components', 'geometry'] 
                 });
             }
 
-            // 2. AUTOCOMPLETE BAIRRO
             if (districtInput) {
                 autoDistrict = new google.maps.places.Autocomplete(districtInput, {
-                    componentRestrictions: { country: 'br' },
-                    fields: ['name', 'geometry']
+                    componentRestrictions: { country: 'br' }, fields: ['name', 'geometry']
                 });
             }
 
-            // 3. AUTOCOMPLETE RUA
             if (streetInput) {
                 autoStreet = new google.maps.places.Autocomplete(streetInput, {
-                    types: ['address'],
-                    componentRestrictions: { country: 'br' },
-                    fields: ['name', 'address_components', 'geometry']
+                    types: ['address'], componentRestrictions: { country: 'br' }, fields: ['name', 'address_components', 'geometry']
                 });
             }
 
-            // LÓGICA DE CASCATA: CIDADE -> RESTRINGE BAIRRO E RUA
             if (autoCity) {
                 autoCity.addListener('place_changed', () => {
                     const place = autoCity.getPlace();
@@ -787,68 +802,48 @@
                         }
                         cityInput.value = formatted;
 
-                        // Se a cidade tiver área no mapa, tranca os limites do Bairro e da Rua nela
                         if (place.geometry && place.geometry.viewport) {
-                            if (autoDistrict) {
-                                autoDistrict.setBounds(place.geometry.viewport);
-                                autoDistrict.setOptions({ strictBounds: true });
-                            }
-                            if (autoStreet) {
-                                autoStreet.setBounds(place.geometry.viewport);
-                                autoStreet.setOptions({ strictBounds: true });
-                            }
+                            if (autoDistrict) { autoDistrict.setBounds(place.geometry.viewport); autoDistrict.setOptions({ strictBounds: true }); }
+                            if (autoStreet) { autoStreet.setBounds(place.geometry.viewport); autoStreet.setOptions({ strictBounds: true }); }
                         }
                     }
                 });
                 cityInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
             }
 
-            // LÓGICA DE CASCATA: BAIRRO -> RESTRINGE RUA
             if (autoDistrict) {
                 autoDistrict.addListener('place_changed', () => {
                     const place = autoDistrict.getPlace();
                     if (place && place.name) {
                         districtInput.value = place.name; 
-                        
-                        // Se o bairro tiver área no mapa, aperta o limite da Rua apenas para dentro do bairro
                         if (place.geometry && place.geometry.viewport) {
-                            if (autoStreet) {
-                                autoStreet.setBounds(place.geometry.viewport);
-                                autoStreet.setOptions({ strictBounds: true });
-                            }
+                            if (autoStreet) { autoStreet.setBounds(place.geometry.viewport); autoStreet.setOptions({ strictBounds: true }); }
                         }
                     }
                 });
                 districtInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
             }
 
-            // LÓGICA DA RUA (Apenas captura o nome)
             if (autoStreet) {
                 autoStreet.addListener('place_changed', () => {
                     const place = autoStreet.getPlace();
                     if (place && place.address_components) {
                         const route = place.address_components.find(c => c.types.includes('route'));
-                        if (route) {
-                            streetInput.value = route.long_name;
-                        } else if (place.name) {
-                            streetInput.value = place.name;
-                        }
-                    } else if (place && place.name) {
-                        streetInput.value = place.name;
-                    }
+                        if (route) streetInput.value = route.long_name;
+                        else if (place.name) streetInput.value = place.name;
+                    } else if (place && place.name) streetInput.value = place.name;
                 });
                 streetInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
             }
         }
-
         toast('Sistema geográfico conectado!');
       }
 
       function updateCounters() {
-        document.getElementById('foundCount').textContent = leads.length;
         document.getElementById('savedCount').textContent = savedLeads.length;
         document.getElementById('exportedCount').textContent = exportedLeads.length;
         document.getElementById('pendingCount').textContent = leads.length; 
+        // O foundCount é atualizado direto na função renderLeads para refletir os filtros
       }
 
       function normalizeString(str) { return (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
@@ -879,15 +874,19 @@
         if (city) queryParts.push(`em ${city}`);
         
         leads = []; detailsQueue = []; selectedLeadIds.clear(); isProcessingQueue = false; isSearching = true;
-        ignoredLeadsCount = 0; 
+        ignoredLeadsCount = 0; currentApiPage = 1;
         
         document.getElementById('selectAllCheckbox').checked = false;
+        document.getElementById('filterResultsInput').value = '';
+        document.getElementById('sortResultsSelect').value = 'default';
+
         const btn = document.getElementById('searchBtn'); btn.disabled = true; btn.textContent = 'Extraindo...';
 
         renderLeads();
         placesService.textSearch({ query: queryParts.join(' '), type: 'establishment' }, handlePlacesResults);
       }
 
+      // MOTOR DE BUSCA EM LOOP ATÉ O LIMITE DO GOOGLE
       function handlePlacesResults(results, status, pagination) {
         if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
            setTimeout(() => { if (pagination && pagination.hasNextPage) pagination.nextPage(); }, 2000); return; 
@@ -914,7 +913,8 @@
         const btn = document.getElementById('searchBtn');
         
         if (pagination && pagination.hasNextPage) {
-          btn.textContent = `Processando... (${leads.length})`; 
+          currentApiPage++;
+          btn.textContent = `Buscando página ${currentApiPage}... (${leads.length})`; 
           setTimeout(() => { pagination.nextPage(); }, 2000);
         } else {
           isSearching = false; btn.disabled = false; btn.textContent = 'Extrair Leads';
@@ -954,12 +954,42 @@
         );
       }
 
+      // RENDERIZADOR INTELIGENTE COM FILTROS E ORDENAÇÃO
       function renderLeads() {
         const grid = document.getElementById('leadsGrid'), empty = document.getElementById('resultsEmpty');
         grid.innerHTML = '';
-        if (!leads.length) { empty.innerHTML = isSearching ? 'Pesquisando...' : 'Nenhum lead pesquisado.'; empty.classList.remove('hidden'); return; }
+
+        // 1. Aplicar Filtro de Pesquisa
+        const filterText = (document.getElementById('filterResultsInput')?.value || '').toLowerCase();
+        let displayLeads = leads.filter(l => 
+          l.name.toLowerCase().includes(filterText) || 
+          l.address.toLowerCase().includes(filterText) ||
+          (l.phone && l.phone.includes(filterText))
+        );
+
+        // 2. Aplicar Ordenação
+        const sortVal = document.getElementById('sortResultsSelect')?.value || 'default';
+        if (sortVal === 'az') displayLeads.sort((a, b) => a.name.localeCompare(b.name));
+        else if (sortVal === 'za') displayLeads.sort((a, b) => b.name.localeCompare(a.name));
+        else if (sortVal === 'rating_desc') displayLeads.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        else if (sortVal === 'rating_asc') displayLeads.sort((a, b) => (a.rating || 0) - (b.rating || 0));
+
+        // 3. Atualizar Contador da Tela
+        const foundEl = document.getElementById('foundCount');
+        if (filterText && displayLeads.length !== leads.length) {
+            foundEl.textContent = `${displayLeads.length} / ${leads.length}`;
+        } else {
+            foundEl.textContent = leads.length;
+        }
+
+        if (!displayLeads.length) { 
+            empty.innerHTML = isSearching ? 'Pesquisando...' : (leads.length ? 'Nenhum lead corresponde ao filtro digitado.' : 'Nenhum lead pesquisado.'); 
+            empty.classList.remove('hidden'); 
+            return; 
+        }
+        
         empty.classList.add('hidden');
-        leads.forEach(lead => grid.appendChild(createLeadCard(lead, 'current')));
+        displayLeads.forEach(lead => grid.appendChild(createLeadCard(lead, 'current')));
       }
 
       function createLeadCard(lead, source) {
@@ -1071,10 +1101,9 @@
         const filterVal = document.getElementById('savedFolderFilter').value;
         const list = filterVal === 'Todas' ? savedLeads : savedLeads.filter(l => (l.folder || 'Geral') === filterVal);
         
-        if (!list.length) { empty.classList.remove('hidden'); updateCounters(); return; }
+        if (!list.length) { empty.classList.remove('hidden'); return; }
         empty.classList.add('hidden');
         list.forEach(lead => grid.appendChild(createLeadCard(lead, 'saved')));
-        updateCounters();
       }
 
       function clearSavedLeads() {
@@ -1142,10 +1171,13 @@
         ['nameInput', 'nicheInput', 'cityInput', 'districtInput', 'streetInput'].forEach(id => document.getElementById(id).value = '');
         detailsQueue = []; isProcessingQueue = false; isSearching = false; leads = []; selectedLeadIds.clear();
         document.getElementById('selectAllCheckbox').checked = false;
+        document.getElementById('filterResultsInput').value = '';
+        document.getElementById('sortResultsSelect').value = 'default';
         document.getElementById('searchBtn').disabled = false; document.getElementById('searchBtn').textContent = 'Extrair Leads';
         renderLeads(); updateCounters(); toast('Pesquisa limpa.');
       }
 
+      // EXPORTAR PARA CSV OS LEADS SALVOS (Aba Salvos)
       function exportSavedToCSV() {
         const filterVal = document.getElementById('savedFolderFilter').value;
         const list = filterVal === 'Todas' ? savedLeads : savedLeads.filter(l => (l.folder || 'Geral') === filterVal);
@@ -1153,7 +1185,28 @@
         
         const csv = [['Empresa', 'Telefone', 'Site', 'Endereço', 'Avaliação', 'Pasta', 'Status', 'Google Maps'], ...list.map(l => [l.name || '', l.phone || '', l.website || '', l.address || '', l.rating || '', l.folder || 'Geral', l.status || '', l.url || ''])].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')).join('\n');
         const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }));
-        a.download = `leads-${filterVal}-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); toast('CSV exportado.');
+        a.download = `leads-salvos-${filterVal}-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); toast('CSV exportado.');
+      }
+
+      // EXPORTAR PARA CSV OS LEADS DA TELA ATUAL (Aba Extrair)
+      function exportCurrentToCSV() {
+        if (!leads.length) { toast('Nenhum lead na tela para exportar.'); return; }
+        
+        const filterText = (document.getElementById('filterResultsInput')?.value || '').toLowerCase();
+        let exportData = leads.filter(l => 
+          l.name.toLowerCase().includes(filterText) || 
+          l.address.toLowerCase().includes(filterText) ||
+          (l.phone && l.phone.includes(filterText))
+        );
+
+        if (!exportData.length) { toast('Nenhum lead corresponde ao filtro para exportar.'); return; }
+
+        const csv = [['Empresa', 'Telefone', 'Site', 'Endereço', 'Avaliação', 'Status', 'Google Maps'], 
+          ...exportData.map(l => [l.name || '', l.phone || '', l.website || '', l.address || '', l.rating || '', l.status || '', l.url || ''])
+        ].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')).join('\n');
+        
+        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }));
+        a.download = `extracao-leads-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); toast(`${exportData.length} leads exportados.`);
       }
 
       function makeWhatsAppUrl(phone, name) {
@@ -1164,12 +1217,17 @@
       function escapeAttr(v) { return escapeHtml(v).replace(/`/g, '&#096;'); }
 
       // ============================================
-      // FASE 6 - SELEÇÃO INTELIGENTE
+      // SELEÇÃO INTELIGENTE
       // ============================================
       function selectWithPhone() {
         let count = 0;
+        const filterText = (document.getElementById('filterResultsInput')?.value || '').toLowerCase();
+        
         leads.forEach(lead => {
-          if (lead.phone && lead.phone.trim() !== '') {
+          // Respeitar o filtro da tela, se houver
+          const matchesFilter = lead.name.toLowerCase().includes(filterText) || lead.address.toLowerCase().includes(filterText) || (lead.phone && lead.phone.includes(filterText));
+          
+          if (matchesFilter && lead.phone && lead.phone.trim() !== '') {
             selectedLeadIds.add(lead.place_id);
             count++;
           }
@@ -1181,8 +1239,12 @@
 
       function selectWithWebsite() {
         let count = 0;
+        const filterText = (document.getElementById('filterResultsInput')?.value || '').toLowerCase();
+
         leads.forEach(lead => {
-          if (lead.website && lead.website.trim() !== '') {
+          const matchesFilter = lead.name.toLowerCase().includes(filterText) || lead.address.toLowerCase().includes(filterText) || (lead.phone && lead.phone.includes(filterText));
+          
+          if (matchesFilter && lead.website && lead.website.trim() !== '') {
             selectedLeadIds.add(lead.place_id);
             count++;
           }
@@ -1193,7 +1255,7 @@
       }
 
       // ============================================
-      // FASE 7 - VOLTAR AO TOPO
+      // VOLTAR AO TOPO
       // ============================================
       window.addEventListener('scroll', () => {
         const btn = document.getElementById('backToTopBtn');
@@ -1210,3 +1272,4 @@
   </div>
 </body>
 </html>
+
