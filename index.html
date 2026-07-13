@@ -334,10 +334,10 @@
           Pastas & Salvos
         </button>
 
-        <!-- ABA PIPEDRIVE -->
+        <!-- ABA CRM -->
         <button class="menu-item" data-section="pipedrive" onclick="showSection('pipedrive')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
-          Pipedrive
+          CRM
         </button>
 
         <!-- ABA CONFIGURAÇÕES -->
@@ -445,7 +445,7 @@
                 </button>
                 <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('pipedrive')">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #f87171;"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="M8 17l4 4 4-4"></path></svg>
-                  Enviar Lote para o Pipedrive
+                  Enviar Lote para o CRM
                 </button>
               </div>
             </div>
@@ -464,7 +464,7 @@
                   <span style="color:#4ade80; font-size:14px; font-weight:600;">Ativa</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:8px;">
-                  <span style="color:var(--muted); font-size:14px;">Conexão Pipedrive</span>
+                  <span style="color:var(--muted); font-size:14px;">Conexão CRM</span>
                   <span id="dashPipeStatus" style="color:var(--muted); font-size:14px; font-weight:600;">Verificando...</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:8px;">
@@ -650,7 +650,7 @@
           </div>
         </section>
 
-        <!-- ABA PIPEDRIVE -->
+        <!-- ABA CRM -->
         <section id="pipedriveSection" class="hidden">
           <div class="section">
             <div class="section-title" style="margin-bottom: 22px;">
@@ -658,8 +658,8 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
               </div>
               <div>
-                <h3>Histórico CRM (Pipedrive)</h3>
-                <p>Histórico local de leads enviados com sucesso para o Pipedrive.</p>
+                <h3>Histórico CRM</h3>
+                <p>Histórico local de leads enviados com sucesso para o CRM.</p>
               </div>
             </div>
 
@@ -719,8 +719,8 @@
                   <input id="googleApiKeyInput" type="password" autocomplete="new-password" placeholder="Chave de acesso à API do Google..." />
                 </div>
                 <div class="field">
-                  <label for="pipedriveTokenInput">Token CRM (Pipedrive)</label>
-                  <input id="pipedriveTokenInput" type="password" autocomplete="new-password" placeholder="Token do Pipedrive (opcional)" />
+                  <label for="pipedriveTokenInput">Token API CRM</label>
+                  <input id="pipedriveTokenInput" type="password" autocomplete="new-password" placeholder="Token do seu CRM (opcional)" />
                 </div>
                 <div class="field">
                   <label for="webhookUrlInput">URL Webhook (Exportação)</label>
@@ -949,7 +949,7 @@
 
         <div class="grid-2">
           <div class="field">
-            <label>Leads Extraídos</label>
+            <label>Leads Salvos</label>
             <input type="number" id="teamMemberExtracted" value="0">
           </div>
           <div class="field">
@@ -1145,7 +1145,7 @@
         if (!listEl) return;
         listEl.innerHTML = '';
 
-        // Calcula XP (Ex: Extraído x 2 XP + Exportado x 25 XP) e ordena
+        // Calcula XP (Ex: Extraído/Salvo x 2 XP + Exportado x 25 XP) e ordena
         const sortedTeam = [...teamMembers].map(member => {
           const xp = (parseInt(member.extracted || 0) * 2) + (parseInt(member.exported || 0) * 25);
           return { ...member, xp };
@@ -1187,7 +1187,7 @@
               <span>${escapeHtml(member.role)}</span>
             </div>
             <div class="rank-stats">
-              <div class="rank-stat-col"><span>Extraídos</span><strong>${member.extracted.toLocaleString('pt-BR')}</strong></div>
+              <div class="rank-stat-col"><span>Salvos</span><strong>${member.extracted.toLocaleString('pt-BR')}</strong></div>
               <div class="rank-stat-col"><span>Exportados</span><strong>${member.exported.toLocaleString('pt-BR')}</strong></div>
             </div>
             <div class="rank-score" style="${pos > 3 ? 'background:var(--border); color:var(--dark);' : ''}">${member.xp.toLocaleString('pt-BR')} XP</div>
@@ -1287,6 +1287,42 @@
         renderLeaderboard();
         closeTeamMemberModal();
         toast('Membro removido do ranking.');
+      }
+
+      // ============================================
+      // FUNÇÃO PRINCIPAL DE PONTUAÇÃO AUTOMÁTICA
+      // ============================================
+      function addPointsToCurrentUser(savedCount, exportedCount) {
+        if (savedCount === 0 && exportedCount === 0) return;
+
+        let memberIndex = teamMembers.findIndex(m => m.name === currentUserFullName);
+
+        // Se o usuário ainda não existir no ranking local, ele é criado automaticamente
+        if (memberIndex === -1) {
+          teamMembers.push({
+            id: Date.now(),
+            name: currentUserFullName,
+            role: userProfile.role || 'SDR',
+            extracted: 0, 
+            exported: 0,
+            avatar: userProfile.avatarBase64 || ''
+          });
+          memberIndex = teamMembers.length - 1;
+        }
+
+        // Soma os números da ação
+        teamMembers[memberIndex].extracted += savedCount; // (Visualmente isso se chama 'Salvos')
+        teamMembers[memberIndex].exported += exportedCount; 
+
+        // Atualiza a foto se disponível
+        if(userProfile.avatarBase64) teamMembers[memberIndex].avatar = userProfile.avatarBase64;
+
+        // Salva e atualiza
+        localStorage.setItem(STORAGE_KEYS_TEAM, JSON.stringify(teamMembers));
+        
+        if (!document.getElementById('rankingSection').classList.contains('hidden')) {
+            renderLeaderboard();
+        }
       }
 
       // ============================================
@@ -1505,7 +1541,7 @@
         else if(section === 'extract') { topTitle.textContent = "Prospecção Ativa"; topSubtitle.textContent = "Encontre novos clientes no Maps."; }
         else if(section === 'ranking') { topTitle.textContent = "Ranking & Gamificação"; topSubtitle.textContent = "Quadro de líderes e performance da equipe."; }
         else if(section === 'saved') { topTitle.textContent = "Pastas & Salvos"; topSubtitle.textContent = "Sua base de contatos curados."; }
-        else if(section === 'pipedrive') { topTitle.textContent = "Histórico CRM"; topSubtitle.textContent = "Log de envios para o Pipedrive."; }
+        else if(section === 'pipedrive') { topTitle.textContent = "Histórico CRM"; topSubtitle.textContent = "Log de envios para o CRM."; }
         else if(section === 'settings') { topTitle.textContent = "Painel Master"; topSubtitle.textContent = "Controle das chaves e parâmetros."; }
         else if(section === 'account') { topTitle.textContent = "Minha Conta"; topSubtitle.textContent = "Dados de perfil e assinatura."; }
 
@@ -1841,6 +1877,7 @@
 
       function closeFolderModal() { document.getElementById('folderModal').style.display = 'none'; pendingLeadsToSave = []; }
 
+      // ========= AQUI O SISTEMA GERA PONTOS DE SALVAR LEADS =========
       function confirmFolderSave() {
         const folderName = document.getElementById('newFolderInput').value.trim() || document.getElementById('folderSelect').value || 'Geral';
         let count = 0;
@@ -1852,6 +1889,10 @@
         });
         localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
         updateFolderFilterDropdown(); renderSavedLeads(); renderLeads(); updateDashboardStats(); closeFolderModal();
+        
+        // DISPARA OS PONTOS PRO USUÁRIO LOGADO (LEADS SALVOS)
+        if (count > 0) { addPointsToCurrentUser(count, 0); }
+        
         toast(`${count} lead(s) salvo(s) na pasta "${folderName}".`);
       }
 
@@ -1907,13 +1948,14 @@
         renderLeads(); renderSavedLeads();
       }
 
+      // ========= AQUI O SISTEMA GERA PONTOS DE EXPORTAR =========
       async function sendSavedToPipedrive() {
         const filterVal = document.getElementById('savedFolderFilter').value;
         const list = filterVal === 'Todas' ? savedLeads : savedLeads.filter(l => (l.folder || 'Geral') === filterVal);
         if (!list.length) { toast('Nenhum lead nesta pasta.'); return; }
 
         const settings = getSettings();
-        if (!settings.pipedriveToken) { toast('Token Pipedrive ausente.'); return; }
+        if (!settings.pipedriveToken) { toast('Token CRM ausente.'); return; }
 
         let success = 0, failed = 0; toast(`Enviando para o CRM...`);
 
@@ -1940,8 +1982,13 @@
             success++;
           } catch (e) { failed++; }
         }
-        localStorage.setItem(STORAGE_KEYS.exported, JSON.stringify(exportedLeads)); localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
+        localStorage.setItem(STORAGE_KEYS.exported, JSON.stringify(exportedLeads)); 
+        localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
         renderLeads(); renderSavedLeads(); renderExportedLeads(); updateDashboardStats();
+        
+        // DISPARA OS PONTOS DE EXPORTAÇÃO PRO USUÁRIO LOGADO
+        if (success > 0) { addPointsToCurrentUser(0, success); }
+
         toast(failed ? `${success} enviados, ${failed} falharam.` : `${success} exportados com sucesso.`);
       }
 
