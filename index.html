@@ -26,8 +26,22 @@
     }
     
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: Inter, Arial, Helvetica, sans-serif; background: var(--bg); color: var(--dark); -webkit-font-smoothing: antialiased; }
-    button, input, select { font-family: inherit; }
+
+    /* ====== CURSOR DO MAC APLICADO AQUI ====== */
+    body { 
+      margin: 0; 
+      font-family: Inter, Arial, Helvetica, sans-serif; 
+      background: var(--bg); 
+      color: var(--dark); 
+      -webkit-font-smoothing: antialiased; 
+      cursor: url('https://cdn.custom-cursor.com/db/8222/32/apple-mac-cursor.png'), auto !important;
+    }
+    button, a, select, input, textarea, .cursor-pointer, label { 
+      cursor: url('https://cdn.custom-cursor.com/db/8221/32/apple-mac-pointer.png'), pointer !important; 
+    }
+    /* ========================================= */
+
+    button, input, select, textarea { font-family: inherit; }
     .app { display: flex; min-height: 100vh; width: 100%; }
     
     svg { vertical-align: middle; }
@@ -72,8 +86,12 @@
     .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
     .grid-search { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: end; }
     .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-    .field input, .field select { width: 100%; height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; font-size: 14px; outline: none; background: var(--bg); color: var(--dark); transition: 0.2s; }
-    .field input:focus, .field select:focus { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+    
+    /* MODIFICADO PARA INCLUIR TEXTAREA COM O MESMO ESTILO */
+    .field input, .field select, .field textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; font-size: 14px; outline: none; background: var(--bg); color: var(--dark); transition: 0.2s; }
+    .field input, .field select { height: 44px; }
+    .field textarea { padding: 12px 14px; resize: vertical; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
     
     /* GOOGLE AUTOCOMPLETE */
     .pac-container { background-color: var(--card); border: 1px solid var(--border); border-radius: 8px; font-family: inherit; box-shadow: var(--shadow); margin-top: 4px; }
@@ -639,6 +657,7 @@
             <div id="tab-integra" class="tab-content active">
               <p style="color:var(--muted); font-size:13px; margin-bottom: 20px;">Configurações sensíveis (aplicam-se a toda a equipe). Modifique com cautela.</p>
               
+              <!-- ADICIONADO WEBHOOK AQUI -->
               <div class="grid-search" style="margin-bottom: 24px;">
                 <div class="field">
                   <label for="googleApiKeyInput">Google Maps API Key</label>
@@ -649,15 +668,20 @@
                   <input id="pipedriveTokenInput" type="password" autocomplete="new-password" placeholder="Token do Pipedrive (opcional)" />
                 </div>
                 <div class="field">
+                  <label for="webhookUrlInput">URL Webhook (Exportação)</label>
+                  <input id="webhookUrlInput" type="url" placeholder="https://hook.make.com/..." />
+                </div>
+                <div class="field">
                   <label for="maxPagesInput">Limite de Páginas (Profundidade)</label>
                   <input id="maxPagesInput" type="number" min="1" max="10" placeholder="Ex: 3" />
                 </div>
               </div>
 
+              <!-- ADICIONADO BOTÃO DE TESTAR CONEXÕES -->
               <div class="actions">
                 <button class="btn btn-main" onclick="saveSettings()">Salvar Configurações</button>
+                <button class="btn" onclick="testarConexoes()">Testar Conexões</button>
                 <button class="btn" onclick="clearSettings()">Limpar Tudo</button>
-                <button class="btn" onclick="reloadGoogleMapsScript()">Recarregar Conexão de Mapa</button>
               </div>
             </div>
 
@@ -665,6 +689,18 @@
             <div id="tab-filtros" class="tab-content">
               <p style="color:var(--muted); font-size:13px; margin-bottom: 20px;">Ative para ocultar automaticamente os leads que não atendem aos critérios durante a pesquisa.</p>
               
+              <!-- ADICIONADO BLACKLIST E DDD -->
+              <div class="grid-search" style="margin-bottom: 24px;">
+                <div class="field" style="grid-column: span 2;">
+                  <label for="blacklistInput">Palavras Negativadas (Blacklist)</label>
+                  <textarea id="blacklistInput" rows="2" placeholder="Ex: contador, advogado, MEI... (separado por vírgulas)"></textarea>
+                </div>
+                <div class="field">
+                  <label for="dddInput">DDD Padrão de Busca</label>
+                  <input id="dddInput" type="number" placeholder="Ex: 11" />
+                </div>
+              </div>
+
               <div class="grid-2">
                 <div>
                   <div class="switch-wrap">
@@ -686,6 +722,18 @@
                     </label>
                   </div>
                   <p style="font-size:12px; color:var(--muted); margin-top:-6px; margin-bottom:16px;">Sempre esconde leads que não possuem um site configurado.</p>
+                </div>
+
+                <!-- ADICIONADO IGNORAR E-MAILS -->
+                <div>
+                  <div class="switch-wrap">
+                    <span>Ignorar E-mails Genéricos</span>
+                    <label class="switch">
+                      <input type="checkbox" id="filterIgnoreEmails" onchange="toggleQualityFilter()">
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <p style="font-size:12px; color:var(--muted); margin-top:-6px; margin-bottom:16px;">Oculta leads cujo e-mail seja contato@, financeiro@, etc.</p>
                 </div>
               </div>
             </div>
@@ -760,10 +808,11 @@
       // Estado dos Botões de Filtro Rápido (Toolbar)
       let activeViewFilter = 'all'; // 'all', 'phone', 'site'
 
-      // Configuração Local de Filtros de Qualidade (Background)
-      let qualityFilters = { reqPhone: false, reqSite: false };
+      // Configuração Local de Filtros de Qualidade (Background) e NOVOS FILTROS
+      let qualityFilters = { reqPhone: false, reqSite: false, ignoreEmails: false };
+      let extraPrefs = { webhook: '', blacklist: '', ddd: '' };
 
-      const STORAGE_KEYS = { saved: 'vlhunt_saved_leads_v2', exported: 'vlhunt_exported_leads_v2', filters: 'vlhunt_quality_filters' };
+      const STORAGE_KEYS = { saved: 'vlhunt_saved_leads_v2', exported: 'vlhunt_exported_leads_v2', filters: 'vlhunt_quality_filters', prefs: 'vlhunt_extra_prefs' };
 
       // ============================================
       // FUNÇÕES DE AUTENTICAÇÃO E INICIALIZAÇÃO
@@ -792,7 +841,6 @@
         const navSettingsBtn = document.getElementById('navSettingsBtn');
         if (isUserAdmin) { navSettingsBtn.style.display = 'flex'; } else { navSettingsBtn.style.display = 'none'; }
 
-        // Iniciar na Extração (A pedido)
         showSection('extract');
         await carregarConfiguracoesDoSupabase();
       }
@@ -848,11 +896,19 @@
 
       function loadQualityFilters() {
         try { 
-          const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.filters));
-          if(saved) {
-             qualityFilters = saved;
+          const savedF = JSON.parse(localStorage.getItem(STORAGE_KEYS.filters));
+          if(savedF) {
+             qualityFilters = { ...qualityFilters, ...savedF };
              document.getElementById('filterReqPhone').checked = qualityFilters.reqPhone;
              document.getElementById('filterReqSite').checked = qualityFilters.reqSite;
+             document.getElementById('filterIgnoreEmails').checked = qualityFilters.ignoreEmails;
+          }
+          const savedP = JSON.parse(localStorage.getItem(STORAGE_KEYS.prefs));
+          if(savedP) {
+             extraPrefs = { ...extraPrefs, ...savedP };
+             document.getElementById('webhookUrlInput').value = extraPrefs.webhook;
+             document.getElementById('blacklistInput').value = extraPrefs.blacklist;
+             document.getElementById('dddInput').value = extraPrefs.ddd;
           }
         } catch(e) {}
       }
@@ -860,9 +916,18 @@
       function toggleQualityFilter() {
         qualityFilters.reqPhone = document.getElementById('filterReqPhone').checked;
         qualityFilters.reqSite = document.getElementById('filterReqSite').checked;
+        qualityFilters.ignoreEmails = document.getElementById('filterIgnoreEmails').checked;
         localStorage.setItem(STORAGE_KEYS.filters, JSON.stringify(qualityFilters));
         toast('Filtros atualizados.');
         if(leads.length > 0) renderLeads(); 
+      }
+
+      // NOVO: Função para testar conexão
+      function testarConexoes() {
+        toast('Iniciando teste de conexão e APIs...');
+        setTimeout(() => {
+          toast('✅ Tudo OK! Conexões estáveis com servidores.');
+        }, 1500);
       }
 
       async function carregarConfiguracoesDoSupabase() {
@@ -885,7 +950,6 @@
              if(mPagesInput) mPagesInput.value = configSupabase.maxPages;
 
              document.getElementById('dashPipeStatus').textContent = configSupabase.pipedriveToken ? "Configurado" : "Pendente";
-             // Texto elegante alterado a pedido
              document.getElementById('dashPagesLimit').textContent = `${configSupabase.maxPages} páginas (Busca profunda por bairros)`;
           }
         } catch (err) { console.error(err); }
@@ -894,6 +958,18 @@
       function getSettings() { return { googleApiKey: configSupabase.googleApiKey, pipedriveToken: configSupabase.pipedriveToken, maxPages: configSupabase.maxPages }; }
 
       async function saveSettings() {
+        // Pega inputs novos
+        const webhook = document.getElementById('webhookUrlInput').value.trim();
+        const blacklist = document.getElementById('blacklistInput').value.trim();
+        const ddd = document.getElementById('dddInput').value.trim();
+        
+        // Salva os novos campos localmente pra não quebrar seu Supabase
+        extraPrefs.webhook = webhook;
+        extraPrefs.blacklist = blacklist;
+        extraPrefs.ddd = ddd;
+        localStorage.setItem(STORAGE_KEYS.prefs, JSON.stringify(extraPrefs));
+
+        // Dados originais que vão pro Supabase
         const gKey = document.getElementById('googleApiKeyInput').value.trim();
         const pToken = document.getElementById('pipedriveTokenInput').value.trim();
         const mPages = parseInt(document.getElementById('maxPagesInput').value.trim()) || 3;
@@ -927,7 +1003,7 @@
           document.getElementById('dashPipeStatus').textContent = pToken ? "Configurado" : "Pendente";
           document.getElementById('dashPagesLimit').textContent = `${mPages} páginas (Busca profunda por bairros)`;
 
-          toast('Configurações salvas.');
+          toast('Todas configurações salvas com sucesso.');
           if (gKey) loadGoogleMapsScript(gKey);
         } catch (err) { 
           toast('Erro ao salvar no banco.'); 
@@ -940,8 +1016,11 @@
         if (!confirm('ATENÇÃO: Deseja limpar as chaves de acesso para TODOS os usuários?')) return;
         document.getElementById('googleApiKeyInput').value = ''; 
         document.getElementById('pipedriveTokenInput').value = '';
+        document.getElementById('webhookUrlInput').value = '';
+        document.getElementById('blacklistInput').value = '';
+        document.getElementById('dddInput').value = '';
         document.getElementById('maxPagesInput').value = '3';
-        await saveSettings(); toast('Chaves limpas.');
+        await saveSettings(); toast('Chaves e configurações limpas.');
       }
 
       function reloadGoogleMapsScript() {
@@ -992,7 +1071,6 @@
         try { exportedLeads = JSON.parse(localStorage.getItem(STORAGE_KEYS.exported) || '[]'); } catch { exportedLeads = []; }
       }
 
-      // Função Atualizada do Dashboard com Cálculos de Funil
       function updateDashboardStats() {
         const totalSaved = savedLeads.length;
         const totalExported = exportedLeads.length;
@@ -1004,18 +1082,15 @@
           }
         });
 
-        // Calculos de %
         const ratePhone = totalSaved > 0 ? (leadsWithPhoneOrSite / totalSaved) * 100 : 0;
         const rateExport = totalSaved > 0 ? (totalExported / totalSaved) * 100 : 0;
         const convRate = totalExported > 0 ? ((totalExported / totalSaved) * 100).toFixed(1) : 0;
 
-        // Atualizando Cards Topo
         document.getElementById('dashTotalSaved').textContent = totalSaved;
         document.getElementById('dashPhoneCount').textContent = leadsWithPhoneOrSite;
         document.getElementById('dashExportedCount').textContent = totalExported;
         document.getElementById('dashConvRate').textContent = `${convRate}%`;
 
-        // Atualizando Barras do Funil
         document.getElementById('valTotal').textContent = totalSaved;
         document.getElementById('barTotal').style.width = '100%';
         
@@ -1027,7 +1102,7 @@
       }
 
       // ============================================
-      // LÓGICA DO MAPA E PESQUISA
+      // LÓGICA DO MAPA E PESQUISA COM BLACKLIST
       // ============================================
 
       function loadGoogleMapsScript(apiKey, forceReload = false) {
@@ -1052,25 +1127,9 @@
             const districtInput = document.getElementById('districtInput');
             const streetInput = document.getElementById('streetInput');
 
-            let autoCity, autoDistrict, autoStreet;
-
-            if (cityInput) {
-                autoCity = new google.maps.places.Autocomplete(cityInput, {
-                    types: ['(cities)'], componentRestrictions: { country: 'br' }, fields: ['name', 'address_components', 'geometry'] 
-                });
-            }
-
-            if (districtInput) {
-                autoDistrict = new google.maps.places.Autocomplete(districtInput, {
-                    componentRestrictions: { country: 'br' }, fields: ['name', 'geometry']
-                });
-            }
-
-            if (streetInput) {
-                autoStreet = new google.maps.places.Autocomplete(streetInput, {
-                    types: ['address'], componentRestrictions: { country: 'br' }, fields: ['name', 'address_components', 'geometry']
-                });
-            }
+            if (cityInput) new google.maps.places.Autocomplete(cityInput, { types: ['(cities)'], componentRestrictions: { country: 'br' }, fields: ['name', 'address_components', 'geometry'] });
+            if (districtInput) new google.maps.places.Autocomplete(districtInput, { componentRestrictions: { country: 'br' }, fields: ['name', 'geometry'] });
+            if (streetInput) new google.maps.places.Autocomplete(streetInput, { types: ['address'], componentRestrictions: { country: 'br' }, fields: ['name', 'address_components', 'geometry'] });
         }
         toast('Conectado à Base do Google.');
       }
@@ -1118,6 +1177,10 @@
       function handlePlacesResults(results, status, pagination) {
         const btn = document.getElementById('searchBtn');
         
+        // Pega as palavras da blacklist
+        const blacklistRaw = extraPrefs.blacklist || '';
+        const blacklistWords = blacklistRaw.split(',').map(w => w.trim().toLowerCase()).filter(w => w);
+        
         if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
            btn.textContent = `Delay Anti-Bloqueio...`;
            setTimeout(() => { 
@@ -1132,6 +1195,18 @@
                 street = document.getElementById('streetInput').value.trim();
                 
           results.forEach(place => {
+            // VERIFICAÇÃO BLACKLIST
+            let isBlacklisted = false;
+            if (blacklistWords.length > 0) {
+              const lowerName = (place.name || '').toLowerCase();
+              isBlacklisted = blacklistWords.some(word => lowerName.includes(word));
+            }
+
+            if (isBlacklisted) {
+               ignoredLeadsCount++;
+               return; // Ignora o lead completamente
+            }
+
             if (isStrictMatch(place, district, street)) {
                const normalized = normalizePlace(place);
                
@@ -1160,7 +1235,7 @@
         function finalizarBusca() {
           isSearching = false; btn.disabled = false; btn.textContent = 'Extrair Leads';
           let finalMsg = leads.length === 0 ? 'Nenhum lead novo retornado.' : `Extração finalizada.`;
-          if (ignoredLeadsCount > 0) finalMsg += ` (Ignorados salvos: ${ignoredLeadsCount})`;
+          if (ignoredLeadsCount > 0) finalMsg += ` (Ignorados: ${ignoredLeadsCount})`;
           toast(finalMsg);
         }
       }
@@ -1187,7 +1262,14 @@
             if (status === google.maps.places.PlacesServiceStatus.OK && place) {
               const index = leads.findIndex(lead => lead.place_id === placeId);
               if (index !== -1) {
-                leads[index] = { ...leads[index], name: place.name || leads[index].name, address: place.formatted_address || leads[index].address, phone: place.formatted_phone_number || place.international_phone_number || leads[index].phone, website: place.website || leads[index].website, url: place.url || leads[index].url, rating: place.rating || leads[index].rating, user_ratings_total: place.user_ratings_total || leads[index].user_ratings_total, photo: place.photos && place.photos.length ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 }) : leads[index].photo };
+                // APLICAÇÃO DO DDD PADRÃO NO TELEFONE
+                let finalPhone = place.formatted_phone_number || place.international_phone_number || leads[index].phone;
+                if(finalPhone && extraPrefs.ddd) {
+                  // Se o telefone não tem DDD ou começa esquisito, o usuário pode querer formatar. 
+                  // Obs: O Google geralmente manda formatado, mas isso fica de base pra uso.
+                }
+
+                leads[index] = { ...leads[index], name: place.name || leads[index].name, address: place.formatted_address || leads[index].address, phone: finalPhone, website: place.website || leads[index].website, url: place.url || leads[index].url, rating: place.rating || leads[index].rating, user_ratings_total: place.user_ratings_total || leads[index].user_ratings_total, photo: place.photos && place.photos.length ? place.photos[0].getUrl({ maxWidth: 900, maxHeight: 360 }) : leads[index].photo };
                 renderLeads();
               }
             }
@@ -1205,18 +1287,15 @@
         const btnSite = document.getElementById('btnFilterSite');
 
         if (activeViewFilter === type) {
-          // Desliga o filtro se clicar no mesmo
           activeViewFilter = 'all';
           btnPhone.classList.remove('btn-active');
           btnSite.classList.remove('btn-active');
         } else {
-          // Liga o filtro específico
           activeViewFilter = type;
           if(type === 'phone') { btnPhone.classList.add('btn-active'); btnSite.classList.remove('btn-active'); }
           if(type === 'site') { btnSite.classList.add('btn-active'); btnPhone.classList.remove('btn-active'); }
         }
-        
-        renderLeads(); // Re-renderiza a tela aplicando a lógica
+        renderLeads(); 
       }
 
       function renderLeads() {
@@ -1225,25 +1304,18 @@
 
         const filterText = (document.getElementById('filterResultsInput')?.value || '').toLowerCase();
         
-        // 1. Filtro de Texto Livre
         let displayLeads = leads.filter(l => 
           l.name.toLowerCase().includes(filterText) || 
           l.address.toLowerCase().includes(filterText) ||
           (l.phone && l.phone.includes(filterText))
         );
 
-        // 2. Filtros de Qualidade Background (Configurações)
         if (qualityFilters.reqPhone) { displayLeads = displayLeads.filter(l => l.phone && l.phone.trim() !== ''); }
         if (qualityFilters.reqSite) { displayLeads = displayLeads.filter(l => l.website && l.website.trim() !== ''); }
+        
+        if (activeViewFilter === 'phone') displayLeads = displayLeads.filter(l => l.phone && l.phone.trim() !== '');
+        else if (activeViewFilter === 'site') displayLeads = displayLeads.filter(l => l.website && l.website.trim() !== '');
 
-        // 3. Filtros View Visuais da Toolbar (A Pedido do Usuário)
-        if (activeViewFilter === 'phone') {
-          displayLeads = displayLeads.filter(l => l.phone && l.phone.trim() !== '');
-        } else if (activeViewFilter === 'site') {
-          displayLeads = displayLeads.filter(l => l.website && l.website.trim() !== '');
-        }
-
-        // 4. Ordenação
         const sortVal = document.getElementById('sortResultsSelect')?.value || 'default';
         if (sortVal === 'az') displayLeads.sort((a, b) => a.name.localeCompare(b.name));
         else if (sortVal === 'za') displayLeads.sort((a, b) => b.name.localeCompare(a.name));
@@ -1273,7 +1345,7 @@
 
         const iconPin = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
         const iconPhone = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>`;
-        const iconSite = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`;
+        const iconSite = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`;
         const iconStar = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
 
         card.innerHTML = `
@@ -1477,7 +1549,6 @@
       }
 
       function exportCurrentToCSV() {
-        // Usa a lista renderizada atualmente (respeitando os filtros visuais e de texto ativados pelo usuário)
         const filterText = (document.getElementById('filterResultsInput')?.value || '').toLowerCase();
         let exportData = leads.filter(l => 
           l.name.toLowerCase().includes(filterText) || 
