@@ -54,14 +54,31 @@
     .user-card strong { font-size: 13px; font-weight: 600;}
     .user-card span { font-size: 12px; color: var(--muted); }
 
-    /* STATS & SECTIONS */
+    /* STATS & SECTIONS (DASHBOARD) */
     .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; min-height: 90px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; min-height: 90px; position: relative; overflow: hidden;}
+    .stat-card::after { content: ''; position: absolute; right: -10px; bottom: -10px; width: 60px; height: 60px; background: var(--border); opacity: 0.3; border-radius: 50%; }
     .stat-card span { display: block; color: var(--muted); font-weight: 600; font-size: 12px; letter-spacing: 0.5px; margin-bottom: 8px; text-transform: uppercase; }
     .stat-card strong { display: block; font-size: 28px; font-weight: 800; }
     
+    .dashboard-funnel { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; }
+    .funnel-bars { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+    .funnel-row { display: flex; align-items: center; gap: 16px; }
+    .funnel-label { width: 150px; font-size: 13px; font-weight: 600; color: var(--muted); }
+    .funnel-bar-wrap { flex: 1; height: 12px; background: var(--border); border-radius: 6px; overflow: hidden; position: relative; }
+    .funnel-bar-fill { height: 100%; background: var(--primary); border-radius: 6px; transition: width 0.5s ease; }
+    .funnel-value { width: 60px; text-align: right; font-weight: 800; font-size: 14px; }
+
+    /* FOLDERS GRID */
+    .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .folder-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; cursor: pointer; transition: 0.2s ease; display: flex; flex-direction: column; gap: 12px; }
+    .folder-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow); }
+    .folder-icon { width: 48px; height: 48px; background: var(--nav-hover); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--dark); }
+    .folder-info h4 { margin: 0; font-size: 16px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .folder-info p { margin: 4px 0 0; font-size: 13px; color: var(--muted); font-weight: 500; }
+
     .section { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; }
-    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; flex-wrap: wrap; }
     .section-title { display: flex; align-items: center; gap: 14px; }
     .section-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--border); display: flex; align-items: center; justify-content: center; color: var(--dark); }
     .section-title h3 { margin: 0; font-size: 18px; font-weight: 700; }
@@ -149,10 +166,6 @@
     .modal select:focus, .modal input:focus { border-color: var(--primary); }
     .modal-divider { text-align: center; margin: 10px 0 20px; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
     .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
-    
-    .folder-filter-wrap { display: flex; align-items: center; font-size: 14px; }
-    .folder-filter-wrap select { height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; font-size: 13px; font-weight: 500; min-width: 200px; outline: none; background: transparent; color: var(--dark); cursor: pointer; transition: 0.2s; }
-    .folder-filter-wrap select:hover { background: var(--nav-hover); }
 
     /* MEDIA QUERIES */
     @media (max-width: 1400px) { .grid-search { grid-template-columns: 1fr 1fr; } }
@@ -210,14 +223,20 @@
 
         <div class="menu-title">Menu Principal</div>
 
-        <button class="menu-item active" data-section="extract" onclick="showSection('extract')">
+        <!-- NOVO MENU DASHBOARD -->
+        <button class="menu-item active" data-section="dashboard" onclick="showSection('dashboard')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Dashboard
+        </button>
+
+        <button class="menu-item" data-section="extract" onclick="showSection('extract')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           Extrair Leads
         </button>
 
         <button class="menu-item" data-section="saved" onclick="showSection('saved')">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-          Leads Salvos
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          Pastas & Salvos
         </button>
 
         <button class="menu-item" data-section="pipedrive" onclick="showSection('pipedrive')">
@@ -239,7 +258,7 @@
       <main class="main">
         <div class="topbar">
           <div>
-            <h2>Pesquisa</h2>
+            <h2 id="topBarTitle">Dashboard</h2>
           </div>
 
           <div class="user-card">
@@ -251,27 +270,67 @@
           </div>
         </div>
 
-        <div class="stats">
-          <div class="stat-card">
-            <span>Na Tela</span>
-            <strong id="foundCount">0</strong>
+        <!-- ABA DASHBOARD (NOVA) -->
+        <section id="dashboardSection">
+          <!-- Movido os Status Cards para o Dashboard -->
+          <div class="stats">
+            <div class="stat-card">
+              <span>Leads Salvos</span>
+              <strong id="dashTotalSaved">0</strong>
+            </div>
+            <div class="stat-card">
+              <span>Com Telefone</span>
+              <strong id="dashTotalPhones">0</strong>
+            </div>
+            <div class="stat-card">
+              <span>Exportados CRM</span>
+              <strong id="dashTotalExported">0</strong>
+            </div>
+            <div class="stat-card">
+              <span>Tx. Conversão</span>
+              <strong id="dashConversion">0%</strong>
+            </div>
           </div>
-          <div class="stat-card">
-            <span>Salvos</span>
-            <strong id="savedCount">0</strong>
+
+          <div class="dashboard-funnel">
+             <div class="section-title">
+                <div class="section-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                </div>
+                <div>
+                  <h3>Funil de Qualidade</h3>
+                  <p>Visão geral de aproveitamento dos leads na sua base salva.</p>
+                </div>
+              </div>
+
+              <div class="funnel-bars">
+                <div class="funnel-row">
+                  <div class="funnel-label">Total Salvos</div>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar-fill" id="barSalvos" style="width: 0%; opacity: 0.5;"></div></div>
+                  <div class="funnel-value" id="valSalvos">0</div>
+                </div>
+                <div class="funnel-row">
+                  <div class="funnel-label">Com Telefone/Site</div>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar-fill" id="barContato" style="width: 0%; opacity: 0.7;"></div></div>
+                  <div class="funnel-value" id="valContato">0</div>
+                </div>
+                <div class="funnel-row">
+                  <div class="funnel-label">Enviados (Exportados)</div>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar-fill" id="barExportados" style="width: 0%; background: #22c55e;"></div></div>
+                  <div class="funnel-value" id="valExportados">0</div>
+                </div>
+              </div>
           </div>
-          <div class="stat-card">
-            <span>Exportados</span>
-            <strong id="exportedCount">0</strong>
-          </div>
-          <div class="stat-card">
-            <span>Pendentes</span>
-            <strong id="pendingCount">0</strong>
-          </div>
-        </div>
+        </section>
 
         <!-- ABA EXTRAIR -->
-        <section id="extractSection">
+        <section id="extractSection" class="hidden">
+          
+          <div class="section" style="padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; background: var(--nav-hover); border-style: dashed;">
+             <span style="font-size: 14px; font-weight: 500; color: var(--muted);">Última extração ativa na tela:</span>
+             <strong style="font-size: 16px;" id="pendingCountExtract">0 leads pendentes</strong>
+          </div>
+
           <div class="section">
             <div class="section-title" style="margin-bottom: 22px;">
               <div class="section-icon">
@@ -403,46 +462,69 @@
           </div>
         </section>
 
-        <!-- ABA SALVOS -->
+        <!-- ABA SALVOS (PASTAS) -->
         <section id="savedSection" class="hidden">
-          <div class="section">
-            <div class="section-head">
+          
+          <!-- Visão 1: Lista de Pastas -->
+          <div id="folderListView">
+            <div class="section-head" style="margin-bottom: 24px;">
               <div class="section-title">
                 <div class="section-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
                 </div>
                 <div>
-                  <h3>Leads Salvos</h3>
-                  <p>Empresas salvas organizadas por pastas para prospecção.</p>
+                  <h3>Suas Pastas</h3>
+                  <p>Organize seus leads salvos por campanhas ou regiões.</p>
                 </div>
-              </div>
-
-              <div class="actions" style="margin-top:0; align-items: center;">
-                <div class="folder-filter-wrap">
-                  <select id="savedFolderFilter" onchange="renderSavedLeads()">
-                    <option value="Todas">Todas as pastas</option>
-                  </select>
-                </div>
-
-                <button class="btn" onclick="sendSavedToPipedrive()">
-                  Exportar CRM
-                </button>
-
-                <button class="btn" onclick="exportSavedToCSV()">
-                  Exportar CSV
-                </button>
-
-                <button class="btn btn-danger" onclick="clearSavedLeads()">
-                  Limpar salvos
-                </button>
               </div>
             </div>
 
-            <div id="savedEmpty" class="empty">
-              Nenhum lead salvo ainda.
+            <div id="foldersGrid" class="folder-grid">
+               <!-- Preenchido via JS -->
             </div>
+            <div id="foldersEmpty" class="empty hidden">
+              Você ainda não tem nenhuma pasta criada. Busque e salve leads para criar a primeira!
+            </div>
+          </div>
 
-            <div id="savedGrid" class="leads-grid"></div>
+          <!-- Visão 2: Leads dentro da Pasta (Escondida por padrão) -->
+          <div id="folderDetailsView" class="hidden">
+            <div class="section">
+              <div class="section-head">
+                <div class="section-title">
+                  <button class="btn" style="height: 40px; padding: 0 12px; margin-right: 12px;" onclick="closeFolderDetails()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                  </button>
+                  <div>
+                    <h3 id="currentFolderNameDisplay">Nome da Pasta</h3>
+                    <p>Gerenciando os leads desta pasta específica.</p>
+                  </div>
+                </div>
+
+                <div class="actions" style="margin-top:0; align-items: center;">
+                  <!-- Usamos input hidden para guardar qual pasta tá aberta e reutilizar as funcoes antigas -->
+                  <input type="hidden" id="savedFolderFilter" value="Todas" /> 
+
+                  <button class="btn" onclick="sendSavedToPipedrive()">
+                    Exportar CRM
+                  </button>
+
+                  <button class="btn" onclick="exportSavedToCSV()">
+                    Exportar CSV
+                  </button>
+
+                  <button class="btn btn-danger" onclick="clearSavedLeads()">
+                    Limpar Pasta
+                  </button>
+                </div>
+              </div>
+
+              <div id="savedEmpty" class="empty">
+                Nenhum lead nesta pasta.
+              </div>
+
+              <div id="savedGrid" class="leads-grid"></div>
+            </div>
           </div>
         </section>
 
@@ -493,7 +575,6 @@
               </div>
             </div>
 
-            <!-- Adicionado o campo de controle de páginas (limite da API) -->
             <div class="grid-search" style="margin-bottom: 24px;">
               <div class="field">
                 <label for="googleApiKeyInput">Google Maps API Key</label>
@@ -615,7 +696,8 @@
         const navSettingsBtn = document.getElementById('navSettingsBtn');
         if (isUserAdmin) { navSettingsBtn.style.display = 'flex'; } else { navSettingsBtn.style.display = 'none'; }
 
-        showSection('extract');
+        // Agora cai primeiro no Dashboard
+        showSection('dashboard');
         await carregarConfiguracoesDoSupabase();
       }
 
@@ -639,7 +721,7 @@
       }
 
       document.addEventListener('DOMContentLoaded', async () => {
-        loadLocalData(); updateCounters(); updateFolderFilterDropdown(); renderSavedLeads(); renderExportedLeads();
+        loadLocalData(); updateDashboard(); renderFoldersGrid(); renderExportedLeads();
 
         localStorage.removeItem('vlhunt_last_name');
         localStorage.removeItem('vlhunt_last_niche');
@@ -657,6 +739,41 @@
         const { data: { session } } = await supa.auth.getSession();
         if (session) { iniciarSistemaApp(session.user.email); }
       });
+
+      // ============================================
+      // FUNÇÕES DE DASHBOARD (TAREFA 16)
+      // ============================================
+
+      function updateDashboard() {
+        // Atualiza extração na aba de Busca
+        document.getElementById('pendingCountExtract').textContent = `${leads.length} leads na pesquisa`;
+
+        // Calculo Dashboard
+        const totalSaved = savedLeads.length;
+        const totalExported = exportedLeads.length;
+        const totalComContato = savedLeads.filter(l => (l.phone && l.phone.trim() !== '') || (l.website && l.website.trim() !== '')).length;
+        
+        document.getElementById('dashTotalSaved').textContent = totalSaved;
+        document.getElementById('dashTotalPhones').textContent = totalComContato;
+        document.getElementById('dashTotalExported').textContent = totalExported;
+
+        let conversion = 0;
+        if (totalSaved > 0) conversion = Math.round((totalExported / totalSaved) * 100);
+        document.getElementById('dashConversion').textContent = `${conversion}%`;
+
+        // Funil Animado
+        document.getElementById('valSalvos').textContent = totalSaved;
+        document.getElementById('barSalvos').style.width = totalSaved > 0 ? '100%' : '0%';
+
+        document.getElementById('valContato').textContent = totalComContato;
+        const pctContato = totalSaved > 0 ? Math.round((totalComContato / totalSaved) * 100) : 0;
+        document.getElementById('barContato').style.width = `${pctContato}%`;
+
+        document.getElementById('valExportados').textContent = totalExported;
+        const pctExportados = totalSaved > 0 ? Math.round((totalExported / totalSaved) * 100) : 0;
+        document.getElementById('barExportados').style.width = `${pctExportados}%`;
+      }
+
 
       // ============================================
       // FUNÇÕES DE CONFIGURAÇÃO (SUPABASE)
@@ -742,20 +859,37 @@
       }
 
       // ============================================
-      // RESTANTE DO CÓDIGO (MAPS, LEADS, PIPEDRIVE)
+      // NAVEGAÇÃO E UX
       // ============================================
 
       function showSection(section) {
         if (section === 'settings' && !isUserAdmin) { toast('Acesso negado.'); return; }
-        const sections = { extract: document.getElementById('extractSection'), saved: document.getElementById('savedSection'), pipedrive: document.getElementById('pipedriveSection'), settings: document.getElementById('settingsSection') };
-        Object.values(sections).forEach(el => el.classList.add('hidden'));
+        
+        // Esconde todas as sections
+        const sections = { 
+          dashboard: document.getElementById('dashboardSection'), 
+          extract: document.getElementById('extractSection'), 
+          saved: document.getElementById('savedSection'), 
+          pipedrive: document.getElementById('pipedriveSection'), 
+          settings: document.getElementById('settingsSection') 
+        };
+        Object.values(sections).forEach(el => { if(el) el.classList.add('hidden'); });
+        
+        // Mostra a selecionada
         if (sections[section]) sections[section].classList.remove('hidden');
 
+        // Atualiza botões do menu
         document.querySelectorAll('.menu-item').forEach(btn => btn.classList.remove('active'));
         const activeButton = document.querySelector(`.menu-item[data-section="${section}"]`);
         if (activeButton) activeButton.classList.add('active');
 
-        if (section === 'saved') { updateFolderFilterDropdown(); renderSavedLeads(); }
+        // Titulo no Topbar
+        const titles = { dashboard: "Dashboard", extract: "Pesquisa de Leads", saved: "Gestão de Pastas", pipedrive: "Exportações", settings: "Configurações" };
+        document.getElementById('topBarTitle').textContent = titles[section] || "VL Hunt";
+
+        // Lógicas Específicas por aba
+        if (section === 'dashboard') { updateDashboard(); }
+        if (section === 'saved') { closeFolderDetails(); renderFoldersGrid(); } // Ao clicar em saved, sempre volta pra lista de pastas
         if (section === 'pipedrive') renderExportedLeads();
       }
 
@@ -860,12 +994,6 @@
         toast('Sistema geográfico conectado!');
       }
 
-      function updateCounters() {
-        document.getElementById('savedCount').textContent = savedLeads.length;
-        document.getElementById('exportedCount').textContent = exportedLeads.length;
-        document.getElementById('pendingCount').textContent = leads.length; 
-      }
-
       function normalizeString(str) { return (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
 
       function isStrictMatch(place, district, street) {
@@ -906,11 +1034,9 @@
         placesService.textSearch({ query: queryParts.join(' '), type: 'establishment' }, handlePlacesResults);
       }
 
-      // NOVO MOTOR CORRIGIDO E OTIMIZADO CONTRA BLOQUEIOS
       function handlePlacesResults(results, status, pagination) {
         const btn = document.getElementById('searchBtn');
         
-        // Se a API for muito rápida e o Google bloquear, nós damos uma pausa visível no botão.
         if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
            btn.textContent = `Pausa anti-bloqueio... (${leads.length})`;
            setTimeout(() => { 
@@ -938,19 +1064,14 @@
           });
         }
         
-        renderLeads(); updateCounters();
+        renderLeads(); updateDashboard();
 
         const limiteMaximoAdmin = parseInt(configSupabase.maxPages, 10) || 3;
 
-        // Se tem página e está dentro do limite do plano, avança
         if (pagination && pagination.hasNextPage && currentApiPage < limiteMaximoAdmin) {
           currentApiPage++;
           btn.textContent = `Buscando página ${currentApiPage}/${limiteMaximoAdmin}... (${leads.length})`;
-          
-          // Delay seguro de 3.5s para não causar "engarrafamento" com a extração de detalhes
-          setTimeout(() => { 
-              pagination.nextPage(); 
-          }, 3500); 
+          setTimeout(() => { pagination.nextPage(); }, 3500); 
         } else {
           finalizarBusca();
         }
@@ -961,9 +1082,7 @@
           btn.textContent = 'Extrair Leads';
 
           let finalMsg = leads.length === 0 ? 'Nenhum lead novo retornado.' : `${leads.length} encontrados.`;
-          if (ignoredLeadsCount > 0) {
-              finalMsg += ` (${ignoredLeadsCount} ocultados pois já estão salvos)`;
-          }
+          if (ignoredLeadsCount > 0) finalMsg += ` (${ignoredLeadsCount} ocultados pois já estão salvos)`;
           toast(finalMsg);
         }
       }
@@ -982,7 +1101,6 @@
 
         placesService.getDetails({ placeId: placeId, fields: ['name', 'formatted_address', 'formatted_phone_number', 'international_phone_number', 'website', 'url', 'rating', 'user_ratings_total', 'photos'] },
           (place, status) => {
-            // Em caso de limite de dados pesados, espera 3s
             if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) { 
                 detailsQueue.unshift(placeId); 
                 setTimeout(() => { isProcessingQueue = false; processQueue(); }, 3000); 
@@ -995,7 +1113,6 @@
                 renderLeads();
               }
             }
-            // Aumentado o delay de extração (de 500 para 800ms) para proteger a busca por páginas
             setTimeout(() => { isProcessingQueue = false; processQueue(); }, 800);
           }
         );
@@ -1017,13 +1134,6 @@
         else if (sortVal === 'za') displayLeads.sort((a, b) => b.name.localeCompare(a.name));
         else if (sortVal === 'rating_desc') displayLeads.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         else if (sortVal === 'rating_asc') displayLeads.sort((a, b) => (a.rating || 0) - (b.rating || 0));
-
-        const foundEl = document.getElementById('foundCount');
-        if (filterText && displayLeads.length !== leads.length) {
-            foundEl.textContent = `${displayLeads.length} / ${leads.length}`;
-        } else {
-            foundEl.textContent = leads.length;
-        }
 
         if (!displayLeads.length) { 
             empty.innerHTML = isSearching ? 'Pesquisando...' : (leads.length ? 'Nenhum lead corresponde ao filtro digitado.' : 'Nenhum lead pesquisado.'); 
@@ -1082,10 +1192,9 @@
         return card;
       }
 
-      function toggleLeadSelection(placeId, checked) { checked ? selectedLeadIds.add(placeId) : selectedLeadIds.delete(placeId); renderLeads(); }
-      function toggleSelectAll(checked) { checked ? leads.forEach(l => selectedLeadIds.add(l.place_id)) : selectedLeadIds.clear(); renderLeads(); }
-      function clearSelected() { selectedLeadIds.clear(); document.getElementById('selectAllCheckbox').checked = false; renderLeads(); toast('Seleção limpa.'); }
-      function getSelectedLeads() { return leads.filter(l => selectedLeadIds.has(l.place_id)); }
+      // ============================================
+      // PASTAS E SALVAMENTO (TAREFA 14)
+      // ============================================
 
       function openFolderModal() {
         const select = document.getElementById('folderSelect');
@@ -1108,8 +1217,9 @@
            count++;
         });
         localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
-        updateFolderFilterDropdown(); renderSavedLeads(); renderLeads(); updateCounters(); closeFolderModal();
-        toast(`✅ ${count} lead(s) salvo(s).`);
+        
+        renderFoldersGrid(); renderLeads(); updateDashboard(); closeFolderModal();
+        toast(`✅ ${count} lead(s) salvo(s) na pasta "${folderName}".`);
       }
 
       function saveLeadById(id) {
@@ -1128,14 +1238,55 @@
         openFolderModal();
       }
 
-      function updateFolderFilterDropdown() {
-        const filter = document.getElementById('savedFolderFilter');
-        if(!filter) return;
-        const currentVal = filter.value;
-        const uniqueFolders = [...new Set(savedLeads.map(l => l.folder || 'Geral'))];
-        filter.innerHTML = '<option value="Todas">Todas as pastas</option>';
-        uniqueFolders.forEach(f => filter.innerHTML += `<option value="${escapeAttr(f)}">${escapeHtml(f)}</option>`);
-        if (uniqueFolders.includes(currentVal) || currentVal === 'Todas') filter.value = currentVal;
+      // NOVO SISTEMA VISUAL DE PASTAS
+      function renderFoldersGrid() {
+        const grid = document.getElementById('foldersGrid');
+        const empty = document.getElementById('foldersEmpty');
+        grid.innerHTML = '';
+
+        if (savedLeads.length === 0) {
+            empty.classList.remove('hidden');
+            return;
+        }
+        empty.classList.add('hidden');
+
+        // Agrupa os leads por pasta
+        const folderGroups = {};
+        savedLeads.forEach(lead => {
+            const folderName = lead.folder || 'Geral';
+            if(!folderGroups[folderName]) folderGroups[folderName] = 0;
+            folderGroups[folderName]++;
+        });
+
+        Object.keys(folderGroups).sort().forEach(folder => {
+            const card = document.createElement('div');
+            card.className = 'folder-card';
+            card.onclick = () => openFolderDetails(folder);
+            card.innerHTML = `
+                <div class="folder-icon">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+                <div class="folder-info">
+                   <h4>${escapeHtml(folder)}</h4>
+                   <p>${folderGroups[folder]} leads</p>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+      }
+
+      function openFolderDetails(folderName) {
+         document.getElementById('folderListView').classList.add('hidden');
+         document.getElementById('folderDetailsView').classList.remove('hidden');
+         document.getElementById('currentFolderNameDisplay').textContent = folderName;
+         document.getElementById('savedFolderFilter').value = folderName; // Configura o filtro oculto pro CRM e CSV usar
+         renderSavedLeads();
+      }
+
+      function closeFolderDetails() {
+         document.getElementById('folderDetailsView').classList.add('hidden');
+         document.getElementById('folderListView').classList.remove('hidden');
+         renderFoldersGrid();
       }
 
       function renderSavedLeads() {
@@ -1151,11 +1302,24 @@
 
       function clearSavedLeads() {
         const filterVal = document.getElementById('savedFolderFilter').value;
-        if (filterVal === 'Todas') { if (!confirm('Apagar TODOS os leads de TODAS as pastas?')) return; savedLeads = []; } 
-        else { if (!confirm(`Apagar TODOS os leads da pasta "${filterVal}"?`)) return; savedLeads = savedLeads.filter(l => (l.folder || 'Geral') !== filterVal); }
+        if (!confirm(`Apagar TODOS os leads da pasta "${filterVal}"? Isso não pode ser desfeito.`)) return; 
+        
+        savedLeads = savedLeads.filter(l => (l.folder || 'Geral') !== filterVal); 
         localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
-        updateFolderFilterDropdown(); renderSavedLeads(); updateCounters(); toast('Apagados com sucesso.');
+        
+        updateDashboard(); 
+        toast('Pasta apagada com sucesso.');
+        closeFolderDetails(); // Volta pra visão geral
       }
+
+      // ============================================
+      // RESTANTES: UTILITÁRIOS, EXPORTAÇÃO, PIPEDRIVE
+      // ============================================
+
+      function toggleLeadSelection(placeId, checked) { checked ? selectedLeadIds.add(placeId) : selectedLeadIds.delete(placeId); renderLeads(); }
+      function toggleSelectAll(checked) { checked ? leads.forEach(l => selectedLeadIds.add(l.place_id)) : selectedLeadIds.clear(); renderLeads(); }
+      function clearSelected() { selectedLeadIds.clear(); document.getElementById('selectAllCheckbox').checked = false; renderLeads(); toast('Seleção limpa.'); }
+      function getSelectedLeads() { return leads.filter(l => selectedLeadIds.has(l.place_id)); }
 
       function changeLeadStatus(id, status) {
         leads = leads.map(l => l.place_id === id ? { ...l, status } : l);
@@ -1198,7 +1362,7 @@
           } catch (e) { failed++; }
         }
         localStorage.setItem(STORAGE_KEYS.exported, JSON.stringify(exportedLeads)); localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
-        renderLeads(); renderSavedLeads(); renderExportedLeads(); updateCounters();
+        renderLeads(); renderSavedLeads(); renderExportedLeads(); updateDashboard();
         toast(failed ? `${success} enviados, ${failed} falhas.` : `${success} lead(s) enviados.`);
       }
 
@@ -1217,7 +1381,7 @@
         document.getElementById('filterResultsInput').value = '';
         document.getElementById('sortResultsSelect').value = 'default';
         document.getElementById('searchBtn').disabled = false; document.getElementById('searchBtn').textContent = 'Extrair Leads';
-        renderLeads(); updateCounters(); toast('Pesquisa limpa.');
+        renderLeads(); updateDashboard(); toast('Pesquisa limpa.');
       }
 
       function exportSavedToCSV() {
@@ -1227,7 +1391,7 @@
         
         const csv = [['Empresa', 'Telefone', 'Site', 'Endereço', 'Avaliação', 'Pasta', 'Status', 'Google Maps'], ...list.map(l => [l.name || '', l.phone || '', l.website || '', l.address || '', l.rating || '', l.folder || 'Geral', l.status || '', l.url || ''])].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')).join('\n');
         const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }));
-        a.download = `leads-salvos-${filterVal}-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); toast('CSV exportado.');
+        a.download = `leads-pasta-${filterVal}-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); toast('CSV exportado.');
       }
 
       function exportCurrentToCSV() {
