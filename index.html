@@ -58,9 +58,8 @@
     /* STATS & SECTIONS */
     .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
     .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; min-height: 90px; position: relative; overflow: hidden; }
-    .stat-card span { display: block; color: var(--muted); font-weight: 600; font-size: 12px; letter-spacing: 0.5px; margin-bottom: 8px; text-transform: uppercase; }
+    .stat-card span { display: block; color: var(--muted); font-weight: 600; font-size: 11px; letter-spacing: 0.5px; margin-bottom: 8px; text-transform: uppercase; }
     .stat-card strong { display: block; font-size: 28px; font-weight: 800; }
-    .stat-card svg { position: absolute; right: -10px; bottom: -10px; width: 80px; height: 80px; opacity: 0.05; color: var(--primary); }
     
     .section { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; }
     .section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
@@ -76,7 +75,7 @@
     .field input, .field select { width: 100%; height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; font-size: 14px; outline: none; background: var(--bg); color: var(--dark); transition: 0.2s; }
     .field input:focus, .field select:focus { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
     
-    /* GOOGLE AUTOCOMPLETE (Fundo Escuro) */
+    /* GOOGLE AUTOCOMPLETE */
     .pac-container { background-color: var(--card); border: 1px solid var(--border); border-radius: 8px; font-family: inherit; box-shadow: var(--shadow); margin-top: 4px; }
     .pac-item { color: var(--dark); border-top: 1px solid var(--border); padding: 8px 12px; cursor: pointer; }
     .pac-item:hover { background-color: var(--nav-hover); }
@@ -95,14 +94,26 @@
     .btn-danger { color: #f87171; border-color: #7f1d1d; }
     .btn-danger:hover { background: #7f1d1d; color: #fca5a5; }
 
+    /* BOTÕES FILTRO ATIVO */
+    .btn-active { background: var(--primary); color: var(--primary-inv); border-color: var(--primary); }
+    .btn-active:hover { background: #e5e5e5; }
+    .btn-active svg { color: var(--primary-inv); }
+
     /* TABS (CONFIGURAÇÕES) */
     .settings-nav { display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 0; overflow-x: auto; }
-    .tab-btn { background: transparent; border: none; color: var(--muted); padding: 12px 16px; font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s; margin-bottom: -1px; white-space: nowrap; }
+    .tab-btn { background: transparent; border: none; color: var(--muted); padding: 12px 16px; font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s; margin-bottom: -1px; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
     .tab-btn:hover { color: var(--dark); }
     .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
     .tab-content { display: none; animation: fadeIn 0.3s ease; }
     .tab-content.active { display: block; }
     
+    /* FUNIL DASHBOARD */
+    .funnel-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; font-size: 14px; }
+    .funnel-label { width: 180px; color: var(--muted); font-weight: 500; }
+    .funnel-bar-bg { flex: 1; height: 8px; background: var(--border); border-radius: 4px; margin: 0 20px; overflow: hidden; }
+    .funnel-bar-fill { height: 100%; background: var(--primary); border-radius: 4px; transition: width 1s ease; }
+    .funnel-value { width: 40px; text-align: right; font-weight: 700; }
+
     /* TOGGLE SWITCH (FILTROS) */
     .switch-wrap { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; }
     .switch-wrap span { font-size: 14px; font-weight: 600; }
@@ -151,7 +162,11 @@
     /* UTILS & MODALS */
     .hidden { display: none !important; }
     .empty { padding: 40px; text-align: center; color: var(--muted); font-weight: 500; font-size: 14px; background: transparent; border: 1px dashed var(--border); border-radius: var(--radius); }
-    .toast { position: fixed; right: 24px; bottom: 24px; background: var(--dark); color: var(--bg); padding: 14px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; box-shadow: var(--shadow); z-index: 9999; max-width: 400px; display: none; animation: fadeIn 0.3s ease; }
+    
+    /* TOAST ELEGANTE */
+    .toast { position: fixed; right: 24px; bottom: 24px; background: var(--card); color: var(--dark); padding: 14px 20px; border-radius: 8px; border: 1px solid var(--border); font-weight: 500; font-size: 13px; box-shadow: var(--shadow); z-index: 9999; max-width: 400px; display: none; animation: fadeIn 0.3s ease; display: flex; align-items: center; gap: 10px; }
+    .toast svg { color: var(--primary); }
+    
     .map-hidden { width: 1px; height: 1px; opacity: 0; position: fixed; left: -9999px; bottom: -9999px; }
     
     .table-wrap { overflow-x: auto; }
@@ -235,20 +250,21 @@
 
         <div class="menu-title">Menu Principal</div>
 
-        <!-- ABA DASHBOARD INSERIDA -->
-        <button class="menu-item active" data-section="dashboard" onclick="showSection('dashboard')">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
-          Dashboard
-        </button>
-
-        <button class="menu-item" data-section="extract" onclick="showSection('extract')">
+        <!-- ABA EXTRAIR (PRIMEIRO) -->
+        <button class="menu-item active" data-section="extract" onclick="showSection('extract')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           Extrair Leads
         </button>
 
+        <!-- ABA DASHBOARD (SEGUNDO) -->
+        <button class="menu-item" data-section="dashboard" onclick="showSection('dashboard')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          Dashboard
+        </button>
+
         <button class="menu-item" data-section="saved" onclick="showSection('saved')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-          Leads Salvos
+          Pastas & Salvos
         </button>
 
         <button class="menu-item" data-section="pipedrive" onclick="showSection('pipedrive')">
@@ -261,8 +277,7 @@
           Configurações
         </button>
 
-        <!-- ESCONDIDO PARA APARECER APENAS NA ABA DE CONTA -->
-        <button class="menu-item logout-btn hidden" id="sideLogoutBtn" onclick="handleSupabaseLogout()">
+        <button class="menu-item logout-btn" id="sideLogoutBtn" style="margin-top:auto;" onclick="handleSupabaseLogout()">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
           Sair do Sistema
         </button>
@@ -271,8 +286,8 @@
       <main class="main">
         <div class="topbar">
           <div>
-            <h2 id="topTitle">Visão Geral</h2>
-            <p id="topSubtitle">Acompanhe as métricas de prospecção</p>
+            <h2 id="topTitle">Prospecção Ativa</h2>
+            <p id="topSubtitle">Encontre novos clientes no Maps.</p>
           </div>
 
           <div class="user-card">
@@ -284,29 +299,54 @@
           </div>
         </div>
 
-        <!-- ABA DASHBOARD (NOVA VIEW) -->
-        <section id="dashboardSection">
+        <!-- ABA DASHBOARD (NOVA VIEW CHIQUE) -->
+        <section id="dashboardSection" class="hidden">
           
           <div class="stats">
             <div class="stat-card">
-              <span>Leads na Tela</span>
-              <strong id="foundCount">0</strong>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            </div>
-            <div class="stat-card">
               <span>Leads Salvos</span>
-              <strong id="savedCount">0</strong>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+              <strong id="dashTotalSaved">0</strong>
             </div>
             <div class="stat-card">
-              <span>Exportados Pipedrive</span>
-              <strong id="exportedCount">0</strong>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+              <span>Com Telefone</span>
+              <strong id="dashPhoneCount">0</strong>
             </div>
             <div class="stat-card">
-              <span>Aguardando Triagem</span>
-              <strong id="pendingCount">0</strong>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              <span>Exportados CRM</span>
+              <strong id="dashExportedCount">0</strong>
+            </div>
+            <div class="stat-card">
+              <span>Tx. Conversão</span>
+              <strong id="dashConvRate">0%</strong>
+            </div>
+          </div>
+
+          <!-- FUNIL DE QUALIDADE -->
+          <div class="section">
+            <div class="section-title" style="margin-bottom: 24px;">
+              <div class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg></div>
+              <div>
+                <h3>Funil de Qualidade</h3>
+                <p>Visão geral de aproveitamento dos leads na sua base salva.</p>
+              </div>
+            </div>
+            
+            <div>
+              <div class="funnel-row">
+                <span class="funnel-label">Total Salvos</span>
+                <div class="funnel-bar-bg"><div class="funnel-bar-fill" id="barTotal" style="width: 100%;"></div></div>
+                <span class="funnel-value" id="valTotal">0</span>
+              </div>
+              <div class="funnel-row">
+                <span class="funnel-label">Com Telefone/Site</span>
+                <div class="funnel-bar-bg"><div class="funnel-bar-fill" id="barContact" style="width: 0%;"></div></div>
+                <span class="funnel-value" id="valContact">0</span>
+              </div>
+              <div class="funnel-row">
+                <span class="funnel-label">Enviados (Exportados)</span>
+                <div class="funnel-bar-bg"><div class="funnel-bar-fill" id="barExported" style="width: 0%;"></div></div>
+                <span class="funnel-value" id="valExported">0</span>
+              </div>
             </div>
           </div>
 
@@ -320,9 +360,18 @@
                 </div>
               </div>
               <div style="display:flex; flex-direction:column; gap:12px;">
-                <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('extract')">🔍 Iniciar nova Extração de Leads</button>
-                <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('saved')">📁 Ver Pastas e Leads Salvos</button>
-                <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('pipedrive')">🚀 Enviar Lote para o Pipedrive</button>
+                <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('extract')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #60a5fa;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  Iniciar nova Extração de Leads
+                </button>
+                <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('saved')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #fbbf24;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                  Ver Pastas e Leads Salvos
+                </button>
+                <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('pipedrive')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #f87171;"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="M8 17l4 4 4-4"></path></svg>
+                  Enviar Lote para o Pipedrive
+                </button>
               </div>
             </div>
 
@@ -353,7 +402,7 @@
         </section>
 
         <!-- ABA EXTRAIR -->
-        <section id="extractSection" class="hidden">
+        <section id="extractSection">
           <div class="section">
             <div class="section-title" style="margin-bottom: 22px;">
               <div class="section-icon">
@@ -430,26 +479,25 @@
               </div>
             </div>
 
+            <!-- TOOLBAR REFINADA (AGORA OS BOTÕES SÃO FILTROS VISUAIS) -->
             <div class="results-toolbar">
               <div class="toolbar-row">
                 <div class="bulk-actions">
                   <label class="select-all">
                     <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this.checked)" />
-                    Selecionar todos
+                    Selecionar visíveis
                   </label>
-                  <button class="btn" style="height: 40px; font-size: 13px;" onclick="selectWithPhone()">
+                  
+                  <button class="btn" id="btnFilterPhone" style="height: 40px; font-size: 13px;" onclick="toggleViewFilter('phone')">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                    Com Telefone
+                    Apenas c/ Telefone
                   </button>
-                  <button class="btn" style="height: 40px; font-size: 13px;" onclick="selectWithWebsite()">
+                  <button class="btn" id="btnFilterSite" style="height: 40px; font-size: 13px;" onclick="toggleViewFilter('site')">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                    Com Site
+                    Apenas c/ Site
                   </button>
                   <button class="btn btn-main" style="height: 40px; font-size: 13px;" onclick="saveSelectedLeads()">
                     Salvar Selecionados
-                  </button>
-                  <button class="btn" style="height: 40px; font-size: 13px;" onclick="clearSelected()">
-                    Limpar
                   </button>
                 </div>
 
@@ -463,7 +511,7 @@
 
               <div class="toolbar-filters">
                 <div class="field" style="flex: 1; margin: 0;">
-                  <input type="text" id="filterResultsInput" placeholder="🔍 Filtrar resultados (ex: nome, clínica, av brasil...)" oninput="renderLeads()" style="height: 40px;" />
+                  <input type="text" id="filterResultsInput" placeholder="🔍 Filtrar nomes (ex: clínica, av brasil...)" oninput="renderLeads()" style="height: 40px;" />
                 </div>
                 <div class="field" style="margin: 0; min-width: 200px;">
                   <select id="sortResultsSelect" onchange="renderLeads()" style="height: 40px;">
@@ -515,7 +563,7 @@
                 </button>
 
                 <button class="btn btn-danger" onclick="clearSavedLeads()">
-                  Limpar Salvamento
+                  Limpar Pasta
                 </button>
               </div>
             </div>
@@ -562,7 +610,7 @@
           </div>
         </section>
 
-        <!-- ABA CONFIGURAÇÕES (NOVA ESTRUTURA COM TABS) -->
+        <!-- ABA CONFIGURAÇÕES (ICONES CHIQUES SVG) -->
         <section id="settingsSection" class="hidden">
           <div class="section">
             <div class="section-title" style="margin-bottom: 16px;">
@@ -570,16 +618,21 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-2.82.33 1.65 1.65 0 0 0-.1 1.51v.1a2 2 0 0 1-3.91 0v-.1a1.65 1.65 0 0 0-1.82-1.33 1.65 1.65 0 0 0-1.51.1l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-2.82 1.65 1.65 0 0 0-1.51-.1h-.1a2 2 0 0 1 0-3.91h.1a1.65 1.65 0 0 0 1.33-1.82 1.65 1.65 0 0 0-.1-1.51l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 2.82-.33 1.65 1.65 0 0 0 .1-1.51v-.1a2 2 0 0 1 3.91 0v.1a1.65 1.65 0 0 0 1.82 1.33 1.65 1.65 0 0 0 1.51-.1l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 2.82 1.65 1.65 0 0 0 1.51.1h.1a2 2 0 0 1 0 3.91h-.1a1.65 1.65 0 0 0-1.33 1.82z"></path></svg>
               </div>
               <div>
-                <h3>Painel de Controle</h3>
+                <h3>Painel Master</h3>
                 <p>Gerencie as integrações, filtros do sistema e seu perfil.</p>
               </div>
             </div>
 
             <!-- NAVEGAÇÃO DAS ABAS DE CONFIGURAÇÃO -->
             <div class="settings-nav">
-              <button class="tab-btn active" onclick="switchSettingsTab('tab-integra', this)">🔌 Integrações & API</button>
-              <button class="tab-btn" onclick="switchSettingsTab('tab-filtros', this)">🛡️ Filtros de Qualidade</button>
-              <button class="tab-btn" onclick="switchSettingsTab('tab-conta', this)">👤 Minha Conta</button>
+              <button class="tab-btn active" onclick="switchSettingsTab('tab-integra', this)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                Integrações & API
+              </button>
+              <button class="tab-btn" onclick="switchSettingsTab('tab-filtros', this)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                Filtros de Qualidade
+              </button>
             </div>
 
             <!-- CONTEÚDO TAB 1: INTEGRAÇÕES -->
@@ -596,8 +649,8 @@
                   <input id="pipedriveTokenInput" type="password" autocomplete="new-password" placeholder="Token do Pipedrive (opcional)" />
                 </div>
                 <div class="field">
-                  <label for="maxPagesInput">Limite de Páginas (Plano)</label>
-                  <input id="maxPagesInput" type="number" min="1" max="10" placeholder="Ex: 3 (1 pág = ~20 leads)" />
+                  <label for="maxPagesInput">Limite de Páginas (Profundidade)</label>
+                  <input id="maxPagesInput" type="number" min="1" max="10" placeholder="Ex: 3" />
                 </div>
               </div>
 
@@ -615,52 +668,25 @@
               <div class="grid-2">
                 <div>
                   <div class="switch-wrap">
-                    <span>Exigir Telefone</span>
+                    <span>Exigir Telefone Automático</span>
                     <label class="switch">
                       <input type="checkbox" id="filterReqPhone" onchange="toggleQualityFilter()">
                       <span class="slider"></span>
                     </label>
                   </div>
-                  <p style="font-size:12px; color:var(--muted); margin-top:-6px; margin-bottom:16px;">Esconde leads que não possuem telefone cadastrado no Google.</p>
+                  <p style="font-size:12px; color:var(--muted); margin-top:-6px; margin-bottom:16px;">Sempre esconde leads que não possuem telefone cadastrado no Google.</p>
                 </div>
                 
                 <div>
                   <div class="switch-wrap">
-                    <span>Exigir Website</span>
+                    <span>Exigir Website Automático</span>
                     <label class="switch">
                       <input type="checkbox" id="filterReqSite" onchange="toggleQualityFilter()">
                       <span class="slider"></span>
                     </label>
                   </div>
-                  <p style="font-size:12px; color:var(--muted); margin-top:-6px; margin-bottom:16px;">Esconde leads que não possuem um site configurado.</p>
+                  <p style="font-size:12px; color:var(--muted); margin-top:-6px; margin-bottom:16px;">Sempre esconde leads que não possuem um site configurado.</p>
                 </div>
-              </div>
-            </div>
-
-            <!-- CONTEÚDO TAB 3: MINHA CONTA -->
-            <div id="tab-conta" class="tab-content">
-              <p style="color:var(--muted); font-size:13px; margin-bottom: 20px;">Informações do seu perfil ativo na plataforma.</p>
-              
-              <div class="grid-2" style="max-width: 600px; margin-bottom: 30px;">
-                <div class="field">
-                  <label>Nome Completo Identificado</label>
-                  <input type="text" id="accFullName" readonly style="background:rgba(255,255,255,0.02); color:var(--muted); cursor:not-allowed;" />
-                </div>
-                <div class="field">
-                  <label>E-mail da Conta</label>
-                  <input type="text" id="accEmail" readonly style="background:rgba(255,255,255,0.02); color:var(--muted); cursor:not-allowed;" />
-                </div>
-                <div class="field">
-                  <label>Nível de Acesso</label>
-                  <input type="text" id="accRole" readonly style="background:rgba(255,255,255,0.02); color:var(--muted); cursor:not-allowed;" />
-                </div>
-              </div>
-
-              <div class="actions" style="border-top: 1px solid var(--border); padding-top: 24px;">
-                <button class="btn btn-danger" onclick="handleSupabaseLogout()">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                  Encerrar Sessão (Logout)
-                </button>
               </div>
             </div>
 
@@ -699,7 +725,11 @@
     </button>
 
     <div id="map" class="map-hidden"></div>
-    <div id="toast" class="toast"></div>
+    <!-- TOAST CLEAN E ELEGANTE -->
+    <div id="toast" class="toast">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span id="toastMessage">Mensagem</span>
+    </div>
 
     <!-- BIBLIOTECA SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -727,7 +757,10 @@
       
       let currentUserEmail = '', currentUserFullName = '', isUserAdmin = false; 
 
-      // Configuração Local de Filtros de Qualidade
+      // Estado dos Botões de Filtro Rápido (Toolbar)
+      let activeViewFilter = 'all'; // 'all', 'phone', 'site'
+
+      // Configuração Local de Filtros de Qualidade (Background)
       let qualityFilters = { reqPhone: false, reqSite: false };
 
       const STORAGE_KEYS = { saved: 'vlhunt_saved_leads_v2', exported: 'vlhunt_exported_leads_v2', filters: 'vlhunt_quality_filters' };
@@ -756,16 +789,11 @@
         document.getElementById('topUserName').textContent = userInfo.fullName;
         document.getElementById('topUserInitials').textContent = userInfo.initials;
 
-        // Preenche dados da aba Minha Conta
-        document.getElementById('accFullName').value = userInfo.fullName;
-        document.getElementById('accEmail').value = email;
-        document.getElementById('accRole').value = isUserAdmin ? "Administrador" : "Usuário Comum";
-
         const navSettingsBtn = document.getElementById('navSettingsBtn');
         if (isUserAdmin) { navSettingsBtn.style.display = 'flex'; } else { navSettingsBtn.style.display = 'none'; }
 
-        // Iniciar direto na Dashboard
-        showSection('dashboard');
+        // Iniciar na Extração (A pedido)
+        showSection('extract');
         await carregarConfiguracoesDoSupabase();
       }
 
@@ -785,16 +813,16 @@
       });
 
       async function handleSupabaseLogout() {
-        if(confirm('Tem certeza que deseja encerrar a sessão?')) { await supa.auth.signOut(); window.location.reload(); }
+        if(confirm('Tem certeza que deseja sair do sistema?')) { await supa.auth.signOut(); window.location.reload(); }
       }
 
       document.addEventListener('DOMContentLoaded', async () => {
         loadLocalData(); 
-        updateCounters(); 
+        updateDashboardStats(); 
         updateFolderFilterDropdown(); 
         renderSavedLeads(); 
         renderExportedLeads();
-        loadQualityFilters(); // Carrega os filtros salvos do Switch
+        loadQualityFilters(); 
 
         const searchFields = document.querySelectorAll('#nameInput, #nicheInput, #districtInput, #streetInput'); 
         searchFields.forEach(field => {
@@ -812,11 +840,8 @@
       // ============================================
 
       function switchSettingsTab(tabId, btnElement) {
-        // Remove active dos botões e esconde abas
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-        
-        // Ativa o clicado
         btnElement.classList.add('active');
         document.getElementById(tabId).classList.add('active');
       }
@@ -836,8 +861,8 @@
         qualityFilters.reqPhone = document.getElementById('filterReqPhone').checked;
         qualityFilters.reqSite = document.getElementById('filterReqSite').checked;
         localStorage.setItem(STORAGE_KEYS.filters, JSON.stringify(qualityFilters));
-        toast('Filtros de qualidade atualizados!');
-        if(leads.length > 0) renderLeads(); // re-renderiza aplicando a máscara se estiver extraindo
+        toast('Filtros atualizados.');
+        if(leads.length > 0) renderLeads(); 
       }
 
       async function carregarConfiguracoesDoSupabase() {
@@ -860,7 +885,8 @@
              if(mPagesInput) mPagesInput.value = configSupabase.maxPages;
 
              document.getElementById('dashPipeStatus').textContent = configSupabase.pipedriveToken ? "Configurado" : "Pendente";
-             document.getElementById('dashPagesLimit').textContent = `${configSupabase.maxPages} páginas (~${configSupabase.maxPages * 20} leads)`;
+             // Texto elegante alterado a pedido
+             document.getElementById('dashPagesLimit').textContent = `${configSupabase.maxPages} páginas (Busca profunda por bairros)`;
           }
         } catch (err) { console.error(err); }
       }
@@ -899,13 +925,12 @@
           configSupabase.maxPages = mPages;
 
           document.getElementById('dashPipeStatus').textContent = pToken ? "Configurado" : "Pendente";
-          document.getElementById('dashPagesLimit').textContent = `${mPages} páginas (~${mPages * 20} leads)`;
+          document.getElementById('dashPagesLimit').textContent = `${mPages} páginas (Busca profunda por bairros)`;
 
-          toast('Configurações da API salvas com sucesso!');
+          toast('Configurações salvas.');
           if (gKey) loadGoogleMapsScript(gKey);
         } catch (err) { 
-          console.error(err);
-          toast('Erro ao salvar no banco!'); 
+          toast('Erro ao salvar no banco.'); 
         } finally { 
           btn.textContent = oldText; btn.disabled = false; 
         }
@@ -916,7 +941,7 @@
         document.getElementById('googleApiKeyInput').value = ''; 
         document.getElementById('pipedriveTokenInput').value = '';
         document.getElementById('maxPagesInput').value = '3';
-        await saveSettings(); toast('Chaves de API limpas.');
+        await saveSettings(); toast('Chaves limpas.');
       }
 
       function reloadGoogleMapsScript() {
@@ -926,11 +951,11 @@
       }
 
       // ============================================
-      // RESTANTE DO CÓDIGO (Navegação, Maps, Leads)
+      // NAVEGAÇÃO E DASHBOARD DINÂMICO
       // ============================================
 
       function showSection(section) {
-        if (section === 'settings' && !isUserAdmin) { toast('Acesso negado. Apenas administradores.'); return; }
+        if (section === 'settings' && !isUserAdmin) { toast('Acesso negado.'); return; }
         
         const sections = { dashboard: document.getElementById('dashboardSection'), extract: document.getElementById('extractSection'), saved: document.getElementById('savedSection'), pipedrive: document.getElementById('pipedriveSection'), settings: document.getElementById('settingsSection') };
         
@@ -941,12 +966,11 @@
         const activeButton = document.querySelector(`.menu-item[data-section="${section}"]`);
         if (activeButton) activeButton.classList.add('active');
 
-        // Mudar Título do Topo Dinamicamente
         const topTitle = document.getElementById('topTitle');
         const topSubtitle = document.getElementById('topSubtitle');
-        if(section === 'dashboard') { topTitle.textContent = "Dashboard"; topSubtitle.textContent = "Visão geral do seu funil."; }
+        if(section === 'dashboard') { topTitle.textContent = "Dashboard"; topSubtitle.textContent = "Visão geral do seu funil e performance."; updateDashboardStats(); }
         else if(section === 'extract') { topTitle.textContent = "Prospecção Ativa"; topSubtitle.textContent = "Encontre novos clientes no Maps."; }
-        else if(section === 'saved') { topTitle.textContent = "Leads Salvos"; topSubtitle.textContent = "Sua base de contatos curados."; }
+        else if(section === 'saved') { topTitle.textContent = "Pastas & Salvos"; topSubtitle.textContent = "Sua base de contatos curados."; }
         else if(section === 'pipedrive') { topTitle.textContent = "Histórico CRM"; topSubtitle.textContent = "Log de envios para o Pipedrive."; }
         else if(section === 'settings') { topTitle.textContent = "Painel Master"; topSubtitle.textContent = "Controle das chaves e parâmetros."; }
 
@@ -955,15 +979,56 @@
       }
 
       function toast(message) {
-        const el = document.getElementById('toast');
-        el.textContent = message; el.style.display = 'block';
-        clearTimeout(window.__toastTimer); window.__toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3800); 
+        const msgEl = document.getElementById('toastMessage');
+        const box = document.getElementById('toast');
+        msgEl.textContent = message; 
+        box.style.display = 'flex';
+        clearTimeout(window.__toastTimer); 
+        window.__toastTimer = setTimeout(() => { box.style.display = 'none'; }, 3800); 
       }
 
       function loadLocalData() {
         try { savedLeads = JSON.parse(localStorage.getItem(STORAGE_KEYS.saved) || '[]'); } catch { savedLeads = []; }
         try { exportedLeads = JSON.parse(localStorage.getItem(STORAGE_KEYS.exported) || '[]'); } catch { exportedLeads = []; }
       }
+
+      // Função Atualizada do Dashboard com Cálculos de Funil
+      function updateDashboardStats() {
+        const totalSaved = savedLeads.length;
+        const totalExported = exportedLeads.length;
+        
+        let leadsWithPhoneOrSite = 0;
+        savedLeads.forEach(l => {
+          if((l.phone && l.phone.trim() !== '') || (l.website && l.website.trim() !== '')) {
+            leadsWithPhoneOrSite++;
+          }
+        });
+
+        // Calculos de %
+        const ratePhone = totalSaved > 0 ? (leadsWithPhoneOrSite / totalSaved) * 100 : 0;
+        const rateExport = totalSaved > 0 ? (totalExported / totalSaved) * 100 : 0;
+        const convRate = totalExported > 0 ? ((totalExported / totalSaved) * 100).toFixed(1) : 0;
+
+        // Atualizando Cards Topo
+        document.getElementById('dashTotalSaved').textContent = totalSaved;
+        document.getElementById('dashPhoneCount').textContent = leadsWithPhoneOrSite;
+        document.getElementById('dashExportedCount').textContent = totalExported;
+        document.getElementById('dashConvRate').textContent = `${convRate}%`;
+
+        // Atualizando Barras do Funil
+        document.getElementById('valTotal').textContent = totalSaved;
+        document.getElementById('barTotal').style.width = '100%';
+        
+        document.getElementById('valContact').textContent = leadsWithPhoneOrSite;
+        document.getElementById('barContact').style.width = `${ratePhone}%`;
+
+        document.getElementById('valExported').textContent = totalExported;
+        document.getElementById('barExported').style.width = `${rateExport}%`;
+      }
+
+      // ============================================
+      // LÓGICA DO MAPA E PESQUISA
+      // ============================================
 
       function loadGoogleMapsScript(apiKey, forceReload = false) {
         if (window.google && window.google.maps && window.google.maps.places && !forceReload) { initGoogleMaps(); return; }
@@ -973,7 +1038,7 @@
         const script = document.createElement('script'); script.id = 'googleMapsScript';
         script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&libraries=places&callback=initVLHuntGoogleMaps`;
         script.async = true; script.defer = true;
-        script.onerror = function () { toast('Erro ao carregar mapa. Verifique a API Key.'); };
+        script.onerror = function () { toast('Erro de permissão no mapa. Verifique a API Key.'); };
         document.body.appendChild(script);
       }
 
@@ -1007,14 +1072,7 @@
                 });
             }
         }
-        toast('Conectado à Base do Google!');
-      }
-
-      function updateCounters() {
-        document.getElementById('savedCount').textContent = savedLeads.length;
-        document.getElementById('exportedCount').textContent = exportedLeads.length;
-        document.getElementById('pendingCount').textContent = leads.length; // Aqui representa leads extraídos nesta sessão
-        document.getElementById('foundCount').textContent = leads.length; // Se houver filtro visual, alteramos em renderLeads
+        toast('Conectado à Base do Google.');
       }
 
       function normalizeString(str) { return (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
@@ -1035,7 +1093,7 @@
         if (!name && (!niche || !city)) { toast('Digite o NOME ou NICHO + CIDADE.'); return; }
         const settings = getSettings();
         if (!settings.googleApiKey) { toast('Configuração de API pendente.'); return; }
-        if (!placesService) { toast('Conectando ao banco de dados geográfico...'); return; }
+        if (!placesService) { toast('Conectando ao banco...'); return; }
 
         let queryParts = [];
         if (name) queryParts.push(name);
@@ -1051,7 +1109,7 @@
         document.getElementById('filterResultsInput').value = '';
         document.getElementById('sortResultsSelect').value = 'default';
 
-        const btn = document.getElementById('searchBtn'); btn.disabled = true; btn.textContent = 'Minerando...';
+        const btn = document.getElementById('searchBtn'); btn.disabled = true; btn.textContent = 'Buscando...';
 
         renderLeads();
         placesService.textSearch({ query: queryParts.join(' '), type: 'establishment' }, handlePlacesResults);
@@ -1061,7 +1119,7 @@
         const btn = document.getElementById('searchBtn');
         
         if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-           btn.textContent = `Delay Anti-Bloqueio... (${leads.length})`;
+           btn.textContent = `Delay Anti-Bloqueio...`;
            setTimeout(() => { 
                if (pagination && pagination.hasNextPage) pagination.nextPage(); 
                else finalizarBusca();
@@ -1087,13 +1145,13 @@
           });
         }
         
-        renderLeads(); updateCounters();
+        renderLeads();
 
         const limiteMaximoAdmin = parseInt(configSupabase.maxPages, 10) || 3;
 
         if (pagination && pagination.hasNextPage && currentApiPage < limiteMaximoAdmin) {
           currentApiPage++;
-          btn.textContent = `Buscando página ${currentApiPage}/${limiteMaximoAdmin}...`;
+          btn.textContent = `Página ${currentApiPage}/${limiteMaximoAdmin}...`;
           setTimeout(() => { pagination.nextPage(); }, 3500); 
         } else {
           finalizarBusca();
@@ -1101,8 +1159,8 @@
 
         function finalizarBusca() {
           isSearching = false; btn.disabled = false; btn.textContent = 'Extrair Leads';
-          let finalMsg = leads.length === 0 ? 'Nenhum lead novo retornado.' : `${leads.length} encontrados.`;
-          if (ignoredLeadsCount > 0) finalMsg += ` (${ignoredLeadsCount} ocultados pois já estão salvos)`;
+          let finalMsg = leads.length === 0 ? 'Nenhum lead novo retornado.' : `Extração finalizada.`;
+          if (ignoredLeadsCount > 0) finalMsg += ` (Ignorados salvos: ${ignoredLeadsCount})`;
           toast(finalMsg);
         }
       }
@@ -1138,33 +1196,62 @@
         );
       }
 
+      // ============================================
+      // RENDERIZAÇÃO E FILTROS VISUAIS 
+      // ============================================
+
+      function toggleViewFilter(type) {
+        const btnPhone = document.getElementById('btnFilterPhone');
+        const btnSite = document.getElementById('btnFilterSite');
+
+        if (activeViewFilter === type) {
+          // Desliga o filtro se clicar no mesmo
+          activeViewFilter = 'all';
+          btnPhone.classList.remove('btn-active');
+          btnSite.classList.remove('btn-active');
+        } else {
+          // Liga o filtro específico
+          activeViewFilter = type;
+          if(type === 'phone') { btnPhone.classList.add('btn-active'); btnSite.classList.remove('btn-active'); }
+          if(type === 'site') { btnSite.classList.add('btn-active'); btnPhone.classList.remove('btn-active'); }
+        }
+        
+        renderLeads(); // Re-renderiza a tela aplicando a lógica
+      }
+
       function renderLeads() {
         const grid = document.getElementById('leadsGrid'), empty = document.getElementById('resultsEmpty');
         grid.innerHTML = '';
 
         const filterText = (document.getElementById('filterResultsInput')?.value || '').toLowerCase();
         
+        // 1. Filtro de Texto Livre
         let displayLeads = leads.filter(l => 
           l.name.toLowerCase().includes(filterText) || 
           l.address.toLowerCase().includes(filterText) ||
           (l.phone && l.phone.includes(filterText))
         );
 
-        // Aplicando Filtros de Qualidade (Aba Configurações)
+        // 2. Filtros de Qualidade Background (Configurações)
         if (qualityFilters.reqPhone) { displayLeads = displayLeads.filter(l => l.phone && l.phone.trim() !== ''); }
         if (qualityFilters.reqSite) { displayLeads = displayLeads.filter(l => l.website && l.website.trim() !== ''); }
 
+        // 3. Filtros View Visuais da Toolbar (A Pedido do Usuário)
+        if (activeViewFilter === 'phone') {
+          displayLeads = displayLeads.filter(l => l.phone && l.phone.trim() !== '');
+        } else if (activeViewFilter === 'site') {
+          displayLeads = displayLeads.filter(l => l.website && l.website.trim() !== '');
+        }
+
+        // 4. Ordenação
         const sortVal = document.getElementById('sortResultsSelect')?.value || 'default';
         if (sortVal === 'az') displayLeads.sort((a, b) => a.name.localeCompare(b.name));
         else if (sortVal === 'za') displayLeads.sort((a, b) => b.name.localeCompare(a.name));
         else if (sortVal === 'rating_desc') displayLeads.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         else if (sortVal === 'rating_asc') displayLeads.sort((a, b) => (a.rating || 0) - (b.rating || 0));
 
-        const foundEl = document.getElementById('foundCount'); // Na Dashboard
-        foundEl.textContent = displayLeads.length;
-
         if (!displayLeads.length) { 
-            empty.innerHTML = isSearching ? 'Pesquisando...' : (leads.length ? 'Nenhum lead corresponde aos filtros.' : 'Inicie uma pesquisa acima.'); 
+            empty.innerHTML = isSearching ? 'Minerando dados...' : (leads.length ? 'Nenhum lead atende a estes filtros no momento.' : 'Inicie uma pesquisa acima.'); 
             empty.classList.remove('hidden'); 
             return; 
         }
@@ -1224,14 +1311,17 @@
       
       function toggleSelectAll(checked) { 
         if(checked) {
-            // Selecionar apenas os que estão visíveis na tela (respeita o filtro)
             const filterText = (document.getElementById('filterResultsInput')?.value || '').toLowerCase();
             leads.forEach(l => {
               const matchesFilter = l.name.toLowerCase().includes(filterText) || l.address.toLowerCase().includes(filterText) || (l.phone && l.phone.includes(filterText));
-              const reqPhone = !qualityFilters.reqPhone || (l.phone && l.phone.trim() !== '');
-              const reqSite = !qualityFilters.reqSite || (l.website && l.website.trim() !== '');
+              const reqPhoneGlobal = !qualityFilters.reqPhone || (l.phone && l.phone.trim() !== '');
+              const reqSiteGlobal = !qualityFilters.reqSite || (l.website && l.website.trim() !== '');
+              const viewPhone = activeViewFilter !== 'phone' || (l.phone && l.phone.trim() !== '');
+              const viewSite = activeViewFilter !== 'site' || (l.website && l.website.trim() !== '');
               
-              if(matchesFilter && reqPhone && reqSite) selectedLeadIds.add(l.place_id);
+              if(matchesFilter && reqPhoneGlobal && reqSiteGlobal && viewPhone && viewSite) {
+                 selectedLeadIds.add(l.place_id);
+              }
             });
         } else {
             selectedLeadIds.clear(); 
@@ -1239,7 +1329,7 @@
         renderLeads(); 
       }
       
-      function clearSelected() { selectedLeadIds.clear(); document.getElementById('selectAllCheckbox').checked = false; renderLeads(); toast('Seleção limpa.'); }
+      function clearSelected() { selectedLeadIds.clear(); document.getElementById('selectAllCheckbox').checked = false; renderLeads(); }
       function getSelectedLeads() { return leads.filter(l => selectedLeadIds.has(l.place_id)); }
 
       function openFolderModal() {
@@ -1263,8 +1353,8 @@
            count++;
         });
         localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
-        updateFolderFilterDropdown(); renderSavedLeads(); renderLeads(); updateCounters(); closeFolderModal();
-        toast(`✅ ${count} lead(s) salvo(s) na pasta "${folderName}".`);
+        updateFolderFilterDropdown(); renderSavedLeads(); renderLeads(); updateDashboardStats(); closeFolderModal();
+        toast(`${count} lead(s) salvo(s) na pasta "${folderName}".`);
       }
 
       function saveLeadById(id) {
@@ -1277,9 +1367,9 @@
 
       function saveSelectedLeads() {
         const selected = getSelectedLeads();
-        if (!selected.length) { toast('Marque as caixinhas dos leads que deseja salvar.'); return; }
+        if (!selected.length) { toast('Selecione os leads que deseja salvar.'); return; }
         pendingLeadsToSave = selected.filter(l => !savedLeads.some(s => s.place_id === l.place_id));
-        if (!pendingLeadsToSave.length) { toast('Todos os selecionados já foram salvos anteriormente.'); return; }
+        if (!pendingLeadsToSave.length) { toast('Todos os selecionados já foram salvos.'); return; }
         openFolderModal();
       }
 
@@ -1309,7 +1399,7 @@
         if (filterVal === 'Todas') { if (!confirm('Isso apagará TODOS os leads de TODAS as pastas. Continuar?')) return; savedLeads = []; } 
         else { if (!confirm(`Apagar TODOS os leads da pasta "${filterVal}"?`)) return; savedLeads = savedLeads.filter(l => (l.folder || 'Geral') !== filterVal); }
         localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
-        updateFolderFilterDropdown(); renderSavedLeads(); updateCounters(); toast('Leads apagados com sucesso.');
+        updateFolderFilterDropdown(); renderSavedLeads(); updateDashboardStats(); toast('Pasta limpa.');
       }
 
       function changeLeadStatus(id, status) {
@@ -1322,12 +1412,12 @@
       async function sendSavedToPipedrive() {
         const filterVal = document.getElementById('savedFolderFilter').value;
         const list = filterVal === 'Todas' ? savedLeads : savedLeads.filter(l => (l.folder || 'Geral') === filterVal);
-        if (!list.length) { toast('Nenhum lead nesta pasta para exportar.'); return; }
+        if (!list.length) { toast('Nenhum lead nesta pasta.'); return; }
 
         const settings = getSettings();
-        if (!settings.pipedriveToken) { toast('Vá em Configurações e insira o Token do CRM.'); return; }
+        if (!settings.pipedriveToken) { toast('Token Pipedrive ausente.'); return; }
 
-        let success = 0, failed = 0; toast(`Enviando ${list.length} lead(s) para Pipedrive...`);
+        let success = 0, failed = 0; toast(`Enviando para o CRM...`);
 
         for (const lead of list) {
           if(lead.exported) continue; 
@@ -1353,8 +1443,8 @@
           } catch (e) { failed++; }
         }
         localStorage.setItem(STORAGE_KEYS.exported, JSON.stringify(exportedLeads)); localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
-        renderLeads(); renderSavedLeads(); renderExportedLeads(); updateCounters();
-        toast(failed ? `${success} enviados, ${failed} falharam.` : `${success} lead(s) exportados com sucesso.`);
+        renderLeads(); renderSavedLeads(); renderExportedLeads(); updateDashboardStats();
+        toast(failed ? `${success} enviados, ${failed} falharam.` : `${success} exportados com sucesso.`);
       }
 
       function renderExportedLeads() {
@@ -1371,8 +1461,9 @@
         document.getElementById('selectAllCheckbox').checked = false;
         document.getElementById('filterResultsInput').value = '';
         document.getElementById('sortResultsSelect').value = 'default';
+        activeViewFilter = 'all'; document.getElementById('btnFilterPhone').classList.remove('btn-active'); document.getElementById('btnFilterSite').classList.remove('btn-active');
         document.getElementById('searchBtn').disabled = false; document.getElementById('searchBtn').textContent = 'Extrair Leads';
-        renderLeads(); updateCounters(); toast('Pesquisa apagada.');
+        renderLeads(); toast('Pesquisa limpa.');
       }
 
       function exportSavedToCSV() {
@@ -1386,8 +1477,7 @@
       }
 
       function exportCurrentToCSV() {
-        if (!leads.length) { toast('Nenhum lead na tela para exportar.'); return; }
-        
+        // Usa a lista renderizada atualmente (respeitando os filtros visuais e de texto ativados pelo usuário)
         const filterText = (document.getElementById('filterResultsInput')?.value || '').toLowerCase();
         let exportData = leads.filter(l => 
           l.name.toLowerCase().includes(filterText) || 
@@ -1395,7 +1485,12 @@
           (l.phone && l.phone.includes(filterText))
         );
 
-        if (!exportData.length) { toast('Nenhum lead corresponde ao filtro.'); return; }
+        if (qualityFilters.reqPhone) exportData = exportData.filter(l => l.phone && l.phone.trim() !== '');
+        if (qualityFilters.reqSite) exportData = exportData.filter(l => l.website && l.website.trim() !== '');
+        if (activeViewFilter === 'phone') exportData = exportData.filter(l => l.phone && l.phone.trim() !== '');
+        if (activeViewFilter === 'site') exportData = exportData.filter(l => l.website && l.website.trim() !== '');
+
+        if (!exportData.length) { toast('Nenhum lead visível para exportar.'); return; }
 
         const csv = [['Empresa', 'Telefone', 'Site', 'Endereço', 'Avaliação', 'Status', 'Google Maps'], 
           ...exportData.map(l => [l.name || '', l.phone || '', l.website || '', l.address || '', l.rating || '', l.status || '', l.url || ''])
@@ -1411,42 +1506,6 @@
       }
       function escapeHtml(v) { return String(v || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
       function escapeAttr(v) { return escapeHtml(v).replace(/`/g, '&#096;'); }
-
-      function selectWithPhone() {
-        let count = 0;
-        const filterText = (document.getElementById('filterResultsInput')?.value || '').toLowerCase();
-        
-        leads.forEach(lead => {
-          const matchesFilter = lead.name.toLowerCase().includes(filterText) || lead.address.toLowerCase().includes(filterText) || (lead.phone && lead.phone.includes(filterText));
-          const reqSite = !qualityFilters.reqSite || (lead.website && lead.website.trim() !== ''); // Respeita o filtro de site
-
-          if (matchesFilter && reqSite && lead.phone && lead.phone.trim() !== '') {
-            selectedLeadIds.add(lead.place_id);
-            count++;
-          }
-        });
-        renderLeads();
-        if(count > 0) toast(`✅ ${count} leads com telefone selecionados!`);
-        else toast('Nenhum lead válido com telefone na tela.');
-      }
-
-      function selectWithWebsite() {
-        let count = 0;
-        const filterText = (document.getElementById('filterResultsInput')?.value || '').toLowerCase();
-
-        leads.forEach(lead => {
-          const matchesFilter = lead.name.toLowerCase().includes(filterText) || lead.address.toLowerCase().includes(filterText) || (lead.phone && lead.phone.includes(filterText));
-          const reqPhone = !qualityFilters.reqPhone || (lead.phone && lead.phone.trim() !== ''); // Respeita o filtro de telefone
-
-          if (matchesFilter && reqPhone && lead.website && lead.website.trim() !== '') {
-            selectedLeadIds.add(lead.place_id);
-            count++;
-          }
-        });
-        renderLeads();
-        if(count > 0) toast(`✅ ${count} leads com site selecionados!`);
-        else toast('Nenhum lead válido com site na tela.');
-      }
 
       window.addEventListener('scroll', () => {
         const btn = document.getElementById('backToTopBtn');
