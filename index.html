@@ -573,7 +573,7 @@
       const supa = window.supabase.createClient(supabaseUrl, supabaseKey);
       const ADMIN_EMAILS = ['leonvquadros@gmail.com']; 
 
-      let configSupabase = { googleApiKey: '', pipedriveToken: '', maxPages: 3 }; // Adicionado limite de páginas
+      let configSupabase = { googleApiKey: '', pipedriveToken: '', maxPages: 3 };
       let map = null, placesService = null;
       let detailsQueue = [], isProcessingQueue = false;
       let leads = [], savedLeads = [], exportedLeads = [];
@@ -582,7 +582,7 @@
       let pendingLeadsToSave = []; 
       
       let ignoredLeadsCount = 0; 
-      let currentApiPage = 1; // Para o motor de busca
+      let currentApiPage = 1; 
       
       let currentUserEmail = '', currentUserFullName = '', isUserAdmin = false; 
 
@@ -669,7 +669,6 @@
           if (data && data.length > 0) {
              configSupabase.googleApiKey = data[0].google_api_key || '';
              configSupabase.pipedriveToken = data[0].pipedrive_token || '';
-             // Carrega o limite (se não existir na base de dados, usa 3 por padrão)
              configSupabase.maxPages = data[0].limite_paginas || 3; 
 
              if (configSupabase.googleApiKey) { loadGoogleMapsScript(configSupabase.googleApiKey); }
@@ -702,7 +701,7 @@
           const payload = { 
             google_api_key: gKey, 
             pipedrive_token: pToken,
-            limite_paginas: mPages // <- ATENÇÃO: você precisará criar essa coluna no seu banco Supabase
+            limite_paginas: mPages
           };
 
           if (existe && existe.length > 0) {
@@ -722,7 +721,7 @@
           if (gKey) loadGoogleMapsScript(gKey);
         } catch (err) { 
           console.error(err);
-          toast('Erro ao salvar! (Você criou a coluna "limite_paginas" no Supabase?)'); 
+          toast('Erro ao salvar no banco!'); 
         } finally { 
           btn.textContent = oldText; btn.disabled = false; 
         }
@@ -907,12 +906,17 @@
         placesService.textSearch({ query: queryParts.join(' '), type: 'establishment' }, handlePlacesResults);
       }
 
-      // MOTOR DE BUSCA EM LOOP ATÉ O LIMITE DO GOOGLE E DO PLANO (ADMIN)
+      // NOVO MOTOR CORRIGIDO E OTIMIZADO CONTRA BLOQUEIOS
       function handlePlacesResults(results, status, pagination) {
         const btn = document.getElementById('searchBtn');
         
+        // Se a API for muito rápida e o Google bloquear, nós damos uma pausa visível no botão.
         if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-           setTimeout(() => { if (pagination && pagination.hasNextPage) pagination.nextPage(); }, 3000); 
+           btn.textContent = `Pausa anti-bloqueio... (${leads.length})`;
+           setTimeout(() => { 
+               if (pagination && pagination.hasNextPage) pagination.nextPage(); 
+               else finalizarBusca();
+           }, 3500); 
            return; 
         }
         
@@ -936,17 +940,22 @@
         
         renderLeads(); updateCounters();
 
-        // 🚨 A MÁGICA ACONTECE AQUI: Delay de 3 segundos + Trava de Planos
-        const limiteMaximoAdmin = configSupabase.maxPages || 3;
+        const limiteMaximoAdmin = parseInt(configSupabase.maxPages, 10) || 3;
 
+        // Se tem página e está dentro do limite do plano, avança
         if (pagination && pagination.hasNextPage && currentApiPage < limiteMaximoAdmin) {
           currentApiPage++;
           btn.textContent = `Buscando página ${currentApiPage}/${limiteMaximoAdmin}... (${leads.length})`;
           
+          // Delay seguro de 3.5s para não causar "engarrafamento" com a extração de detalhes
           setTimeout(() => { 
               pagination.nextPage(); 
-          }, 3000); 
+          }, 3500); 
         } else {
+          finalizarBusca();
+        }
+
+        function finalizarBusca() {
           isSearching = false; 
           btn.disabled = false; 
           btn.textContent = 'Extrair Leads';
@@ -973,7 +982,12 @@
 
         placesService.getDetails({ placeId: placeId, fields: ['name', 'formatted_address', 'formatted_phone_number', 'international_phone_number', 'website', 'url', 'rating', 'user_ratings_total', 'photos'] },
           (place, status) => {
-            if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) { detailsQueue.unshift(placeId); setTimeout(() => { isProcessingQueue = false; processQueue(); }, 2000); return; }
+            // Em caso de limite de dados pesados, espera 3s
+            if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) { 
+                detailsQueue.unshift(placeId); 
+                setTimeout(() => { isProcessingQueue = false; processQueue(); }, 3000); 
+                return; 
+            }
             if (status === google.maps.places.PlacesServiceStatus.OK && place) {
               const index = leads.findIndex(lead => lead.place_id === placeId);
               if (index !== -1) {
@@ -981,7 +995,8 @@
                 renderLeads();
               }
             }
-            setTimeout(() => { isProcessingQueue = false; processQueue(); }, 500);
+            // Aumentado o delay de extração (de 500 para 800ms) para proteger a busca por páginas
+            setTimeout(() => { isProcessingQueue = false; processQueue(); }, 800);
           }
         );
       }
