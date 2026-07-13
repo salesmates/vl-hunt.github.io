@@ -223,15 +223,16 @@
 
         <div class="menu-title">Menu Principal</div>
 
-        <!-- NOVO MENU DASHBOARD -->
-        <button class="menu-item active" data-section="dashboard" onclick="showSection('dashboard')">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-          Dashboard
-        </button>
-
-        <button class="menu-item" data-section="extract" onclick="showSection('extract')">
+        <!-- EXTRAIR LEADS PRIMEIRO -->
+        <button class="menu-item active" data-section="extract" onclick="showSection('extract')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           Extrair Leads
+        </button>
+
+        <!-- DASHBOARD SEGUNDO -->
+        <button class="menu-item" data-section="dashboard" onclick="showSection('dashboard')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Dashboard
         </button>
 
         <button class="menu-item" data-section="saved" onclick="showSection('saved')">
@@ -258,7 +259,7 @@
       <main class="main">
         <div class="topbar">
           <div>
-            <h2 id="topBarTitle">Dashboard</h2>
+            <h2 id="topBarTitle">Pesquisa de Leads</h2>
           </div>
 
           <div class="user-card">
@@ -270,61 +271,8 @@
           </div>
         </div>
 
-        <!-- ABA DASHBOARD (NOVA) -->
-        <section id="dashboardSection">
-          <!-- Movido os Status Cards para o Dashboard -->
-          <div class="stats">
-            <div class="stat-card">
-              <span>Leads Salvos</span>
-              <strong id="dashTotalSaved">0</strong>
-            </div>
-            <div class="stat-card">
-              <span>Com Telefone</span>
-              <strong id="dashTotalPhones">0</strong>
-            </div>
-            <div class="stat-card">
-              <span>Exportados CRM</span>
-              <strong id="dashTotalExported">0</strong>
-            </div>
-            <div class="stat-card">
-              <span>Tx. Conversão</span>
-              <strong id="dashConversion">0%</strong>
-            </div>
-          </div>
-
-          <div class="dashboard-funnel">
-             <div class="section-title">
-                <div class="section-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-                </div>
-                <div>
-                  <h3>Funil de Qualidade</h3>
-                  <p>Visão geral de aproveitamento dos leads na sua base salva.</p>
-                </div>
-              </div>
-
-              <div class="funnel-bars">
-                <div class="funnel-row">
-                  <div class="funnel-label">Total Salvos</div>
-                  <div class="funnel-bar-wrap"><div class="funnel-bar-fill" id="barSalvos" style="width: 0%; opacity: 0.5;"></div></div>
-                  <div class="funnel-value" id="valSalvos">0</div>
-                </div>
-                <div class="funnel-row">
-                  <div class="funnel-label">Com Telefone/Site</div>
-                  <div class="funnel-bar-wrap"><div class="funnel-bar-fill" id="barContato" style="width: 0%; opacity: 0.7;"></div></div>
-                  <div class="funnel-value" id="valContato">0</div>
-                </div>
-                <div class="funnel-row">
-                  <div class="funnel-label">Enviados (Exportados)</div>
-                  <div class="funnel-bar-wrap"><div class="funnel-bar-fill" id="barExportados" style="width: 0%; background: #22c55e;"></div></div>
-                  <div class="funnel-value" id="valExportados">0</div>
-                </div>
-              </div>
-          </div>
-        </section>
-
         <!-- ABA EXTRAIR -->
-        <section id="extractSection" class="hidden">
+        <section id="extractSection">
           
           <div class="section" style="padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; background: var(--nav-hover); border-style: dashed;">
              <span style="font-size: 14px; font-weight: 500; color: var(--muted);">Última extração ativa na tela:</span>
@@ -459,6 +407,59 @@
             </div>
 
             <div id="leadsGrid" class="leads-grid"></div>
+          </div>
+        </section>
+
+        <!-- ABA DASHBOARD (MOVIDA PARA FICAR EMBAIXO DA EXTRAÇÃO) -->
+        <section id="dashboardSection" class="hidden">
+          <!-- Movido os Status Cards para o Dashboard -->
+          <div class="stats">
+            <div class="stat-card">
+              <span>Leads Salvos</span>
+              <strong id="dashTotalSaved">0</strong>
+            </div>
+            <div class="stat-card">
+              <span>Com Telefone</span>
+              <strong id="dashTotalPhones">0</strong>
+            </div>
+            <div class="stat-card">
+              <span>Exportados CRM</span>
+              <strong id="dashTotalExported">0</strong>
+            </div>
+            <div class="stat-card">
+              <span>Tx. Conversão</span>
+              <strong id="dashConversion">0%</strong>
+            </div>
+          </div>
+
+          <div class="dashboard-funnel">
+             <div class="section-title">
+                <div class="section-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                </div>
+                <div>
+                  <h3>Funil de Qualidade</h3>
+                  <p>Visão geral de aproveitamento dos leads na sua base salva.</p>
+                </div>
+              </div>
+
+              <div class="funnel-bars">
+                <div class="funnel-row">
+                  <div class="funnel-label">Total Salvos</div>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar-fill" id="barSalvos" style="width: 0%; opacity: 0.5;"></div></div>
+                  <div class="funnel-value" id="valSalvos">0</div>
+                </div>
+                <div class="funnel-row">
+                  <div class="funnel-label">Com Telefone/Site</div>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar-fill" id="barContato" style="width: 0%; opacity: 0.7;"></div></div>
+                  <div class="funnel-value" id="valContato">0</div>
+                </div>
+                <div class="funnel-row">
+                  <div class="funnel-label">Enviados (Exportados)</div>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar-fill" id="barExportados" style="width: 0%; background: #22c55e;"></div></div>
+                  <div class="funnel-value" id="valExportados">0</div>
+                </div>
+              </div>
           </div>
         </section>
 
@@ -696,8 +697,8 @@
         const navSettingsBtn = document.getElementById('navSettingsBtn');
         if (isUserAdmin) { navSettingsBtn.style.display = 'flex'; } else { navSettingsBtn.style.display = 'none'; }
 
-        // Agora cai primeiro no Dashboard
-        showSection('dashboard');
+        // Agora cai primeiro no Extrair Leads conforme solicitado!
+        showSection('extract');
         await carregarConfiguracoesDoSupabase();
       }
 
