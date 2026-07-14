@@ -53,11 +53,14 @@
     .brand h1 { margin: 0; font-size: 18px; line-height: 1.1; font-weight: 800; }
     .brand p { margin: 5px 0 0; font-size: 12px; color: var(--muted); }
     .menu-title { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 1px; margin-bottom: 12px; padding: 0 10px; text-transform: uppercase; }
-    .menu-item { border: 0; width: 100%; height: 44px; border-radius: 8px; background: transparent; color: var(--muted); font-weight: 600; font-size: 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 12px; padding: 0 14px; cursor: pointer; text-align: left; transition: 0.2s ease; }
+    .menu-item { border: 0; width: 100%; height: 44px; border-radius: 8px; background: transparent; color: var(--muted); font-weight: 600; font-size: 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 12px; padding: 0 14px; cursor: pointer; text-align: left; transition: 0.2s ease; position: relative; }
     .menu-item:hover { background: var(--nav-hover); color: var(--dark); }
     .menu-item.active { background: var(--nav-hover); color: var(--dark); border-left: 2px solid var(--primary); border-radius: 0 8px 8px 0; }
     .logout-btn { margin-top: auto; color: #ef4444; }
     .logout-btn:hover { background: rgba(239, 68, 68, 0.1); color: #f87171; }
+
+    /* BADGE PRO SIDEBAR */
+    .badge-pro { position: absolute; right: 10px; background: #fbbf24; color: #000; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; }
 
     /* MAIN CONTENT */
     .main { margin-left: 267px; width: calc(100% - 267px); padding: 36px 32px 60px; }
@@ -118,6 +121,13 @@
     .btn-active:hover { filter: brightness(0.9); }
     .btn-active svg { color: var(--primary-inv); }
 
+    /* BOTÕES DE OURO CARDS */
+    .btn-wpp { background: rgba(34, 197, 94, 0.1); color: #4ade80; border-color: rgba(34, 197, 94, 0.3); }
+    .btn-wpp:hover { background: #22c55e; color: #000; border-color: #22c55e; }
+    .btn-cnpj { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
+    .btn-cnpj:hover { background: #3b82f6; color: #fff; border-color: #3b82f6; }
+    .cnpj-result { margin-top: 10px; padding: 10px; background: rgba(59, 130, 246, 0.05); border: 1px dashed rgba(59, 130, 246, 0.3); border-radius: 6px; font-size: 11px; color: #93c5fd; }
+
     /* TABS */
     .settings-nav { display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 0; overflow-x: auto; }
     .tab-btn { background: transparent; border: none; color: var(--muted); padding: 12px 16px; font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s; margin-bottom: -1px; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
@@ -166,7 +176,8 @@
     
     /* TAGS E BADGES */
     .badge { background: rgba(255,255,255,0.1); color: var(--dark); border-radius: 6px; padding: 4px 8px; font-size: 10px; font-weight: 700; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px; }
-    .badge-owner { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); } /* Azul para o Admin saber de quem é */
+    .badge-owner { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); } 
+    .badge-rating { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); display: inline-flex; align-items: center; gap: 4px; }
     
     .lead-info { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 6px 0; display: flex; align-items: center; gap: 8px; word-break: break-word; }
     .lead-info svg { flex-shrink: 0; color: var(--muted); }
@@ -177,6 +188,18 @@
     .small-btn { border: 1px solid var(--border); background: transparent; color: var(--dark); min-height: 32px; border-radius: 6px; padding: 0 12px; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; }
     .small-btn:hover { background: var(--border); }
     
+    /* ====== VL HUNT CRM (KANBAN BOARD) ====== */
+    .crm-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+    .kanban-board { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 16px; min-height: 600px; align-items: flex-start; }
+    .kanban-col { flex: 1; min-width: 280px; max-width: 350px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; }
+    .kanban-col-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 14px; }
+    .kanban-cards { padding: 16px; display: flex; flex-direction: column; gap: 12px; min-height: 150px; }
+    .k-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; cursor: grab; transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .k-card:active { cursor: grabbing; transform: scale(0.98); opacity: 0.8; }
+    .k-card:hover { border-color: var(--primary); }
+    .k-card-title { font-size: 14px; font-weight: 700; margin: 0 0 8px 0; color: var(--primary); }
+    .k-card-info { font-size: 12px; color: var(--muted); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+
     /* UTILS & MODALS */
     .hidden { display: none !important; }
     .empty { padding: 40px; text-align: center; color: var(--muted); font-weight: 500; font-size: 14px; background: transparent; border: 1px dashed var(--border); border-radius: var(--radius); }
@@ -263,6 +286,11 @@
     .login-box button { width: 100%; height: 48px; border: none; border-radius: 8px; background: var(--primary); color: var(--primary-inv); font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; }
     .login-box button:hover { background: var(--dark); filter: brightness(0.9); }
     .login-box button:disabled { opacity: 0.7; cursor: not-allowed; }
+    
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
   </style>
 </head>
 
@@ -315,9 +343,9 @@
           Pastas & Salvos
         </button>
 
-        <button class="menu-item" data-section="pipedrive" onclick="showSection('pipedrive')">
+        <button class="menu-item" data-section="crm" onclick="showSection('crm')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
-          CRM
+          VL Hunt CRM <span class="badge-pro">PRO</span>
         </button>
 
         <!-- ABA CONFIGURAÇÕES (AGORA VISÍVEL PRA TODOS, MAS BLOQUEADA PRA SDR) -->
@@ -382,7 +410,7 @@
               <div style="display:flex; flex-direction:column; gap:12px;">
                 <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('extract')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #60a5fa;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>Iniciar nova Extração de Leads</button>
                 <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('saved')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #fbbf24;"><path d="M22 19a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>Ver Pastas e Leads Salvos</button>
-                <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('pipedrive')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #f87171;"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="M8 17l4 4 4-4"></path></svg>Enviar Lote para o CRM</button>
+                <button class="menu-item" style="background:var(--nav-hover);" onclick="showSection('crm')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #f87171;"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="M8 17l4 4 4-4"></path></svg>Acessar o VL Hunt CRM</button>
               </div>
             </div>
 
@@ -426,7 +454,19 @@
               <div class="field"><label for="cityInput">Cidade</label><input id="cityInput" type="text" placeholder="Ex: Maringá, PR" /></div>
               <div class="field"><label for="districtInput">Bairro <span style="font-weight: normal; text-transform: none;">(Opcional)</span></label><input id="districtInput" type="text" placeholder="Nome do bairro" /></div>
               <div class="field"><label for="streetInput">Rua/Avenida <span style="font-weight: normal; text-transform: none;">(Opcional)</span></label><input id="streetInput" type="text" placeholder="Ex: Avenida Brasil" /></div>
-              <div class="field"><button class="btn btn-main" onclick="searchLeads()" id="searchBtn" style="height: 44px; width: 100%;">Extrair Leads</button></div>
+              
+              <div class="field">
+                <label style="color: #fbbf24;">⭐ Nota Mínima (Google)</label>
+                <select id="minRatingFilter">
+                  <option value="0">Qualquer Nota</option>
+                  <option value="3.5">A partir de 3.5 Estrelas</option>
+                  <option value="4.0">A partir de 4.0 Estrelas</option>
+                  <option value="4.5">A partir de 4.5 Estrelas</option>
+                  <option value="4.8">A partir de 4.8 Estrelas</option>
+                </select>
+              </div>
+
+              <div class="field" style="grid-column: span 3;"><button class="btn btn-main" onclick="searchLeads()" id="searchBtn" style="height: 44px; width: 100%;">Extrair Leads</button></div>
             </div>
             <div class="actions"><button class="btn" onclick="clearResults()">Limpar pesquisa</button></div>
           </div>
@@ -471,7 +511,7 @@
               </div>
               <div class="actions" style="margin-top:0; align-items: center;">
                 <div class="folder-filter-wrap"><select id="savedFolderFilter" onchange="renderSavedLeads()"><option value="Todas">Todas as pastas</option></select></div>
-                <button class="btn btn-main" onclick="sendSavedToPipedrive()">Exportar CRM</button>
+                <button class="btn btn-main" onclick="showSection('crm')">Acessar CRM</button>
                 <button class="btn" onclick="exportSavedToCSV()">Exportar CSV</button>
                 <button class="btn btn-danger" onclick="clearSavedLeads()">Limpar Pasta</button>
               </div>
@@ -481,19 +521,43 @@
           </div>
         </section>
 
-        <!-- ABA CRM -->
-        <section id="pipedriveSection" class="hidden">
-          <div class="section">
-            <div class="section-title" style="margin-bottom: 22px;">
-              <div class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg></div>
-              <div><h3>Histórico CRM</h3><p>Histórico local de leads enviados com sucesso para o CRM.</p></div>
+        <!-- ABA CRM KANBAN -->
+        <section id="crmSection" class="hidden">
+          <div class="section" style="background: var(--bg); border: none; padding: 0;">
+            <div class="crm-header">
+              <div class="section-title">
+                <div class="section-icon" style="background: var(--primary); color: var(--primary-inv);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg></div>
+                <div><h3>VL Hunt CRM (Pipeline)</h3><p>Gerencie o status dos seus leads salvos arrastando os cards.</p></div>
+              </div>
             </div>
-            <div id="exportedEmpty" class="empty">Nenhum lead exportado ainda.</div>
-            <div id="exportedTableWrap" class="table-wrap hidden">
-              <table>
-                <thead><tr><th>Empresa</th><th>Telefone</th><th>Site</th><th>Data de Envio</th><th>Status no CRM</th></tr></thead>
-                <tbody id="exportedTableBody"></tbody>
-              </table>
+
+            <!-- O BOARD KANBAN -->
+            <div class="kanban-board">
+              
+              <!-- Coluna: Novos -->
+              <div class="kanban-col" id="col-novo" ondrop="dropCard(event)" ondragover="allowDrop(event)">
+                <div class="kanban-col-header" style="border-top: 3px solid #3b82f6; border-radius: 8px 8px 0 0;">📌 Novos Leads <span id="count-novo" style="color:var(--muted); font-weight:normal;">0</span></div>
+                <div class="kanban-cards" id="cards-novo"></div>
+              </div>
+
+              <!-- Coluna: Em Contato -->
+              <div class="kanban-col" id="col-contato" ondrop="dropCard(event)" ondragover="allowDrop(event)">
+                <div class="kanban-col-header" style="border-top: 3px solid #fbbf24; border-radius: 8px 8px 0 0;">💬 Em Contato <span id="count-contato" style="color:var(--muted); font-weight:normal;">0</span></div>
+                <div class="kanban-cards" id="cards-contato"></div>
+              </div>
+
+              <!-- Coluna: Negociação -->
+              <div class="kanban-col" id="col-negociacao" ondrop="dropCard(event)" ondragover="allowDrop(event)">
+                <div class="kanban-col-header" style="border-top: 3px solid #a855f7; border-radius: 8px 8px 0 0;">🤝 Negociação <span id="count-negociacao" style="color:var(--muted); font-weight:normal;">0</span></div>
+                <div class="kanban-cards" id="cards-negociacao"></div>
+              </div>
+
+              <!-- Coluna: Fechado -->
+              <div class="kanban-col" id="col-fechado" ondrop="dropCard(event)" ondragover="allowDrop(event)">
+                <div class="kanban-col-header" style="border-top: 3px solid #22c55e; border-radius: 8px 8px 0 0;">✅ Venda Fechada <span id="count-fechado" style="color:var(--muted); font-weight:normal;">0</span></div>
+                <div class="kanban-cards" id="cards-fechado"></div>
+              </div>
+
             </div>
           </div>
         </section>
@@ -1178,7 +1242,10 @@
 
       function showSection(section) {
         
-        ['dashboardSection', 'extractSection', 'savedSection', 'pipedriveSection', 'settingsSection', 'accountSection', 'rankingSection'].forEach(id => document.getElementById(id).classList.add('hidden'));
+        ['dashboardSection', 'extractSection', 'savedSection', 'crmSection', 'settingsSection', 'accountSection', 'rankingSection'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.classList.add('hidden');
+        });
         document.getElementById(section + 'Section').classList.remove('hidden');
 
         document.querySelectorAll('.menu-item').forEach(btn => btn.classList.remove('active'));
@@ -1200,14 +1267,12 @@
         else if(section === 'extract') { t.textContent = "Prospecção Ativa"; s.textContent = "Encontre novos clientes."; }
         else if(section === 'ranking') { t.textContent = "Ranking"; s.textContent = "Gamificação da equipe."; }
         else if(section === 'saved') { t.textContent = "Pastas"; s.textContent = "Leads salvos."; updateFolderFilterDropdown(); renderSavedLeads(); }
+        else if(section === 'crm') { t.textContent = "CRM Pipeline"; s.textContent = "Arraste e gerencie seus leads salvos no Kanban."; renderKanban(); }
         else if(section === 'settings') { 
             t.textContent = "Painel Master"; s.textContent = isUserAdmin ? "Configurações Globais do SaaS." : "Suas configurações pessoais.";
             
-            // Lógica para bloquear Inputs Sensíveis se não for Admin
             const apiInputs = ['googleApiKeyInput', 'pipedriveTokenInput', 'maxPagesInput', 'webhookUrlInput'];
-            apiInputs.forEach(id => {
-                document.getElementById(id).disabled = !isUserAdmin;
-            });
+            apiInputs.forEach(id => { document.getElementById(id).disabled = !isUserAdmin; });
             document.getElementById('btnSaveIntegrations').style.display = isUserAdmin ? 'inline-flex' : 'none';
         }
         else if(section === 'account') { t.textContent = "Minha Conta"; s.textContent = "Seu perfil."; }
@@ -1331,26 +1396,47 @@
       function renderLeads() {
         const grid = document.getElementById('leadsGrid'); grid.innerHTML = '';
         let list = leads;
+
+        // FILTRO VISUAL DE NOTA MÍNIMA
+        const minRatingEl = document.getElementById('minRatingFilter');
+        const minRating = minRatingEl ? parseFloat(minRatingEl.value) : 0;
+        if(minRating > 0) { list = list.filter(l => (l.rating || 0) >= minRating); }
+
         if(qualityFilters.reqPhone || activeViewFilter === 'phone') list = list.filter(l => l.phone);
         if(qualityFilters.reqSite || activeViewFilter === 'site') list = list.filter(l => l.website);
         
+        // ORDENAÇÃO
+        const sortVal = document.getElementById('sortResultsSelect').value;
+        if(sortVal === 'az') list.sort((a,b) => a.name.localeCompare(b.name));
+        else if(sortVal === 'za') list.sort((a,b) => b.name.localeCompare(a.name));
+        else if(sortVal === 'rating_desc') list.sort((a,b) => (b.rating||0) - (a.rating||0));
+        else if(sortVal === 'rating_asc') list.sort((a,b) => (a.rating||0) - (b.rating||0));
+
         list.forEach(lead => grid.appendChild(createLeadCard(lead, 'current')));
       }
 
       function createLeadCard(lead, source) {
         const card = document.createElement('div'); card.className = 'lead-card';
-        const whatsUrl = lead.phone ? `https://wa.me/55${lead.phone.replace(/\D/g,'')}` : '';
+        const whatsUrl = lead.phone ? `https://wa.me/55${lead.phone.replace(/\D/g,'')}?text=Ol%C3%A1,%20encontrei%20a%20empresa%20${encodeURIComponent(lead.name)}%20no%20Google.%20Podemos%20falar?` : '';
         const safeName = lead.name || '';
         const instaQuery = encodeURIComponent(`site:instagram.com ${safeName}`);
         const instaUrl = `https://www.google.com/search?q=${instaQuery}`;
         const emailQuery = encodeURIComponent(`"${safeName}" email OR contato`);
         const emailUrl = `https://www.google.com/search?q=${emailQuery}`;
 
-        // TAG DO DONO (Admin enxerga de quem é o lead)
+        // TAG DO DONO E NOTA
         let ownerTag = '';
         if (source === 'saved' && isUserAdmin && lead.owner) {
            ownerTag = `<span class="badge badge-owner">👤 ${lead.owner}</span>`;
         }
+        let ratingBadge = lead.rating ? `<span class="badge badge-rating">⭐ ${lead.rating}</span>` : '';
+
+        // BOTÕES DE OURO (WHATSAPP E CNPJ)
+        let botoesOuro = `
+          ${whatsUrl ? `<a class="small-btn btn-wpp" href="${whatsUrl}" target="_blank">WhatsApp</a>` : ''}
+          <button class="small-btn btn-cnpj" onclick="enriquecerCNPJ('${lead.place_id}')">Buscar CNPJ</button>
+        `;
+        let divCnpj = lead.cnpj ? `<div class="cnpj-result"><strong>CNPJ:</strong> ${lead.cnpj}<br><strong>CNAE:</strong> ${lead.cnae}</div>` : `<div id="box-cnpj-${lead.place_id}"></div>`;
 
         card.innerHTML = `
           ${source === 'current' ? `<input type="checkbox" class="lead-check" onchange="toggleLeadSelection('${lead.place_id}', this.checked)">` : ''}
@@ -1358,16 +1444,20 @@
           
           <div class="lead-title-row">
              <h4 class="lead-title">${lead.name}</h4>
-             ${ownerTag}
+             <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;">
+               ${ratingBadge}
+               ${ownerTag}
+             </div>
           </div>
 
           <div class="lead-info"><span>${lead.address || 'Sem endereço'}</span></div>
           <div class="lead-info"><span>${lead.phone || 'Sem telefone'}</span></div>
           
+          ${divCnpj}
+          
           <div class="lead-buttons" style="margin-top:10px;">
-            ${whatsUrl ? `<a class="small-btn" href="${whatsUrl}" target="_blank">WhatsApp</a>` : ''}
+            ${botoesOuro}
             ${lead.website ? `<a class="small-btn" href="${lead.website}" target="_blank">Site</a>` : ''}
-            
             <a class="small-btn" href="${instaUrl}" target="_blank">Instagram</a>
             <a class="small-btn" href="${emailUrl}" target="_blank">E-mail</a>
             
@@ -1389,8 +1479,8 @@
         let count = 0;
         
         pendingLeadsToSave.forEach(l => { 
-            // ADICIONADO: Marcando o dono do lead salvo
-            savedLeads.push({...l, folder, owner: userProfile.name }); 
+            // ADICIONADO: crm_status 'novo' na hora de salvar
+            savedLeads.push({...l, folder, owner: userProfile.name, crm_status: 'novo' }); 
             leads = leads.filter(x => x.place_id !== l.place_id); 
             count++;
         });
@@ -1454,6 +1544,98 @@
       function clearResults() { leads = []; renderLeads(); }
       function exportCurrentToCSV() { toast('Baixando CSV...'); }
       function scrollToTop() { window.scrollTo({top:0, behavior:'smooth'}); }
+
+      // ============================================
+      // ROBÔ DE ENRIQUECIMENTO DE CNPJ E KANBAN
+      // ============================================
+      function enriquecerCNPJ(id) {
+        const box = document.getElementById(`box-cnpj-${id}`);
+        if(!box) return;
+        
+        box.innerHTML = `<div class="cnpj-result" style="color:var(--muted);">⏳ Buscando Receita Federal...</div>`;
+        
+        // Simulação da API de Receita Federal
+        setTimeout(() => {
+          const leadList = leads.find(l => l.place_id === id) ? leads : savedLeads;
+          const leadIndex = leadList.findIndex(l => l.place_id === id);
+          
+          if(leadIndex !== -1) {
+            leadList[leadIndex].cnpj = "45.123.890/0001-22"; // Dado Visual p/ Protótipo
+            leadList[leadIndex].cnae = "73.11-4-00 - Agências de publicidade";
+            
+            if(document.getElementById('extractSection').classList.contains('hidden') === false) renderLeads();
+            else if(document.getElementById('savedSection').classList.contains('hidden') === false) renderSavedLeads();
+            else renderKanban();
+            
+            toast("CNPJ Encontrado e Anexado!");
+          }
+        }, 1500);
+      }
+
+      function renderKanban() {
+        const colunas = { 'novo': [], 'contato': [], 'negociacao': [], 'fechado': [] };
+        
+        let listToShow = savedLeads;
+        if(!isUserAdmin) {
+            listToShow = savedLeads.filter(l => l.owner === userProfile.name);
+        }
+
+        // Distribui nas colunas
+        listToShow.forEach(l => {
+          const status = l.crm_status || 'novo';
+          if(colunas[status]) colunas[status].push(l);
+        });
+
+        // Preenche o HTML
+        Object.keys(colunas).forEach(key => {
+          const countEl = document.getElementById(`count-${key}`);
+          if(countEl) countEl.textContent = colunas[key].length;
+          
+          const container = document.getElementById(`cards-${key}`);
+          if(!container) return;
+          container.innerHTML = '';
+          
+          colunas[key].forEach(lead => {
+            const card = document.createElement('div');
+            card.className = 'k-card';
+            card.id = `kcard-${lead.place_id}`;
+            card.draggable = true;
+            card.ondragstart = dragCard;
+            
+            card.innerHTML = `
+              <div class="k-card-title">${lead.name}</div>
+              <div class="k-card-info">📞 ${lead.phone || 'S/ Tel'}</div>
+              ${lead.cnpj ? `<div class="k-card-info" style="color:#60a5fa;">🏢 ${lead.cnpj}</div>` : ''}
+              <div style="margin-top: 8px; font-size: 10px; color: var(--muted); text-transform: uppercase;">
+                ${lead.owner ? `👤 ${lead.owner}` : ''}
+              </div>
+            `;
+            container.appendChild(card);
+          });
+        });
+      }
+
+      function allowDrop(ev) { ev.preventDefault(); }
+      function dragCard(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+      function dropCard(ev) {
+        ev.preventDefault();
+        const data = ev.dataTransfer.getData("text");
+        const element = document.getElementById(data);
+        const col = ev.target.closest('.kanban-col');
+        
+        if (col && element) {
+          const newStatus = col.id.replace('col-', '');
+          const leadId = data.replace('kcard-', '');
+          
+          const leadIndex = savedLeads.findIndex(l => l.place_id === leadId);
+          if (leadIndex !== -1) {
+             savedLeads[leadIndex].crm_status = newStatus;
+             localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
+          }
+          renderKanban();
+        }
+      }
+
     </script>
   </div>
 </body>
