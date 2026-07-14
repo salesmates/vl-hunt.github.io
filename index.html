@@ -408,6 +408,18 @@
               </div>
             </div>
           </div>
+
+          <!-- NOVO BLOCO: LOG DE ATIVIDADES (PDCA) -->
+          <div class="section">
+            <div class="section-title" style="margin-bottom: 22px;">
+              <div class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
+              <div><h3>Log de Atividades (PDCA)</h3><p>Acompanhe em tempo real as ações da sua equipe no sistema.</p></div>
+            </div>
+            <div id="pdcaLogsList" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 10px;">
+              <!-- Logs preenchidos via JS -->
+            </div>
+          </div>
+
         </section>
 
         <!-- ABA EXTRAIR -->
@@ -536,8 +548,8 @@
             <!-- CONTEÚDO TAB 2: FILTROS DE QUALIDADE -->
             <div id="tab-filtros" class="tab-content">
               <div class="grid-search" style="margin-bottom: 24px;">
-                <div class="field" style="grid-column: span 2;"><label>Palavras Negativadas (Blacklist)</label><textarea id="blacklistInput" rows="2" placeholder="Ex: contador, advogado..."></textarea></div>
-                <div class="field"><label>DDD Padrão</label><input id="dddInput" type="number" placeholder="Ex: 11" /></div>
+                <div class="field" style="grid-column: span 2;"><label>Palavras Negativadas (Separe por vírgula)</label><textarea id="blacklistInput" rows="2" placeholder="Ex: prefeitura, ong, hospital, teste..."></textarea></div>
+                <div class="field"><label>DDD Permitidos (Separe por vírgula)</label><input id="dddInput" type="text" placeholder="Ex: 11, 41" /></div>
               </div>
               <div class="grid-2">
                 <div><div class="switch-wrap"><span>Exigir Telefone Automático</span><label class="switch"><input type="checkbox" id="filterReqPhone" onchange="toggleQualityFilter()"><span class="slider"></span></label></div></div>
@@ -715,8 +727,12 @@
       let whiteLabel = { color: '#ffffff', name: 'VL Hunt', logo: '' };
 
       let teamMembers = [];
+      let systemLogs = []; // NOVA VARIÁVEL: LOGS/PDCA
+      
       const STORAGE_KEYS_TEAM = 'vlhunt_team_members';
+      const STORAGE_KEYS_LOGS = 'vlhunt_system_logs'; // CHAVE LOCAL DOS LOGS
       let currentEditingAvatarBase64 = '';
+      
       const STORAGE_KEYS = { saved: 'vlhunt_saved_leads_v2', exported: 'vlhunt_exported_leads_v2', filters: 'vlhunt_quality_filters', prefs: 'vlhunt_extra_prefs', profile: 'vlhunt_user_profile', wl: 'vlhunt_whitelabel' };
 
       // ============================================
@@ -763,6 +779,7 @@
         loadLocalData(); 
         loadQualityFilters(); 
         loadTeamMembers(); 
+        loadLogs(); // CARREGA OS LOGS AO INICIAR
         
         document.getElementById('wlColor').addEventListener('input', function() { document.getElementById('wlColorText').value = this.value; });
 
@@ -778,6 +795,35 @@
         const { data: { session } } = await supa.auth.getSession();
         if (session) { iniciarSistemaApp(session.user.email); }
       });
+
+      // ============================================
+      // LOGS / PDCA (ITEM 7)
+      // ============================================
+      function loadLogs() {
+        try { systemLogs = JSON.parse(localStorage.getItem(STORAGE_KEYS_LOGS)) || []; } 
+        catch(e) { systemLogs = []; }
+        renderLogs();
+      }
+
+      function addLog(action, detail) {
+        const log = { id: Date.now(), user: userProfile.name, action, detail, time: new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) };
+        systemLogs.unshift(log); // Adiciona no topo
+        if (systemLogs.length > 50) systemLogs.pop(); // Mantém apenas os 50 últimos para não pesar
+        localStorage.setItem(STORAGE_KEYS_LOGS, JSON.stringify(systemLogs));
+        renderLogs();
+      }
+
+      function renderLogs() {
+        const list = document.getElementById('pdcaLogsList');
+        if (!list) return;
+        list.innerHTML = systemLogs.length ? systemLogs.map(l => `
+          <div style="border-bottom: 1px solid var(--border); padding-bottom: 8px; font-size: 13px;">
+            <strong style="color: var(--primary);">${l.user}</strong> 
+            <span style="color: var(--muted); margin: 0 6px;">às ${l.time}</span>
+            <span style="color: var(--dark);">- ${l.detail}</span>
+          </div>
+        `).join('') : '<div class="empty" style="border:none;">Nenhuma atividade registrada ainda hoje.</div>';
+      }
 
       // ============================================
       // WHITE LABEL AUTOMÁTICO
@@ -830,13 +876,9 @@
         if(!userProfile.name) userProfile.name = userInfo.fullName;
         currentUserFullName = userProfile.name;
 
-        // VALIDAÇÃO DE SEGURANÇA: Verifica se o e-mail logado está na lista de admins
         isUserAdmin = ADMIN_EMAILS.includes(currentUserEmail.toLowerCase());
-        
-        // Define o cargo forçadamente (evita que o usuário mude no front-end)
         userProfile.role = isUserAdmin ? 'Admin / Gerente' : 'SDR';
 
-        // Esconde/Mostra menus
         document.getElementById('navDashboardBtn').style.display = isUserAdmin ? 'flex' : 'none';
         document.getElementById('navSettingsBtn').style.display = isUserAdmin ? 'flex' : 'none';
         
@@ -856,7 +898,6 @@
         else if(isUserAdmin && isDashVis) { showSection('dashboard'); }
         else { showSection('extract'); } 
 
-        // Preenche interface
         document.getElementById('topUserName').textContent = userProfile.name;
         document.getElementById('topUserRole').textContent = userProfile.role;
         updateAvatarUI(userProfile.avatarBase64, userProfile.name);
@@ -869,7 +910,6 @@
 
       function saveProfile() {
         userProfile.name = document.getElementById('profileName').value.trim() || currentUserFullName;
-        // Removida a captura do "profileRole" para impedir alteração forçada
         userProfile.signature = document.getElementById('profileSignature').value.trim();
         localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(userProfile));
         
@@ -878,7 +918,7 @@
       }
 
       // ============================================
-      // IA ICEBREAKER - COM OPÇÕES A/B/C E CONTEXTO
+      // IA ICEBREAKER
       // ============================================
       async function openIcebreaker(id) {
         const lead = leads.find(l => l.place_id === id) || savedLeads.find(l => l.place_id === id);
@@ -915,6 +955,7 @@
           const data = await response.json();
           if(data.choices && data.choices[0]) {
             textArea.value = data.choices[0].message.content.trim();
+            addLog('usou_ia', `Gerou copy de IA para a empresa: ${lead.name}`); // Log da IA!
           } else {
             throw new Error('Erro na resposta');
           }
@@ -924,7 +965,6 @@
       }
 
       function closeIcebreakerModal() { document.getElementById('icebreakerModal').style.display = 'none'; }
-      
       function copyIcebreaker() {
         const text = document.getElementById('icebreakerText').value;
         navigator.clipboard.writeText(text);
@@ -953,9 +993,9 @@
           const savedP = JSON.parse(localStorage.getItem(STORAGE_KEYS.prefs));
           if(savedP) {
              extraPrefs = { ...extraPrefs, ...savedP };
-             document.getElementById('webhookUrlInput').value = extraPrefs.webhook;
-             document.getElementById('blacklistInput').value = extraPrefs.blacklist;
-             document.getElementById('dddInput').value = extraPrefs.ddd;
+             document.getElementById('webhookUrlInput').value = extraPrefs.webhook || '';
+             document.getElementById('blacklistInput').value = extraPrefs.blacklist || '';
+             document.getElementById('dddInput').value = extraPrefs.ddd || '';
              document.getElementById('openaiApiKeyInput').value = extraPrefs.openaiKey || '';
              document.getElementById('aiContextInput').value = extraPrefs.aiContext || '';
           }
@@ -1013,10 +1053,88 @@
         } catch (err) { }
       }
 
-      function getSettings() { return { googleApiKey: configSupabase.googleApiKey, pipedriveToken: configSupabase.pipedriveToken }; }
+      // ============================================
+      // GERENCIAMENTO DA EQUIPE (RANKING) - ITEM 6
+      // ============================================
+      function loadTeamMembers() {
+        try {
+          const savedTeam = JSON.parse(localStorage.getItem(STORAGE_KEYS_TEAM));
+          if (savedTeam && savedTeam.length > 0) teamMembers = savedTeam;
+          else teamMembers = []; // Zera para puxar automaticamente
+        } catch (e) {}
+        renderLeaderboard();
+      }
+
+      // NOVO: Adiciona pontos para o usuário que salvou (ITEM 6)
+      function updateTeamMemberScore(name, extractedAdd, exportedAdd) {
+         let member = teamMembers.find(m => m.name === name);
+         if (!member) {
+             member = { id: Date.now(), name: name, role: userProfile.role, extracted: 0, exported: 0, avatar: userProfile.avatarBase64 };
+             teamMembers.push(member);
+         }
+         member.extracted += extractedAdd;
+         member.exported += exportedAdd;
+         localStorage.setItem(STORAGE_KEYS_TEAM, JSON.stringify(teamMembers));
+         renderLeaderboard();
+      }
+
+      function renderLeaderboard() {
+        const listEl = document.getElementById('leaderboardList');
+        if (!listEl) return;
+        listEl.innerHTML = '';
+        
+        if (teamMembers.length === 0) {
+            listEl.innerHTML = '<div class="empty" style="border:none;">Nenhum desempenho registrado. Salve leads para entrar no ranking!</div>';
+            return;
+        }
+
+        const sortedTeam = [...teamMembers].map(m => ({ ...m, xp: (m.extracted * 2) + (m.exported * 25) })).sort((a, b) => b.xp - a.xp);
+
+        sortedTeam.forEach((member, i) => {
+          let rClass = i===0 ? 'rank-1' : i===1 ? 'rank-2' : i===2 ? 'rank-3' : '';
+          let avatarHtml = member.avatar ? `<img src="${member.avatar}" class="rank-avatar">` : `<div class="rank-avatar" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:bold;">${member.name.substring(0,2).toUpperCase()}</div>`;
+          listEl.innerHTML += `
+            <div class="rank-item ${rClass}" style="${i>2 ? 'border-left:4px solid var(--border)':''}">
+              <div class="rank-pos">${i+1}º</div>${avatarHtml}
+              <div class="rank-info"><strong>${member.name}</strong><span>${member.role}</span></div>
+              <div class="rank-stats"><div class="rank-stat-col"><span>Salvos</span><strong>${member.extracted}</strong></div></div>
+              <div class="rank-score">${member.xp} XP</div>
+              <div class="rank-admin-actions"><button class="admin-edit-btn" onclick="openTeamMemberModal(${member.id})">Editar</button></div>
+            </div>`;
+        });
+      }
+
+      function openTeamMemberModal(id = null) {
+        const modal = document.getElementById('teamMemberModal');
+        if (id) {
+          const m = teamMembers.find(x => x.id === id);
+          document.getElementById('teamMemberId').value = m.id;
+          document.getElementById('teamMemberName').value = m.name;
+          document.getElementById('teamMemberRole').value = m.role;
+          document.getElementById('teamMemberExtracted').value = m.extracted;
+          currentEditingAvatarBase64 = m.avatar || '';
+        } else {
+          document.getElementById('teamMemberId').value = ""; document.getElementById('teamMemberName').value = ""; currentEditingAvatarBase64 = '';
+        }
+        modal.style.display = 'flex';
+      }
+
+      function closeTeamMemberModal() { document.getElementById('teamMemberModal').style.display = 'none'; }
+      
+      function saveTeamMember() {
+        const id = document.getElementById('teamMemberId').value;
+        const name = document.getElementById('teamMemberName').value;
+        const role = document.getElementById('teamMemberRole').value;
+        const extracted = parseInt(document.getElementById('teamMemberExtracted').value) || 0;
+        
+        if (id) teamMembers = teamMembers.map(m => m.id == id ? { ...m, name, role, extracted, avatar: currentEditingAvatarBase64 } : m);
+        else teamMembers.push({ id: Date.now(), name, role, extracted, exported: 0, avatar: currentEditingAvatarBase64 });
+        
+        localStorage.setItem(STORAGE_KEYS_TEAM, JSON.stringify(teamMembers)); renderLeaderboard(); closeTeamMemberModal();
+      }
 
       // ============================================
-      // EXTRAÇÃO, GOOGLE MAPS E CARDS C/ BOTÕES (BUGFIX LINKS)
+      // EXTRAÇÃO, GOOGLE MAPS E FILTROS (ITEM 8)
       // ============================================
       function updateAvatarUI(base64, name) {
         const topInitials = document.getElementById('topUserInitials');
@@ -1065,64 +1183,6 @@
         try { exportedLeads = JSON.parse(localStorage.getItem(STORAGE_KEYS.exported) || '[]'); } catch { exportedLeads = []; }
       }
 
-      function loadTeamMembers() {
-        try {
-          const savedTeam = JSON.parse(localStorage.getItem(STORAGE_KEYS_TEAM));
-          if (savedTeam && savedTeam.length > 0) teamMembers = savedTeam;
-          else teamMembers = [{ id: 1, name: "Victor Silva", role: "SDR Master", extracted: 1250, exported: 340, avatar: "" }];
-        } catch (e) {}
-        renderLeaderboard();
-      }
-
-      function renderLeaderboard() {
-        const listEl = document.getElementById('leaderboardList');
-        if (!listEl) return;
-        listEl.innerHTML = '';
-        const sortedTeam = [...teamMembers].map(m => ({ ...m, xp: (m.extracted * 2) + (m.exported * 25) })).sort((a, b) => b.xp - a.xp);
-
-        sortedTeam.forEach((member, i) => {
-          let rClass = i===0 ? 'rank-1' : i===1 ? 'rank-2' : i===2 ? 'rank-3' : '';
-          let avatarHtml = member.avatar ? `<img src="${member.avatar}" class="rank-avatar">` : `<div class="rank-avatar" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:bold;">${member.name.substring(0,2).toUpperCase()}</div>`;
-          listEl.innerHTML += `
-            <div class="rank-item ${rClass}" style="${i>2 ? 'border-left:4px solid var(--border)':''}">
-              <div class="rank-pos">${i+1}º</div>${avatarHtml}
-              <div class="rank-info"><strong>${member.name}</strong><span>${member.role}</span></div>
-              <div class="rank-stats"><div class="rank-stat-col"><span>Salvos</span><strong>${member.extracted}</strong></div></div>
-              <div class="rank-score">${member.xp} XP</div>
-              <div class="rank-admin-actions"><button class="admin-edit-btn" onclick="openTeamMemberModal(${member.id})">Editar</button></div>
-            </div>`;
-        });
-      }
-
-      function openTeamMemberModal(id = null) {
-        const modal = document.getElementById('teamMemberModal');
-        if (id) {
-          const m = teamMembers.find(x => x.id === id);
-          document.getElementById('teamMemberId').value = m.id;
-          document.getElementById('teamMemberName').value = m.name;
-          document.getElementById('teamMemberRole').value = m.role;
-          document.getElementById('teamMemberExtracted').value = m.extracted;
-          currentEditingAvatarBase64 = m.avatar || '';
-        } else {
-          document.getElementById('teamMemberId').value = ""; document.getElementById('teamMemberName').value = ""; currentEditingAvatarBase64 = '';
-        }
-        modal.style.display = 'flex';
-      }
-
-      function closeTeamMemberModal() { document.getElementById('teamMemberModal').style.display = 'none'; }
-      
-      function saveTeamMember() {
-        const id = document.getElementById('teamMemberId').value;
-        const name = document.getElementById('teamMemberName').value;
-        const role = document.getElementById('teamMemberRole').value;
-        const extracted = parseInt(document.getElementById('teamMemberExtracted').value) || 0;
-        
-        if (id) teamMembers = teamMembers.map(m => m.id == id ? { ...m, name, role, extracted, avatar: currentEditingAvatarBase64 } : m);
-        else teamMembers.push({ id: Date.now(), name, role, extracted, exported: 0, avatar: currentEditingAvatarBase64 });
-        
-        localStorage.setItem(STORAGE_KEYS_TEAM, JSON.stringify(teamMembers)); renderLeaderboard(); closeTeamMemberModal();
-      }
-
       function loadGoogleMapsScript(apiKey, forceReload = false) {
         if (window.google && window.google.maps && window.google.maps.places && !forceReload) { initGoogleMaps(); return; }
         const oldScript = document.getElementById('googleMapsScript'); if (oldScript) oldScript.remove();
@@ -1143,35 +1203,83 @@
         if (!name && (!niche || !city)) { toast('Digite Nome ou Nicho+Cidade.'); return; }
         if (!placesService) { toast('Google Maps não conectado. Vá em Painel Master.'); return; }
         
-        leads = []; isSearching = true; document.getElementById('searchBtn').textContent = 'Buscando...';
+        leads = []; 
+        ignoredLeadsCount = 0; // Zera a contagem do filtro
+        currentApiPage = 1;
+        isSearching = true; 
+        document.getElementById('searchBtn').textContent = 'Buscando...';
+        
+        addLog('busca', `Iniciou busca por: ${name} ${niche} ${city}`); // Log da busca
+
         placesService.textSearch({ query: `${name} ${niche} ${city}`, type: 'establishment' }, handlePlacesResults);
       }
 
+      // ITEM 8: FILTRO DE BLACKLIST 
       function handlePlacesResults(results, status, pagination) {
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+          
+          // Prepara Blacklist
+          let blacklist = [];
+          if(extraPrefs.blacklist) {
+             blacklist = extraPrefs.blacklist.split(',').map(s => s.trim().toLowerCase()).filter(s => s);
+          }
+
           results.forEach(place => {
-            const photoUrl = place.photos && place.photos.length ? place.photos[0].getUrl({ maxWidth: 400 }) : '';
-            if (!leads.some(l => l.place_id === place.place_id)) { 
+            // Verifica se tem palavra negativada
+            const nomeMinusculo = (place.name || '').toLowerCase();
+            const temPalavraRuim = blacklist.some(palavra => nomeMinusculo.includes(palavra));
+
+            if (!temPalavraRuim && !leads.some(l => l.place_id === place.place_id)) { 
+              const photoUrl = place.photos && place.photos.length ? place.photos[0].getUrl({ maxWidth: 400 }) : '';
               leads.push({ place_id: place.place_id, name: place.name, address: place.formatted_address, phone: '', website: '', rating: place.rating, photo: photoUrl });
               detailsQueue.push(place.place_id);
+            } else if (temPalavraRuim) {
+              ignoredLeadsCount++; // Incrementa bloqueados
             }
           });
         }
         renderLeads();
+        
         if (pagination && pagination.hasNextPage && currentApiPage < configSupabase.maxPages) {
           currentApiPage++; setTimeout(() => { pagination.nextPage(); }, 2000);
         } else {
-          isSearching = false; processQueue(); document.getElementById('searchBtn').textContent = 'Extrair Leads'; toast('Busca concluída.');
+          isSearching = false; 
+          processQueue(); 
+          document.getElementById('searchBtn').textContent = 'Extrair Leads'; 
+          
+          let msgToast = 'Busca concluída!';
+          if (ignoredLeadsCount > 0) msgToast += ` (${ignoredLeadsCount} ocultados pelo Filtro)`;
+          toast(msgToast);
         }
       }
 
+      // ITEM 8: FILTRO DE DDD
       function processQueue() {
         if (isProcessingQueue || detailsQueue.length === 0 || !placesService) return;
         isProcessingQueue = true; const placeId = detailsQueue.shift();
+        
         placesService.getDetails({ placeId: placeId, fields: ['formatted_phone_number', 'website', 'url'] }, (place, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK && place) {
               const i = leads.findIndex(l => l.place_id === placeId);
-              if (i !== -1) { leads[i].phone = place.formatted_phone_number || ''; leads[i].website = place.website || ''; leads[i].url = place.url || ''; renderLeads(); }
+              if (i !== -1) { 
+                 leads[i].phone = place.formatted_phone_number || ''; 
+                 leads[i].website = place.website || ''; 
+                 leads[i].url = place.url || ''; 
+                 
+                 // APÓS PEGAR O TELEFONE, CHECA FILTRO DE DDD
+                 let removerPorDDD = false;
+                 if(extraPrefs.ddd && leads[i].phone) {
+                    const dddLead = leads[i].phone.replace(/\D/g, '').substring(0, 2);
+                    const dddsPermitidos = extraPrefs.ddd.split(',').map(d => d.trim());
+                    if(!dddsPermitidos.includes(dddLead)) removerPorDDD = true;
+                 }
+                 
+                 if(removerPorDDD) {
+                     leads.splice(i, 1); // Corta da lista
+                 }
+
+                 renderLeads(); 
+              }
             }
             setTimeout(() => { isProcessingQueue = false; processQueue(); }, 800);
         });
@@ -1197,8 +1305,6 @@
         const card = document.createElement('div'); card.className = 'lead-card';
         const whatsUrl = lead.phone ? `https://wa.me/55${lead.phone.replace(/\D/g,'')}` : '';
         
-        // BUGFIX DAS BUSCAS NO GOOGLE:
-        // Codifica toda a URL no formato "encodeURIComponent" sem usar aspas reais no código HTML.
         const safeName = lead.name || '';
         const instaQuery = encodeURIComponent(`site:instagram.com ${safeName}`);
         const instaUrl = `https://www.google.com/search?q=${instaQuery}`;
@@ -1233,10 +1339,30 @@
       function openFolderModal() { document.getElementById('folderModal').style.display = 'flex'; }
       function closeFolderModal() { document.getElementById('folderModal').style.display = 'none'; pendingLeadsToSave = []; }
       
+      // ITEM 6 e 7: A AÇÃO PRINCIPAL DE SALVAR!
       function confirmFolderSave() {
         const folder = document.getElementById('newFolderInput').value || 'Geral';
-        pendingLeadsToSave.forEach(l => { savedLeads.push({...l, folder}); leads = leads.filter(x => x.place_id !== l.place_id); });
-        localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads)); renderLeads(); closeFolderModal(); toast('Salvos!');
+        let count = 0;
+        
+        pendingLeadsToSave.forEach(l => { 
+            savedLeads.push({...l, folder}); 
+            leads = leads.filter(x => x.place_id !== l.place_id); 
+            count++;
+        });
+        
+        localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads)); 
+        
+        if (count > 0) {
+           // GERA LOG NO PDCA (ITEM 7)
+           addLog('salvar', `Salvou ${count} lead(s) na pasta "${folder}".`);
+           // ATUALIZA RANKING / DASHBOARD (ITEM 6)
+           updateTeamMemberScore(userProfile.name, count, 0); 
+        }
+
+        renderLeads(); 
+        closeFolderModal(); 
+        updateDashboardStats(); 
+        toast(`${count} Leads Salvos!`);
       }
 
       function saveSelectedLeads() {
@@ -1247,15 +1373,38 @@
         const lead = leads.find(l => l.place_id === id); if(lead) { pendingLeadsToSave = [lead]; openFolderModal(); }
       }
 
+      // ITEM 6: DASHBOARD COM NÚMEROS REAIS DA TELA
       function updateDashboardStats() {
+        // Atualiza Cards Principais
         document.getElementById('dashTotalSaved').textContent = savedLeads.length;
+        
+        const phonesCount = savedLeads.filter(l => l.phone).length;
+        document.getElementById('dashPhoneCount').textContent = phonesCount;
+        
+        document.getElementById('dashExportedCount').textContent = exportedLeads.length;
+        
+        const convRate = savedLeads.length ? Math.round((exportedLeads.length / savedLeads.length) * 100) : 0;
+        document.getElementById('dashConvRate').textContent = convRate + '%';
+
+        // Atualiza Funil
+        const maxTotal = savedLeads.length || 1; // previne div por zero
+        document.getElementById('valTotal').textContent = savedLeads.length;
+        document.getElementById('barTotal').style.width = '100%';
+
+        const contacts = savedLeads.filter(l => l.phone || l.website).length;
+        document.getElementById('valContact').textContent = contacts;
+        document.getElementById('barContact').style.width = `${(contacts/maxTotal)*100}%`;
+
+        document.getElementById('valExported').textContent = exportedLeads.length;
+        document.getElementById('barExported').style.width = `${(exportedLeads.length/maxTotal)*100}%`;
       }
+
       function updateFolderFilterDropdown() {}
       function renderSavedLeads() {
         const grid = document.getElementById('savedGrid'); grid.innerHTML = '';
         savedLeads.forEach(lead => grid.appendChild(createLeadCard(lead, 'saved')));
       }
-      function clearSavedLeads() { savedLeads = []; localStorage.setItem(STORAGE_KEYS.saved, '[]'); renderSavedLeads(); toast('Limpo!'); }
+      function clearSavedLeads() { savedLeads = []; localStorage.setItem(STORAGE_KEYS.saved, '[]'); renderSavedLeads(); updateDashboardStats(); toast('Limpo!'); }
       function clearResults() { leads = []; renderLeads(); }
       function exportCurrentToCSV() { toast('Baixando CSV...'); }
       function scrollToTop() { window.scrollTo({top:0, behavior:'smooth'}); }
