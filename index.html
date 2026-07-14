@@ -578,12 +578,18 @@
               <div class="profile-form-wrap">
                 <div class="grid-2" style="margin-bottom: 16px;">
                   <div class="field"><label>Nome de Exibição</label><input type="text" id="profileName" placeholder="Como quer ser chamado"></div>
-                  <!-- CAMPO DE CARGO TRAVADO -->
-                  <div class="field"><label>Cargo / Função (Protegido pelo sistema)</label><input type="text" id="profileRole" disabled style="opacity: 0.6; cursor: not-allowed;" title="Apenas o banco de dados principal altera esse status"></div>
+                  <!-- CAMPO DE CARGO TRAVADO, DESTAQUE VISUAL (DISABLE) -->
+                  <div class="field">
+                    <label>Cargo / Função 🔒</label>
+                    <input type="text" id="profileRole" disabled style="background-color: var(--nav-hover); color: var(--muted); cursor: not-allowed;" title="Protegido. Apenas o sistema altera esse status.">
+                  </div>
                 </div>
                 
                 <div class="field" style="margin-bottom: 16px;"><label>E-mail de Login</label><input type="email" id="profileEmail" disabled style="opacity: 0.6;"></div>
-                <div class="field" style="margin-bottom: 24px;"><label>Assinatura Padrão</label><textarea id="profileSignature" rows="4"></textarea></div>
+                <div class="field" style="margin-bottom: 24px;">
+                  <label>Assinatura Padrão</label>
+                  <textarea id="profileSignature" rows="4" placeholder="Exemplo:&#10;Victor Silva | Closer de Vendas&#10;WhatsApp: (11) 99999-9999&#10;www.minhaempresa.com.br"></textarea>
+                </div>
 
                 <button class="btn btn-main" onclick="saveProfile()" style="min-width: 200px;">Salvar Perfil</button>
               </div>
@@ -706,7 +712,7 @@
       let qualityFilters = { reqPhone: false, reqSite: false, ignoreEmails: false };
       let extraPrefs = { webhook: '', blacklist: '', ddd: '', openaiKey: '', aiContext: '' };
       let userProfile = { name: '', role: 'SDR', signature: '', avatarBase64: '' };
-      let whiteLabel = { color: '#ffffff', name: 'VL Hunt', logo: '' }; // Item 12!
+      let whiteLabel = { color: '#ffffff', name: 'VL Hunt', logo: '' };
 
       let teamMembers = [];
       const STORAGE_KEYS_TEAM = 'vlhunt_team_members';
@@ -894,7 +900,7 @@
         textArea.value = "Gerando 3 opções de abordagem com Inteligência Artificial...\nIsso leva alguns segundos.";
         
         try {
-          const prompt = `Aja como um especialista em vendas B2B (SDR). Meu produto/serviço é: "${contexto}".\n\nEscreva 3 opções curtas e persuasivas de primeira mensagem de WhatsApp (cold message) para abordar a empresa "${lead.name}" localizada em "${lead.address}".\n\n- Termine sempre com uma pergunta para gerar resposta.\n\nFormate a resposta exatamente assim:\n\nOPÇÃO A (Direta e Reta):\n[texto]\n\nOPÇÃO B (Gerando Curiosidade):\n[texto]\n\nOPÇÃO C (Focada em dor/problema):\n[texto]`;
+          const prompt = `Aja como um especialista em vendas B2B (SDR). Meu produto/serviço é: "${contexto}".\n\nEscreva 3 opções curtas e persuasivas de primeira mensagem de WhatsApp (cold message) para abordar a empresa "${lead.name}".\n\n- Termine sempre com uma pergunta para gerar resposta.\n\nFormate a resposta exatamente assim:\n\nOPÇÃO A (Direta e Reta):\n[texto]\n\nOPÇÃO B (Gerando Curiosidade):\n[texto]\n\nOPÇÃO C (Focada em dor/problema):\n[texto]`;
           
           const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
@@ -1010,7 +1016,7 @@
       function getSettings() { return { googleApiKey: configSupabase.googleApiKey, pipedriveToken: configSupabase.pipedriveToken }; }
 
       // ============================================
-      // EXTRAÇÃO, GOOGLE MAPS E CARDS C/ BOTÕES (Insta/Email)
+      // EXTRAÇÃO, GOOGLE MAPS E CARDS C/ BOTÕES (BUGFIX LINKS)
       // ============================================
       function updateAvatarUI(base64, name) {
         const topInitials = document.getElementById('topUserInitials');
@@ -1191,9 +1197,14 @@
         const card = document.createElement('div'); card.className = 'lead-card';
         const whatsUrl = lead.phone ? `https://wa.me/55${lead.phone.replace(/\D/g,'')}` : '';
         
-        // HACK DE BUSCA: Links para Instagram e Email baseados no nome da empresa e endereço
-        const instaUrl = `https://www.google.com/search?q=site:instagram.com+"${encodeURIComponent(lead.name)}"+"${encodeURIComponent(lead.address)}"`;
-        const emailUrl = `https://www.google.com/search?q="email"+"${encodeURIComponent(lead.name)}"`;
+        // BUGFIX DAS BUSCAS NO GOOGLE:
+        // Codifica toda a URL no formato "encodeURIComponent" sem usar aspas reais no código HTML.
+        const safeName = lead.name || '';
+        const instaQuery = encodeURIComponent(`site:instagram.com ${safeName}`);
+        const instaUrl = `https://www.google.com/search?q=${instaQuery}`;
+        
+        const emailQuery = encodeURIComponent(`"${safeName}" email OR contato`);
+        const emailUrl = `https://www.google.com/search?q=${emailQuery}`;
 
         card.innerHTML = `
           ${source === 'current' ? `<input type="checkbox" class="lead-check" onchange="toggleLeadSelection('${lead.place_id}', this.checked)">` : ''}
