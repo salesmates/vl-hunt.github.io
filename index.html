@@ -683,7 +683,6 @@
     </div>
 
     <!-- MODALS -->
-    
     <!-- MODAL ICEBREAKER IA COM TESTE A/B/C -->
     <div id="icebreakerModal" class="modal-overlay">
       <div class="modal" style="width: 600px; max-width: 95%;">
@@ -712,36 +711,6 @@
       </div>
     </div>
 
-    <!-- MODAL GERENCIAR MEMBRO DA EQUIPE -->
-    <div id="teamMemberModal" class="modal-overlay">
-      <div class="modal" style="width: 500px;">
-        <h3 id="teamModalTitle">Adicionar Membro</h3>
-        <input type="hidden" id="teamMemberId">
-        <div style="display: flex; gap: 20px; margin-bottom: 20px;">
-          <div style="width: 100px; text-align: center;">
-            <div class="team-avatar-preview" id="teamModalAvatarPreview"><span id="teamModalInitials">?</span></div>
-            <label for="teamAvatarInput" class="btn" style="width: 100%; height: 32px; font-size: 11px; padding: 0;">Subir Foto</label>
-            <input type="file" id="teamAvatarInput" accept="image/png, image/jpeg" style="display: none;" onchange="handleTeamAvatarUpload(event)">
-          </div>
-          <div style="flex: 1;">
-            <div class="field"><label>Nome do Vendedor</label><input type="text" id="teamMemberName"></div>
-            <div class="field" style="margin-bottom: 0;"><label>Cargo</label><select id="teamMemberRole"><option value="SDR" selected>SDR</option><option value="Admin">Admin</option></select></div>
-          </div>
-        </div>
-        <div class="grid-2">
-          <div class="field"><label>Leads Salvos</label><input type="number" id="teamMemberExtracted" value="0"></div>
-          <div class="field"><label>Exportados</label><input type="number" id="teamMemberExported" value="0"></div>
-        </div>
-        <div class="modal-buttons" style="justify-content: space-between; margin-top: 10px;">
-          <button class="btn btn-danger hidden" id="btnDeleteTeamMember" onclick="deleteTeamMember()" style="border-color:transparent;">Excluir</button>
-          <div style="display: flex; gap: 12px; margin-left: auto;">
-            <button class="btn" style="border-color:transparent;" onclick="closeTeamMemberModal()">Cancelar</button>
-            <button class="btn btn-main" onclick="saveTeamMember()">Salvar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- BOTÃO VOLTAR AO TOPO -->
     <button id="backToTopBtn" class="back-to-top" onclick="scrollToTop()" title="Voltar ao topo"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button>
 
@@ -753,13 +722,19 @@
 
     <script>
       // ============================================
-      // SEGURANÇA E ARQUITETURA MULTI-TENANT (SAAS)
+      // CONFIGURAÇÃO DA EQUIPE (AQUI QUE RESOLVE O RANKING VAZIO)
       // ============================================
+      // Coloque aqui os emails EXATOS que você e sua equipe usam para logar.
       const ADMIN_EMAILS = ['leonvquadros@gmail.com', 'seuemailaqui@gmail.com'];
-      let CURRENT_EMPRESA_ID = 1; 
+      
+      const EQUIPE = [
+        { email: 'leonvquadros@gmail.com', nome: 'Leon (Admin)' },
+        { email: 'gustavo@seudominio.com', nome: 'Gustavo Preserve' }, // <--- Mude pro email real do Gustavo
+        { email: 'vendedor3@seudominio.com', nome: 'Vendedor 3' }
+      ];
 
       // ============================================
-      // VARIÁVEIS GLOBAIS
+      // CONEXÃO SUPABASE
       // ============================================
       const supabaseUrl = 'https://sowbnurzaukkxybqbtxa.supabase.co';
       const supabaseKey = 'sb_publishable_36PhUy-41qXKbCXG7OQkrA_fOiKgUOK';
@@ -783,10 +758,10 @@
 
       let systemLogs = []; 
       
-      const STORAGE_KEYS = { saved: 'vlhunt_saved_leads_v2', exported: 'vlhunt_exported_leads_v2', filters: 'vlhunt_quality_filters', prefs: 'vlhunt_extra_prefs', profile: 'vlhunt_user_profile', wl: 'vlhunt_whitelabel' };
+      const STORAGE_KEYS = { filters: 'vlhunt_quality_filters', prefs: 'vlhunt_extra_prefs', profile: 'vlhunt_user_profile', wl: 'vlhunt_whitelabel' };
 
       // ============================================
-      // INICIALIZAÇÃO E LOGIN
+      // INICIALIZAÇÃO
       // ============================================
       function formatUserNameFromEmail(email) {
         let namePart = email.split('@')[0].replace(/[._-]/g, ' '); 
@@ -796,44 +771,8 @@
         return { fullName, initials };
       }
 
-      async function iniciarSistemaApp(email) {
-        currentUserEmail = email;
-        document.getElementById('loginOverlay').style.display = 'none';
-        document.getElementById('mainApp').style.display = 'block';
-
-        const userInfo = formatUserNameFromEmail(email);
-        loadUserProfile(userInfo); 
-        loadWhiteLabel(); 
-        await carregarConfiguracoesDoSupabase();
-      }
-
-      document.getElementById('loginForm').addEventListener('submit', async function(e) {
-        e.preventDefault(); 
-        const email = document.getElementById('loginEmail').value.trim();
-        const password = document.getElementById('loginPassword').value.trim();
-        const btn = document.getElementById('loginBtn');
-        btn.textContent = "Validando..."; btn.disabled = true;
-
-        try {
-          const { data, error } = await supa.auth.signInWithPassword({ email: email, password: password });
-          if (error) { alert('Erro no login.'); btn.textContent = "Entrar no Sistema"; btn.disabled = false; } 
-          else { iniciarSistemaApp(data.user.email); }
-        } catch(err) { alert('Erro de conexão.'); btn.textContent = "Entrar no Sistema"; btn.disabled = false; }
-      });
-
-      async function handleSupabaseLogout() {
-        if(confirm('Deseja sair do sistema?')) { await supa.auth.signOut(); window.location.reload(); }
-      }
-
       document.addEventListener('DOMContentLoaded', async () => {
-        loadLocalData(); 
         loadQualityFilters(); 
-        
-        // Dispara o carregamento do ranking e logs logo ao abrir a tela
-        setTimeout(() => {
-          carregarRankingReal();
-          loadLogs();
-        }, 1000); 
         
         document.getElementById('wlColor').addEventListener('input', function() { document.getElementById('wlColorText').value = this.value; });
 
@@ -849,115 +788,105 @@
         const inputsBusca = document.querySelectorAll('#nameInput, #nicheInput, #cityInput, #districtInput, #streetInput');
         inputsBusca.forEach(input => {
             input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') { 
-                    e.preventDefault(); 
-                    searchLeads(); 
-                }
+                if (e.key === 'Enter') { e.preventDefault(); searchLeads(); }
             });
         });
 
         const { data: { session } } = await supa.auth.getSession();
-        if (session) { iniciarSistemaApp(session.user.email); }
+        if (session) { await iniciarSistemaApp(session.user.email); }
       });
 
-      // ==========================================
-      // 1. FUNÇÃO DE LOGS (Admin vê tudo, Usuário vê o dele)
-      // ==========================================
-      let isLogsSubscribed = false;
+      document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault(); 
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        const btn = document.getElementById('loginBtn');
+        btn.textContent = "Validando..."; btn.disabled = true;
 
-      async function loadLogs() {
         try {
-          // Busca na tabela destravada
-          let query = supa.from('logs_atividades').select('*').order('criado_em', {ascending: false}).limit(50);
-          
-          // Se não for Admin, filtra para mostrar SÓ o do usuário logado
-          if (!isUserAdmin) {
-            query = query.eq('usuario', userProfile.name); 
-          }
+          const { data, error } = await supa.auth.signInWithPassword({ email: email, password: password });
+          if (error) { alert('Erro no login.'); btn.textContent = "Entrar no Sistema"; btn.disabled = false; } 
+          else { await iniciarSistemaApp(data.user.email); }
+        } catch(err) { alert('Erro de conexão.'); btn.textContent = "Entrar no Sistema"; btn.disabled = false; }
+      });
 
+      async function handleSupabaseLogout() {
+        if(confirm('Deseja sair do sistema?')) { await supa.auth.signOut(); window.location.reload(); }
+      }
+
+      async function iniciarSistemaApp(email) {
+        currentUserEmail = email;
+        isUserAdmin = ADMIN_EMAILS.includes(currentUserEmail.toLowerCase());
+
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'block';
+
+        const userInfo = formatUserNameFromEmail(email);
+        loadUserProfile(userInfo); 
+        loadWhiteLabel(); 
+        await carregarConfiguracoesDoSupabase();
+
+        // 1. CARREGA LEADS, LOGS E RANKING 100% DO BANCO DE DADOS
+        await carregarLeadsDoBanco();
+        await loadLogs();
+        await carregarRankingReal();
+      }
+
+      // ==========================================
+      // 1. PUXANDO OS LEADS REAIS (MATA O LOCALSTORAGE AQUI)
+      // ==========================================
+      async function carregarLeadsDoBanco() {
+        try {
+          let query = supa.from('leads_salvos').select('*');
+          // Se não for Admin, puxa SÓ OS DELE. Admin puxa de todos.
+          if (!isUserAdmin) {
+            query = query.eq('usuario_email', currentUserEmail);
+          }
           const { data, error } = await query;
           if (error) throw error;
+          
+          if (data) {
+            savedLeads = data; // Substitui o que estaria no localStorage pelos do banco
+            updateDashboardStats();
+          }
+        } catch(e) { console.error('Erro banco leads:', e); }
+      }
 
+      // ==========================================
+      // 2. FUNÇÃO DE LOGS (Corrigida sem colunas falsas)
+      // ==========================================
+      async function loadLogs() {
+        try {
+          let query = supa.from('logs_atividades').select('*').order('criado_em', {ascending: false}).limit(50);
+          if (!isUserAdmin) { query = query.eq('usuario_email', currentUserEmail); }
+
+          const { data, error } = await query;
           if (data) {
             systemLogs = data.map(dbLog => {
               const dateObj = dbLog.criado_em ? new Date(dbLog.criado_em) : new Date();
-              return {
-                id: dbLog.id,
-                user: dbLog.usuario,
-                action: dbLog.acao,
-                detail: dbLog.detalhe,
-                time: dateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})
-              };
+              return { id: dbLog.id, user: dbLog.usuario, action: dbLog.acao, detail: dbLog.detalhe, time: dateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) };
             });
           }
-        } catch(e) { 
-          console.error("Erro ao carregar logs:", e); 
-          systemLogs = [];
-        }
-        
+        } catch(e) { console.error(e); }
         renderLogs();
-        inscreverRealtimeLogs();
-      }
-
-      function inscreverRealtimeLogs() {
-        if (isLogsSubscribed) return;
-        supa.channel('realtime_logs')
-          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'logs_atividades' }, payload => {
-            const newLog = payload.new;
-            if(!systemLogs.find(l => l.id === newLog.id)) {
-               const dateObj = newLog.criado_em ? new Date(newLog.criado_em) : new Date();
-               systemLogs.unshift({
-                 id: newLog.id,
-                 user: newLog.usuario,
-                 action: newLog.acao,
-                 detail: newLog.detalhe,
-                 time: dateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})
-               });
-               if(systemLogs.length > 50) systemLogs.pop();
-               renderLogs();
-            }
-          })
-          .subscribe();
-        isLogsSubscribed = true;
       }
 
       async function addLog(action, detail) {
         try {
-          const { data, error } = await supa.from('logs_atividades').insert([{
+          await supa.from('logs_atividades').insert([{
             usuario: userProfile.name || currentUserEmail,
+            usuario_email: currentUserEmail,
             acao: action,
-            detalhe: detail,
-            empresa_id: CURRENT_EMPRESA_ID
-          }]).select();
-
-          if (data && data[0]) {
-             const newLog = data[0];
-             if(!systemLogs.find(l => l.id === newLog.id)) {
-                const dateObj = newLog.criado_em ? new Date(newLog.criado_em) : new Date();
-                systemLogs.unshift({
-                  id: newLog.id,
-                  user: newLog.usuario,
-                  action: newLog.acao,
-                  detail: newLog.detalhe,
-                  time: dateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})
-                });
-                if(systemLogs.length > 50) systemLogs.pop();
-                renderLogs();
-             }
-          }
-        } catch(e) {
-          console.error("Erro ao salvar log no Supabase", e);
-        }
+            detalhe: detail
+          }]);
+          loadLogs(); // Atualiza painel
+        } catch(e) { console.error(e); }
       }
 
       function renderLogs() {
         const list = document.getElementById('pdcaLogsList');
         if (!list) return;
-
-        let logsToShow = systemLogs;
-        if (!isUserAdmin) logsToShow = systemLogs.filter(l => l.user === userProfile.name);
-
-        list.innerHTML = logsToShow.length ? logsToShow.map(l => `
+        list.innerHTML = systemLogs.length ? systemLogs.map(l => `
           <div style="border-bottom: 1px solid var(--border); padding-bottom: 8px; font-size: 13px;">
             <strong style="color: var(--primary);">${l.user}</strong> 
             <span style="color: var(--muted); margin: 0 6px;">às ${l.time}</span>
@@ -967,75 +896,58 @@
       }
 
       // ==========================================
-      // 2. FUNÇÃO DO RANKING (Puxa os reais do banco Supabase)
+      // 3. RANKING REAL (Garante q todo mundo apareça)
       // ==========================================
       async function carregarRankingReal() {
         try {
-          // Busca todos os leads salvos para contar quem salvou mais
           const { data, error } = await supa.from('leads_salvos').select('usuario_email');
-          if (error) throw error;
-
-          const listEl = document.getElementById('leaderboardList');
-
-          // Se não tiver nenhum lead salvo no banco, mostra mensagem
-          if (!data || data.length === 0) {
-            listEl.innerHTML = '<div class="empty" style="border:none;">Nenhum lead salvo ainda no banco de dados.</div>';
-            return;
+          const contagem = {};
+          
+          if (data) {
+            data.forEach(lead => {
+              const email = lead.usuario_email || '';
+              contagem[email] = (contagem[email] || 0) + 1;
+            });
           }
 
-          // Conta quantos leads cada email salvou
-          const contagem = {};
-          data.forEach(lead => {
-            const email = lead.usuario_email || 'Email Desconhecido';
-            contagem[email] = (contagem[email] || 0) + 1;
-          });
+          // Junta a contagem com a lista fixa EQUIPE pra ninguém ficar de fora
+          const rankingArray = EQUIPE.map(membro => {
+            const salvos = contagem[membro.email] || 0;
+            return { email: membro.email, nome: membro.nome, salvos: salvos, xp: salvos * 10 };
+          }).sort((a, b) => b.salvos - a.salvos);
 
-          // Transforma num array, calcula XP (ex: 10 XP por lead) e ordena do maior pro menor
-          const rankingArray = Object.keys(contagem).map(email => ({
-            email: email,
-            salvos: contagem[email],
-            xp: contagem[email] * 10 
-          })).sort((a, b) => b.salvos - a.salvos);
-
-          // Pega a div do HTML e injeta os cards reais usando a estilização premium
+          const listEl = document.getElementById('leaderboardList');
           if(listEl) {
             listEl.innerHTML = rankingArray.map((user, index) => {
                let rClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : '';
-               let isOnline = (user.email === currentUserEmail);
-               let dotClass = isOnline ? 'status-dot' : 'status-dot offline';
-               let avatarHtml = `<div class="rank-avatar" style="color:var(--muted);font-weight:bold;">${user.email.substring(0,2).toUpperCase()}<div class="${dotClass}"></div></div>`;
-
+               let isMe = (user.email === currentUserEmail);
                return `
                 <div class="rank-item ${rClass}" style="${index > 2 ? 'border-left:4px solid var(--border)' : ''}">
-                  <div class="rank-pos">${index + 1}º</div>${avatarHtml}
-                  <div class="rank-info"><strong>${user.email}</strong><span>Membro da Equipe</span></div>
+                  <div class="rank-pos">${index + 1}º</div>
+                  <div class="rank-avatar" style="color:var(--muted);font-weight:bold;">
+                    ${user.nome.substring(0,2).toUpperCase()}
+                    <div class="status-dot ${isMe ? '' : 'offline'}"></div>
+                  </div>
+                  <div class="rank-info"><strong>${user.nome} ${isMe ? '(Você)' : ''}</strong><span>Membro da Equipe</span></div>
                   <div class="rank-stats"><div class="rank-stat-col"><span>Salvos</span><strong>${user.salvos}</strong></div></div>
                   <div class="rank-score">${user.xp} XP</div>
                 </div>`;
             }).join('');
           }
-        } catch(e) {
-          console.error("Erro ao carregar o ranking:", e);
-        }
-      }
-
-      function updateTeamMemberScore(name, extractedAdd, exportedAdd) {
-         // Mantida apenas para evitar erro quando você salva um lead localmente antes de finalizar a migração
+        } catch(e) { console.error(e); }
       }
 
       // ============================================
-      // WHITE LABEL AUTOMÁTICO
+      // WHITE LABEL, PERFIL, ETC
       // ============================================
       function loadWhiteLabel() {
         try {
           const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.wl));
           if(saved) whiteLabel = { ...whiteLabel, ...saved };
-          
           document.getElementById('wlColor').value = whiteLabel.color;
           document.getElementById('wlColorText').value = whiteLabel.color;
           document.getElementById('wlName').value = whiteLabel.name;
           document.getElementById('wlLogo').value = whiteLabel.logo;
-          
           applyWhiteLabel();
         } catch(e) {}
       }
@@ -1062,9 +974,6 @@
         toast('Aparência atualizada!');
       }
 
-      // ============================================
-      // SEGURANÇA E VISÃO (ADMIN VS SDR)
-      // ============================================
       function loadUserProfile(userInfo) {
         try { 
           const savedP = JSON.parse(localStorage.getItem(STORAGE_KEYS.profile));
@@ -1073,30 +982,10 @@
 
         if(!userProfile.name) userProfile.name = userInfo.fullName;
         currentUserFullName = userProfile.name;
-
-        // VALIDAÇÃO DE SEGURANÇA OCULTA
-        isUserAdmin = ADMIN_EMAILS.includes(currentUserEmail.toLowerCase());
-        
-        // CARGO VISUAL DESBLOQUEADO
         if(!userProfile.role) userProfile.role = isUserAdmin ? 'Admin / Gerente' : 'SDR';
 
         document.getElementById('navDashboardText').textContent = isUserAdmin ? "Dashboard Geral" : "Meu Dashboard";
         document.getElementById('dashAdminStatus').style.display = isUserAdmin ? 'block' : 'none';
-
-        const addTeamMemberBtn = document.getElementById('addTeamMemberBtn');
-        const leaderboardList = document.getElementById('leaderboardList');
-        
-        if (isUserAdmin) { 
-          addTeamMemberBtn.classList.remove('hidden');
-          if(leaderboardList) leaderboardList.classList.add('show-admin-actions');
-        } else { 
-          addTeamMemberBtn.classList.add('hidden');
-          if(leaderboardList) leaderboardList.classList.remove('show-admin-actions');
-        }
-
-        const isDashVis = document.getElementById('dashboardSection').classList.contains('hidden') === false;
-        if(isDashVis) { showSection('dashboard'); }
-        else { showSection('extract'); } 
 
         document.getElementById('topUserName').textContent = userProfile.name;
         document.getElementById('topUserRole').textContent = userProfile.role;
@@ -1118,147 +1007,6 @@
         toast('Perfil salvo com sucesso!');
       }
 
-      // ============================================
-      // IA ICEBREAKER
-      // ============================================
-      async function openIcebreaker(id) {
-        const lead = leads.find(l => l.place_id === id) || savedLeads.find(l => l.place_id === id);
-        if(!lead) return;
-        
-        const modal = document.getElementById('icebreakerModal');
-        const textArea = document.getElementById('icebreakerText');
-        const apiKey = extraPrefs.openaiKey;
-        const contexto = extraPrefs.aiContext || 'serviços de alto valor para ajudar empresas a crescerem';
-
-        modal.style.display = 'flex';
-        document.getElementById('icebreakerLeadName').textContent = lead.name;
-
-        if(!apiKey || apiKey.trim() === '') {
-          textArea.value = `⚠️ CHAVE OPENAI NÃO CONFIGURADA NO PAINEL MASTER.\n\nDemonstração:\n\nOPÇÃO A (Direta e Reta):\nOlá, responsável pela ${lead.name}! Vendo ${contexto}. Faz sentido falarmos?\n\nOPÇÃO B (Gerando Curiosidade):\nOi! Tenho uma estratégia de ${contexto} que funcionaria muito bem aí em ${lead.address}. Posso mandar?\n\nOPÇÃO C (Focada em dor/problema):\nTudo bem? Ajudo empresas como a ${lead.name} a evitar perda de dinheiro com ${contexto}. Faz sentido uma conversa rápida?`;
-          return;
-        }
-
-        textArea.value = "Gerando 3 opções de abordagem com Inteligência Artificial...\nIsso leva alguns segundos.";
-        
-        try {
-          const prompt = `Aja como um especialista em vendas B2B (SDR). Meu produto/serviço é: "${contexto}".\n\nEscreva 3 opções curtas e persuasivas de primeira mensagem de WhatsApp (cold message) para abordar a empresa "${lead.name}".\n\n- Termine sempre com uma pergunta para gerar resposta.\n\nFormate a resposta exatamente assim:\n\nOPÇÃO A (Direta e Reta):\n[texto]\n\nOPÇÃO B (Gerando Curiosidade):\n[texto]\n\nOPÇÃO C (Focada em dor/problema):\n[texto]`;
-          
-          const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-            body: JSON.stringify({
-              model: 'gpt-3.5-turbo',
-              messages: [{role: 'user', content: prompt}],
-              temperature: 0.7
-            })
-          });
-          
-          const data = await response.json();
-          if(data.choices && data.choices[0]) {
-            textArea.value = data.choices[0].message.content.trim();
-            addLog('usou_ia', `Gerou copy de IA para a empresa: ${lead.name}`); 
-          } else {
-            throw new Error('Erro na resposta');
-          }
-        } catch(e) {
-          textArea.value = "Erro ao gerar com IA. Verifique se sua Chave da OpenAI está correta ou possui créditos.";
-        }
-      }
-
-      function closeIcebreakerModal() { document.getElementById('icebreakerModal').style.display = 'none'; }
-      function copyIcebreaker() {
-        const text = document.getElementById('icebreakerText').value;
-        navigator.clipboard.writeText(text);
-        toast('Todas as opções copiadas!');
-        closeIcebreakerModal();
-      }
-
-      // ============================================
-      // CONFIGURAÇÕES GERAIS E INTEGRAÇÕES
-      // ============================================
-      function switchSettingsTab(tabId, btnElement) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-        btnElement.classList.add('active');
-        document.getElementById(tabId).classList.add('active');
-      }
-
-      function loadQualityFilters() {
-        try { 
-          const savedF = JSON.parse(localStorage.getItem(STORAGE_KEYS.filters));
-          if(savedF) {
-             qualityFilters = { ...qualityFilters, ...savedF };
-             document.getElementById('filterReqPhone').checked = qualityFilters.reqPhone;
-             document.getElementById('filterReqSite').checked = qualityFilters.reqSite;
-          }
-          const savedP = JSON.parse(localStorage.getItem(STORAGE_KEYS.prefs));
-          if(savedP) {
-             extraPrefs = { ...extraPrefs, ...savedP };
-             document.getElementById('webhookUrlInput').value = extraPrefs.webhook || '';
-             document.getElementById('blacklistInput').value = extraPrefs.blacklist || '';
-             document.getElementById('dddInput').value = extraPrefs.ddd || '';
-             document.getElementById('openaiApiKeyInput').value = extraPrefs.openaiKey || '';
-             document.getElementById('aiContextInput').value = extraPrefs.aiContext || '';
-          }
-        } catch(e) {}
-      }
-
-      function toggleQualityFilter() {
-        qualityFilters.reqPhone = document.getElementById('filterReqPhone').checked;
-        qualityFilters.reqSite = document.getElementById('filterReqSite').checked;
-        localStorage.setItem(STORAGE_KEYS.filters, JSON.stringify(qualityFilters));
-        if(leads.length > 0) renderLeads(); 
-      }
-
-      function saveAISettings() {
-        extraPrefs.openaiKey = document.getElementById('openaiApiKeyInput').value.trim(); 
-        extraPrefs.aiContext = document.getElementById('aiContextInput').value.trim();
-        localStorage.setItem(STORAGE_KEYS.prefs, JSON.stringify(extraPrefs));
-        toast('Configurações da IA salvas com sucesso!');
-      }
-
-      async function saveSettings() {
-        if (!isUserAdmin) { toast("Você não tem permissão para editar APIs."); return; }
-
-        extraPrefs.webhook = document.getElementById('webhookUrlInput').value.trim();
-        extraPrefs.blacklist = document.getElementById('blacklistInput').value.trim();
-        extraPrefs.ddd = document.getElementById('dddInput').value.trim();
-        saveAISettings(); // Salva IA junto
-        
-        const gKey = document.getElementById('googleApiKeyInput').value.trim();
-        const pToken = document.getElementById('pipedriveTokenInput').value.trim();
-        const mPages = parseInt(document.getElementById('maxPagesInput').value.trim()) || 3;
-
-        try {
-          configSupabase = { googleApiKey: gKey, pipedriveToken: pToken, maxPages: mPages };
-          
-          if (gKey) loadGoogleMapsScript(gKey);
-          toast('Configurações salvas localmente e aplicadas!');
-        } catch (err) { toast('Erro ao salvar integrações.'); } 
-      }
-
-      async function carregarConfiguracoesDoSupabase() {
-        try {
-          configSupabase.googleApiKey = 'AIzaSyBRd4KUJR3Rk4k98OOJVDtSfExn4ENVq0U';
-          configSupabase.pipedriveToken = ''; 
-          configSupabase.maxPages = 3; 
-          
-          if (configSupabase.googleApiKey) { loadGoogleMapsScript(configSupabase.googleApiKey); }
-          
-          document.getElementById('googleApiKeyInput').value = configSupabase.googleApiKey;
-          document.getElementById('pipedriveTokenInput').value = configSupabase.pipedriveToken;
-          document.getElementById('maxPagesInput').value = configSupabase.maxPages;
-          
-          const statPipe = document.getElementById('dashPipeStatus');
-          const statPage = document.getElementById('dashPagesLimit');
-          if(statPipe) statPipe.textContent = configSupabase.pipedriveToken ? "Configurado" : "Pendente";
-          if(statPage) statPage.textContent = configSupabase.maxPages + " páginas";
-        } catch (err) { }
-      }
-
-      // ============================================
-      // NAVEGAÇÃO E UX
-      // ============================================
       function updateAvatarUI(base64, name) {
         const topInitials = document.getElementById('topUserInitials');
         let initials = name.substring(0, 2).toUpperCase();
@@ -1276,7 +1024,6 @@
       }
 
       function showSection(section) {
-        
         ['dashboardSection', 'extractSection', 'savedSection', 'crmSection', 'settingsSection', 'accountSection', 'rankingSection'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.classList.add('hidden');
@@ -1292,20 +1039,17 @@
         if(section === 'dashboard') { 
             t.textContent = isUserAdmin ? "Dashboard Geral" : "Meu Dashboard"; 
             s.textContent = isUserAdmin ? "Visão geral da operação da equipe." : "Acompanhe suas métricas individuais."; 
-            
             document.getElementById('pdcaTitle').textContent = isUserAdmin ? "Log de Atividades (PDCA)" : "Meu Histórico de Ações";
             document.getElementById('pdcaSubtitle').textContent = isUserAdmin ? "Acompanhe em tempo real as ações da sua equipe no sistema." : "Seu registro pessoal de buscas e leads salvos.";
-            
             updateDashboardStats(); 
             renderLogs();
         }
         else if(section === 'extract') { t.textContent = "Prospecção Ativa"; s.textContent = "Encontre novos clientes."; }
         else if(section === 'ranking') { t.textContent = "Ranking"; s.textContent = "Gamificação da equipe."; }
-        else if(section === 'saved') { t.textContent = "Pastas"; s.textContent = "Leads salvos."; updateFolderFilterDropdown(); renderSavedLeads(); }
+        else if(section === 'saved') { t.textContent = "Pastas"; s.textContent = "Leads salvos."; renderSavedLeads(); }
         else if(section === 'crm') { t.textContent = "CRM Pipeline"; s.textContent = "Arraste e gerencie seus leads salvos no Kanban."; renderKanban(); }
         else if(section === 'settings') { 
             t.textContent = "Painel Master"; s.textContent = isUserAdmin ? "Configurações Globais do SaaS." : "Suas configurações pessoais.";
-            
             const apiInputs = ['googleApiKeyInput', 'pipedriveTokenInput', 'maxPagesInput', 'webhookUrlInput'];
             apiInputs.forEach(id => { document.getElementById(id).disabled = !isUserAdmin; });
             document.getElementById('btnSaveIntegrations').style.display = isUserAdmin ? 'inline-flex' : 'none';
@@ -1319,9 +1063,87 @@
         clearTimeout(window.__tTimer); window.__tTimer = setTimeout(() => { box.style.display = 'none'; }, 3800); 
       }
 
-      function loadLocalData() {
-        try { savedLeads = JSON.parse(localStorage.getItem(STORAGE_KEYS.saved) || '[]'); } catch { savedLeads = []; }
-        try { exportedLeads = JSON.parse(localStorage.getItem(STORAGE_KEYS.exported) || '[]'); } catch { exportedLeads = []; }
+      // ============================================
+      // IA ICEBREAKER
+      // ============================================
+      async function openIcebreaker(id) {
+        const lead = leads.find(l => l.place_id === id) || savedLeads.find(l => l.place_id === id);
+        if(!lead) return;
+        
+        const modal = document.getElementById('icebreakerModal');
+        const textArea = document.getElementById('icebreakerText');
+        const apiKey = extraPrefs.openaiKey;
+        const contexto = extraPrefs.aiContext || 'serviços de alto valor para ajudar empresas a crescerem';
+
+        modal.style.display = 'flex';
+        document.getElementById('icebreakerLeadName').textContent = lead.name;
+
+        if(!apiKey || apiKey.trim() === '') {
+          textArea.value = `⚠️ CHAVE OPENAI NÃO CONFIGURADA.\n\nOPÇÃO A (Direta e Reta):\nOlá, responsável pela ${lead.name}! Vendo ${contexto}. Faz sentido falarmos?\n\nOPÇÃO B (Gerando Curiosidade):\nOi! Tenho uma estratégia de ${contexto} que funcionaria muito bem aí em ${lead.address}. Posso mandar?`;
+          return;
+        }
+
+        textArea.value = "Gerando opções com IA...";
+        try {
+          const prompt = `Aja como SDR B2B. Meu produto: "${contexto}".\n\nEscreva 3 opções de primeira mensagem WhatsApp para a empresa "${lead.name}".\n\nFormate como:\nOPÇÃO A (Direta e Reta):\n[texto]\nOPÇÃO B (Curiosidade):\n[texto]\nOPÇÃO C (Dor):\n[texto]`;
+          const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+            body: JSON.stringify({ model: 'gpt-3.5-turbo', messages: [{role: 'user', content: prompt}], temperature: 0.7 })
+          });
+          const data = await response.json();
+          if(data.choices && data.choices[0]) { textArea.value = data.choices[0].message.content.trim(); addLog('usou_ia', `Gerou copy IA para: ${lead.name}`); } 
+        } catch(e) { textArea.value = "Erro na IA. Verifique sua chave."; }
+      }
+
+      function closeIcebreakerModal() { document.getElementById('icebreakerModal').style.display = 'none'; }
+      function copyIcebreaker() { navigator.clipboard.writeText(document.getElementById('icebreakerText').value); toast('Copiado!'); closeIcebreakerModal(); }
+
+      // ============================================
+      // CONFIGURAÇÕES GERAIS E INTEGRAÇÕES
+      // ============================================
+      function switchSettingsTab(tabId, btnElement) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        btnElement.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+      }
+
+      function loadQualityFilters() {
+        try { 
+          const savedF = JSON.parse(localStorage.getItem(STORAGE_KEYS.filters));
+          if(savedF) { qualityFilters = { ...qualityFilters, ...savedF }; document.getElementById('filterReqPhone').checked = qualityFilters.reqPhone; document.getElementById('filterReqSite').checked = qualityFilters.reqSite; }
+          const savedP = JSON.parse(localStorage.getItem(STORAGE_KEYS.prefs));
+          if(savedP) { extraPrefs = { ...extraPrefs, ...savedP }; document.getElementById('webhookUrlInput').value = extraPrefs.webhook || ''; document.getElementById('blacklistInput').value = extraPrefs.blacklist || ''; document.getElementById('dddInput').value = extraPrefs.ddd || ''; document.getElementById('openaiApiKeyInput').value = extraPrefs.openaiKey || ''; document.getElementById('aiContextInput').value = extraPrefs.aiContext || ''; }
+        } catch(e) {}
+      }
+
+      function toggleQualityFilter() {
+        qualityFilters.reqPhone = document.getElementById('filterReqPhone').checked; qualityFilters.reqSite = document.getElementById('filterReqSite').checked; localStorage.setItem(STORAGE_KEYS.filters, JSON.stringify(qualityFilters));
+        if(leads.length > 0) renderLeads(); 
+      }
+
+      function saveAISettings() {
+        extraPrefs.openaiKey = document.getElementById('openaiApiKeyInput').value.trim(); extraPrefs.aiContext = document.getElementById('aiContextInput').value.trim(); localStorage.setItem(STORAGE_KEYS.prefs, JSON.stringify(extraPrefs)); toast('Configurações da IA salvas!');
+      }
+
+      async function saveSettings() {
+        if (!isUserAdmin) { toast("Sem permissão."); return; }
+        extraPrefs.webhook = document.getElementById('webhookUrlInput').value.trim(); extraPrefs.blacklist = document.getElementById('blacklistInput').value.trim(); extraPrefs.ddd = document.getElementById('dddInput').value.trim();
+        saveAISettings(); 
+        const gKey = document.getElementById('googleApiKeyInput').value.trim(), pToken = document.getElementById('pipedriveTokenInput').value.trim(), mPages = parseInt(document.getElementById('maxPagesInput').value.trim()) || 3;
+        configSupabase = { googleApiKey: gKey, pipedriveToken: pToken, maxPages: mPages };
+        if (gKey) loadGoogleMapsScript(gKey);
+        toast('Integrações salvas!');
+      }
+
+      async function carregarConfiguracoesDoSupabase() {
+        try {
+          configSupabase.googleApiKey = 'AIzaSyBRd4KUJR3Rk4k98OOJVDtSfExn4ENVq0U'; configSupabase.pipedriveToken = ''; configSupabase.maxPages = 3; 
+          if (configSupabase.googleApiKey) { loadGoogleMapsScript(configSupabase.googleApiKey); }
+          document.getElementById('googleApiKeyInput').value = configSupabase.googleApiKey; document.getElementById('pipedriveTokenInput').value = configSupabase.pipedriveToken; document.getElementById('maxPagesInput').value = configSupabase.maxPages;
+          const statPipe = document.getElementById('dashPipeStatus'), statPage = document.getElementById('dashPagesLimit');
+          if(statPipe) statPipe.textContent = configSupabase.pipedriveToken ? "Configurado" : "Pendente"; if(statPage) statPage.textContent = configSupabase.maxPages + " páginas";
+        } catch (err) { }
       }
 
       // ============================================
@@ -1345,75 +1167,39 @@
         if (isSearching) return;
         const name = document.getElementById('nameInput').value, niche = document.getElementById('nicheInput').value, city = document.getElementById('cityInput').value;
         if (!name && (!niche || !city)) { toast('Digite Nome ou Nicho+Cidade.'); return; }
-        if (!placesService) { toast('Google Maps não conectado. Fale com seu gerente.'); return; }
+        if (!placesService) { toast('Google Maps não conectado.'); return; }
         
-        leads = []; 
-        ignoredLeadsCount = 0; 
-        currentApiPage = 1;
-        isSearching = true; 
+        leads = []; ignoredLeadsCount = 0; currentApiPage = 1; isSearching = true; 
         document.getElementById('searchBtn').textContent = 'Buscando...';
-        
-        addLog('busca', `Iniciou busca por: ${name} ${niche} ${city}`); 
-
+        addLog('busca', `Busca iniciada por: ${name} ${niche} ${city}`); 
         placesService.textSearch({ query: `${name} ${niche} ${city}`, type: 'establishment' }, handlePlacesResults);
       }
 
       function handlePlacesResults(results, status, pagination) {
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-          
-          let blacklist = [];
-          if(extraPrefs.blacklist) {
-             blacklist = extraPrefs.blacklist.split(',').map(s => s.trim().toLowerCase()).filter(s => s);
-          }
-
+          let blacklist = extraPrefs.blacklist ? extraPrefs.blacklist.split(',').map(s => s.trim().toLowerCase()).filter(s => s) : [];
           results.forEach(place => {
             const nomeMinusculo = (place.name || '').toLowerCase();
-            const temPalavraRuim = blacklist.some(palavra => nomeMinusculo.includes(palavra));
-
-            if (!temPalavraRuim && !leads.some(l => l.place_id === place.place_id)) { 
-              const photoUrl = place.photos && place.photos.length ? place.photos[0].getUrl({ maxWidth: 400 }) : '';
-              leads.push({ place_id: place.place_id, name: place.name, address: place.formatted_address, phone: '', website: '', rating: place.rating, photo: photoUrl });
+            if (!blacklist.some(palavra => nomeMinusculo.includes(palavra)) && !leads.some(l => l.place_id === place.place_id)) { 
+              leads.push({ place_id: place.place_id, name: place.name, address: place.formatted_address, phone: '', website: '', rating: place.rating, photo: place.photos && place.photos.length ? place.photos[0].getUrl({ maxWidth: 400 }) : '' });
               detailsQueue.push(place.place_id);
-            } else if (temPalavraRuim) {
-              ignoredLeadsCount++; 
-            }
+            } else { ignoredLeadsCount++; }
           });
         }
         renderLeads();
-        
-        if (pagination && pagination.hasNextPage && currentApiPage < configSupabase.maxPages) {
-          currentApiPage++; setTimeout(() => { pagination.nextPage(); }, 2000);
-        } else {
-          isSearching = false; 
-          processQueue(); 
-          document.getElementById('searchBtn').textContent = 'Extrair Leads'; 
-          
-          let msgToast = 'Busca concluída!';
-          if (ignoredLeadsCount > 0) msgToast += ` (${ignoredLeadsCount} ocultados pelo Filtro)`;
-          toast(msgToast);
-        }
+        if (pagination && pagination.hasNextPage && currentApiPage < configSupabase.maxPages) { currentApiPage++; setTimeout(() => { pagination.nextPage(); }, 2000); } 
+        else { isSearching = false; processQueue(); document.getElementById('searchBtn').textContent = 'Extrair Leads'; toast(`Busca concluída! ${ignoredLeadsCount > 0 ? '('+ignoredLeadsCount+' ocultados)' : ''}`); }
       }
 
       function processQueue() {
         if (isProcessingQueue || detailsQueue.length === 0 || !placesService) return;
         isProcessingQueue = true; const placeId = detailsQueue.shift();
-        
         placesService.getDetails({ placeId: placeId, fields: ['formatted_phone_number', 'website', 'url'] }, (place, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK && place) {
               const i = leads.findIndex(l => l.place_id === placeId);
               if (i !== -1) { 
-                 leads[i].phone = place.formatted_phone_number || ''; 
-                 leads[i].website = place.website || ''; 
-                 leads[i].url = place.url || ''; 
-                 
-                 let removerPorDDD = false;
-                 if(extraPrefs.ddd && leads[i].phone) {
-                    const dddLead = leads[i].phone.replace(/\D/g, '').substring(0, 2);
-                    const dddsPermitidos = extraPrefs.ddd.split(',').map(d => d.trim());
-                    if(!dddsPermitidos.includes(dddLead)) removerPorDDD = true;
-                 }
-                 
-                 if(removerPorDDD) { leads.splice(i, 1); }
+                 leads[i].phone = place.formatted_phone_number || ''; leads[i].website = place.website || ''; leads[i].url = place.url || ''; 
+                 if(extraPrefs.ddd && leads[i].phone && !extraPrefs.ddd.split(',').map(d => d.trim()).includes(leads[i].phone.replace(/\D/g, '').substring(0, 2))) leads.splice(i, 1);
                  renderLeads(); 
               }
             }
@@ -1422,30 +1208,18 @@
       }
 
       function toggleViewFilter(type) {
-        if (activeViewFilter === type) activeViewFilter = 'all'; else activeViewFilter = type;
-        document.getElementById('btnFilterPhone').classList.toggle('btn-active', activeViewFilter === 'phone');
-        document.getElementById('btnFilterSite').classList.toggle('btn-active', activeViewFilter === 'site');
-        renderLeads();
+        activeViewFilter = activeViewFilter === type ? 'all' : type;
+        document.getElementById('btnFilterPhone').classList.toggle('btn-active', activeViewFilter === 'phone'); document.getElementById('btnFilterSite').classList.toggle('btn-active', activeViewFilter === 'site'); renderLeads();
       }
 
       function renderLeads() {
-        const grid = document.getElementById('leadsGrid'); grid.innerHTML = '';
-        let list = leads;
-
-        // FILTRO VISUAL DE NOTA MÍNIMA
-        const minRatingEl = document.getElementById('minRatingFilter');
-        const minRating = minRatingEl ? parseFloat(minRatingEl.value) : 0;
+        const grid = document.getElementById('leadsGrid'); grid.innerHTML = ''; let list = leads;
+        const minRating = document.getElementById('minRatingFilter') ? parseFloat(document.getElementById('minRatingFilter').value) : 0;
         if(minRating > 0) { list = list.filter(l => (l.rating || 0) >= minRating); }
-
-        if(qualityFilters.reqPhone || activeViewFilter === 'phone') list = list.filter(l => l.phone);
-        if(qualityFilters.reqSite || activeViewFilter === 'site') list = list.filter(l => l.website);
+        if(qualityFilters.reqPhone || activeViewFilter === 'phone') list = list.filter(l => l.phone); if(qualityFilters.reqSite || activeViewFilter === 'site') list = list.filter(l => l.website);
         
-        // ORDENAÇÃO
         const sortVal = document.getElementById('sortResultsSelect').value;
-        if(sortVal === 'az') list.sort((a,b) => a.name.localeCompare(b.name));
-        else if(sortVal === 'za') list.sort((a,b) => b.name.localeCompare(a.name));
-        else if(sortVal === 'rating_desc') list.sort((a,b) => (b.rating||0) - (a.rating||0));
-        else if(sortVal === 'rating_asc') list.sort((a,b) => (a.rating||0) - (b.rating||0));
+        if(sortVal === 'az') list.sort((a,b) => a.name.localeCompare(b.name)); else if(sortVal === 'za') list.sort((a,b) => b.name.localeCompare(a.name)); else if(sortVal === 'rating_desc') list.sort((a,b) => (b.rating||0) - (a.rating||0)); else if(sortVal === 'rating_asc') list.sort((a,b) => (a.rating||0) - (b.rating||0));
 
         list.forEach(lead => grid.appendChild(createLeadCard(lead, 'current')));
       }
@@ -1453,49 +1227,26 @@
       function createLeadCard(lead, source) {
         const card = document.createElement('div'); card.className = 'lead-card';
         const whatsUrl = lead.phone ? `https://wa.me/55${lead.phone.replace(/\D/g,'')}?text=Ol%C3%A1,%20encontrei%20a%20empresa%20${encodeURIComponent(lead.name)}%20no%20Google.%20Podemos%20falar?` : '';
-        const safeName = lead.name || '';
-        const instaQuery = encodeURIComponent(`site:instagram.com ${safeName}`);
-        const instaUrl = `https://www.google.com/search?q=${instaQuery}`;
-        const emailQuery = encodeURIComponent(`"${safeName}" email OR contato`);
-        const emailUrl = `https://www.google.com/search?q=${emailQuery}`;
+        const instaUrl = `https://www.google.com/search?q=${encodeURIComponent(`site:instagram.com ${lead.name}`)}`;
+        const emailUrl = `https://www.google.com/search?q=${encodeURIComponent(`"${lead.name}" email OR contato`)}`;
 
-        // TAG DO DONO E NOTA
-        let ownerTag = '';
-        if (source === 'saved' && isUserAdmin && lead.owner) {
-           ownerTag = `<span class="badge badge-owner">👤 ${lead.owner}</span>`;
-        }
+        let ownerTag = source === 'saved' && lead.owner ? `<span class="badge badge-owner">👤 ${lead.owner}</span>` : '';
         let ratingBadge = lead.rating ? `<span class="badge badge-rating">⭐ ${lead.rating}</span>` : '';
-
-        // BOTÕES DE OURO (WHATSAPP E CNPJ)
-        let botoesOuro = `
-          ${whatsUrl ? `<a class="small-btn btn-wpp" href="${whatsUrl}" target="_blank">WhatsApp</a>` : ''}
-          <button class="small-btn btn-cnpj" onclick="enriquecerCNPJ('${lead.place_id}')">Buscar CNPJ</button>
-        `;
+        let botoesOuro = `${whatsUrl ? `<a class="small-btn btn-wpp" href="${whatsUrl}" target="_blank">WhatsApp</a>` : ''}<button class="small-btn btn-cnpj" onclick="enriquecerCNPJ('${lead.place_id}')">Buscar CNPJ</button>`;
         let divCnpj = lead.cnpj ? `<div class="cnpj-result"><strong>CNPJ:</strong> ${lead.cnpj}<br><strong>CNAE:</strong> ${lead.cnae}</div>` : `<div id="box-cnpj-${lead.place_id}"></div>`;
 
         card.innerHTML = `
           ${source === 'current' ? `<input type="checkbox" class="lead-check" onchange="toggleLeadSelection('${lead.place_id}', this.checked)">` : ''}
           ${lead.photo ? `<img class="lead-photo" src="${lead.photo}">` : `<div class="lead-photo-placeholder">Sem imagem</div>`}
-          
-          <div class="lead-title-row">
-             <h4 class="lead-title">${lead.name}</h4>
-             <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;">
-               ${ratingBadge}
-               ${ownerTag}
-             </div>
-          </div>
-
+          <div class="lead-title-row"><h4 class="lead-title">${lead.name}</h4><div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;">${ratingBadge}${ownerTag}</div></div>
           <div class="lead-info"><span>${lead.address || 'Sem endereço'}</span></div>
           <div class="lead-info"><span>${lead.phone || 'Sem telefone'}</span></div>
-          
           ${divCnpj}
-          
           <div class="lead-buttons" style="margin-top:10px;">
             ${botoesOuro}
             ${lead.website ? `<a class="small-btn" href="${lead.website}" target="_blank">Site</a>` : ''}
             <a class="small-btn" href="${instaUrl}" target="_blank">Instagram</a>
             <a class="small-btn" href="${emailUrl}" target="_blank">E-mail</a>
-            
             <button class="small-btn" style="border-color: var(--primary); color: var(--primary);" onclick="openIcebreaker('${lead.place_id}')">🤖 Copys IA</button>
             ${source === 'current' ? `<button class="small-btn" onclick="saveLeadById('${lead.place_id}')">Salvar</button>` : ''}
           </div>
@@ -1509,164 +1260,152 @@
       function openFolderModal() { document.getElementById('folderModal').style.display = 'flex'; }
       function closeFolderModal() { document.getElementById('folderModal').style.display = 'none'; pendingLeadsToSave = []; }
       
-      function confirmFolderSave() {
-        const folder = document.getElementById('newFolderInput').value || 'Geral';
-        let count = 0;
-        
-        pendingLeadsToSave.forEach(l => { 
-            savedLeads.push({...l, folder, owner: userProfile.name, crm_status: 'novo' }); 
-            leads = leads.filter(x => x.place_id !== l.place_id); 
-            count++;
-        });
-        
-        localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads)); 
-        
-        if (count > 0) {
-           addLog('salvar', `Salvou ${count} lead(s) na pasta "${folder}".`);
-           updateTeamMemberScore(userProfile.name, count, 0); 
-        }
-
-        renderLeads(); 
-        closeFolderModal(); 
-        updateDashboardStats(); 
-        toast(`${count} Leads Salvos!`);
-      }
-
       function saveSelectedLeads() {
         pendingLeadsToSave = leads.filter(l => selectedLeadIds.has(l.place_id) && !savedLeads.some(s => s.place_id === l.place_id));
         if (pendingLeadsToSave.length) openFolderModal(); else toast('Nenhum selecionado.');
       }
-      function saveLeadById(id) {
-        const lead = leads.find(l => l.place_id === id); if(lead) { pendingLeadsToSave = [lead]; openFolderModal(); }
+      function saveLeadById(id) { const lead = leads.find(l => l.place_id === id); if(lead) { pendingLeadsToSave = [lead]; openFolderModal(); } }
+
+      // ==========================================
+      // GRAVANDO LEADS REAIS NO BANCO
+      // ==========================================
+      async function confirmFolderSave() {
+        const folder = document.getElementById('newFolderInput').value || 'Geral';
+        let count = 0;
+        
+        document.querySelector('#folderModal .btn-main').textContent = 'Salvando no Banco...';
+
+        try {
+          for (const l of pendingLeadsToSave) {
+            const novoLead = {
+              place_id: l.place_id,
+              name: l.name,
+              phone: l.phone || '',
+              website: l.website || '',
+              address: l.address || '',
+              photo: l.photo || '',
+              rating: l.rating || 0,
+              folder: folder,
+              owner: userProfile.name,
+              usuario_email: currentUserEmail,
+              crm_status: 'novo'
+            };
+
+            // INSERE DIRETAMENTE NO SUPABASE
+            const { data, error } = await supa.from('leads_salvos').insert([novoLead]).select();
+            
+            if(!error) {
+              savedLeads.push(novoLead); 
+              leads = leads.filter(x => x.place_id !== l.place_id); 
+              count++;
+            } else {
+              console.error("Erro ao salvar:", error);
+            }
+          }
+
+          if (count > 0) {
+             addLog('salvar', `Salvou ${count} lead(s) na pasta "${folder}".`);
+             carregarRankingReal(); // Atualiza na hora o XP
+          }
+
+          renderLeads(); 
+          renderSavedLeads();
+          updateDashboardStats(); 
+          closeFolderModal(); 
+          toast(`${count} Leads Salvos no Banco!`);
+        } catch(e) {
+          toast("Erro na conexão com o banco");
+        } finally {
+          document.querySelector('#folderModal .btn-main').textContent = 'Confirmar e Salvar';
+        }
       }
 
-      function updateDashboardStats() {
-        document.getElementById('dashTotalSaved').textContent = savedLeads.length;
-        const phonesCount = savedLeads.filter(l => l.phone).length;
-        document.getElementById('dashPhoneCount').textContent = phonesCount;
-        document.getElementById('dashExportedCount').textContent = exportedLeads.length;
-        const convRate = savedLeads.length ? Math.round((exportedLeads.length / savedLeads.length) * 100) : 0;
-        document.getElementById('dashConvRate').textContent = convRate + '%';
-
-        const maxTotal = savedLeads.length || 1; 
-        document.getElementById('valTotal').textContent = savedLeads.length;
-        document.getElementById('barTotal').style.width = '100%';
-
-        const contacts = savedLeads.filter(l => l.phone || l.website).length;
-        document.getElementById('valContact').textContent = contacts;
-        document.getElementById('barContact').style.width = `${(contacts/maxTotal)*100}%`;
-
-        document.getElementById('valExported').textContent = exportedLeads.length;
-        document.getElementById('barExported').style.width = `${(exportedLeads.length/maxTotal)*100}%`;
-      }
-
-      function updateFolderFilterDropdown() {}
-      
       function renderSavedLeads() {
         const grid = document.getElementById('savedGrid'); grid.innerHTML = '';
-        
-        let listToShow = savedLeads;
-        // Se NÃO for admin, só mostra os leads que ele salvou
-        if(!isUserAdmin) {
-            listToShow = savedLeads.filter(l => l.owner === userProfile.name);
-        }
-        
+        let listToShow = isUserAdmin ? savedLeads : savedLeads.filter(l => l.usuario_email === currentUserEmail);
         listToShow.forEach(lead => grid.appendChild(createLeadCard(lead, 'saved')));
       }
 
-      function clearSavedLeads() { savedLeads = []; localStorage.setItem(STORAGE_KEYS.saved, '[]'); renderSavedLeads(); updateDashboardStats(); toast('Limpo!'); }
+      // ==========================================
+      // APAGANDO OS LEADS REAIS NO BANCO
+      // ==========================================
+      async function clearSavedLeads() { 
+        if(!confirm("Certeza que deseja apagar permanentemente os leads?")) return;
+        try {
+          if(isUserAdmin) { await supa.from('leads_salvos').delete().neq('place_id', '0'); } 
+          else { await supa.from('leads_salvos').delete().eq('usuario_email', currentUserEmail); }
+          
+          savedLeads = isUserAdmin ? [] : savedLeads.filter(l => l.usuario_email !== currentUserEmail);
+          renderSavedLeads(); updateDashboardStats(); carregarRankingReal(); toast('Apagados do banco!');
+        } catch(e) { console.error(e); }
+      }
+
+      function updateDashboardStats() {
+        const list = isUserAdmin ? savedLeads : savedLeads.filter(l => l.usuario_email === currentUserEmail);
+        document.getElementById('dashTotalSaved').textContent = list.length;
+        document.getElementById('dashPhoneCount').textContent = list.filter(l => l.phone).length;
+        document.getElementById('dashExportedCount').textContent = 0;
+        document.getElementById('dashConvRate').textContent = '0%';
+        document.getElementById('valTotal').textContent = list.length;
+        document.getElementById('valContact').textContent = list.filter(l => l.phone || l.website).length;
+        document.getElementById('barContact').style.width = list.length ? `${(list.filter(l => l.phone || l.website).length/list.length)*100}%` : '0%';
+      }
+
       function clearResults() { leads = []; renderLeads(); }
       function exportCurrentToCSV() { toast('Baixando CSV...'); }
+      function exportSavedToCSV() { toast('Baixando CSV...'); }
       function scrollToTop() { window.scrollTo({top:0, behavior:'smooth'}); }
 
       // ============================================
-      // ROBÔ DE ENRIQUECIMENTO DE CNPJ E KANBAN
+      // ROBÔ DE ENRIQUECIMENTO E CRM (TAMBÉM NO BANCO)
       // ============================================
       function enriquecerCNPJ(id) {
-        const box = document.getElementById(`box-cnpj-${id}`);
-        if(!box) return;
-        
-        box.innerHTML = `<div class="cnpj-result" style="color:var(--muted);">⏳ Buscando Receita Federal...</div>`;
-        
-        // Simulação da API de Receita Federal
+        const box = document.getElementById(`box-cnpj-${id}`); if(!box) return;
+        box.innerHTML = `<div class="cnpj-result" style="color:var(--muted);">⏳ Buscando...</div>`;
         setTimeout(() => {
-          const leadList = leads.find(l => l.place_id === id) ? leads : savedLeads;
-          const leadIndex = leadList.findIndex(l => l.place_id === id);
-          
-          if(leadIndex !== -1) {
-            leadList[leadIndex].cnpj = "45.123.890/0001-22"; // Dado Visual p/ Protótipo
-            leadList[leadIndex].cnae = "73.11-4-00 - Agências de publicidade";
-            
+          const list = leads.find(l => l.place_id === id) ? leads : savedLeads;
+          const index = list.findIndex(l => l.place_id === id);
+          if(index !== -1) {
+            list[index].cnpj = "45.123.890/0001-22"; list[index].cnae = "73.11-4-00 - Agências de publicidade";
             if(document.getElementById('extractSection').classList.contains('hidden') === false) renderLeads();
             else if(document.getElementById('savedSection').classList.contains('hidden') === false) renderSavedLeads();
             else renderKanban();
-            
-            toast("CNPJ Encontrado e Anexado!");
+            toast("CNPJ Anexado!");
           }
         }, 1500);
       }
 
       function renderKanban() {
         const colunas = { 'novo': [], 'contato': [], 'negociacao': [], 'fechado': [] };
+        let listToShow = isUserAdmin ? savedLeads : savedLeads.filter(l => l.usuario_email === currentUserEmail);
+        listToShow.forEach(l => { const status = l.crm_status || 'novo'; if(colunas[status]) colunas[status].push(l); });
         
-        let listToShow = savedLeads;
-        if(!isUserAdmin) {
-            listToShow = savedLeads.filter(l => l.owner === userProfile.name);
-        }
-
-        // Distribui nas colunas
-        listToShow.forEach(l => {
-          const status = l.crm_status || 'novo';
-          if(colunas[status]) colunas[status].push(l);
-        });
-
-        // Preenche o HTML
         Object.keys(colunas).forEach(key => {
-          const countEl = document.getElementById(`count-${key}`);
-          if(countEl) countEl.textContent = colunas[key].length;
-          
-          const container = document.getElementById(`cards-${key}`);
-          if(!container) return;
-          container.innerHTML = '';
-          
-          colunas[key].forEach(lead => {
-            const card = document.createElement('div');
-            card.className = 'k-card';
-            card.id = `kcard-${lead.place_id}`;
-            card.draggable = true;
-            card.ondragstart = dragCard;
-            
-            card.innerHTML = `
+          const countEl = document.getElementById(`count-${key}`); if(countEl) countEl.textContent = colunas[key].length;
+          const container = document.getElementById(`cards-${key}`); if(!container) return;
+          container.innerHTML = colunas[key].map(lead => `
+            <div class="k-card" id="kcard-${lead.place_id}" draggable="true" ondragstart="dragCard(event)">
               <div class="k-card-title">${lead.name}</div>
               <div class="k-card-info">📞 ${lead.phone || 'S/ Tel'}</div>
               ${lead.cnpj ? `<div class="k-card-info" style="color:#60a5fa;">🏢 ${lead.cnpj}</div>` : ''}
-              <div style="margin-top: 8px; font-size: 10px; color: var(--muted); text-transform: uppercase;">
-                ${lead.owner ? `👤 ${lead.owner}` : ''}
-              </div>
-            `;
-            container.appendChild(card);
-          });
+              <div style="margin-top: 8px; font-size: 10px; color: var(--muted); text-transform: uppercase;">${lead.owner ? `👤 ${lead.owner}` : ''}</div>
+            </div>`).join('');
         });
       }
 
       function allowDrop(ev) { ev.preventDefault(); }
       function dragCard(ev) { ev.dataTransfer.setData("text", ev.target.id); }
-      function dropCard(ev) {
+      async function dropCard(ev) {
         ev.preventDefault();
-        const data = ev.dataTransfer.getData("text");
-        const element = document.getElementById(data);
-        const col = ev.target.closest('.kanban-col');
-        
+        const data = ev.dataTransfer.getData("text"), element = document.getElementById(data), col = ev.target.closest('.kanban-col');
         if (col && element) {
-          const newStatus = col.id.replace('col-', '');
-          const leadId = data.replace('kcard-', '');
-          
-          const leadIndex = savedLeads.findIndex(l => l.place_id === leadId);
-          if (leadIndex !== -1) {
-             savedLeads[leadIndex].crm_status = newStatus;
-             localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads));
+          const newStatus = col.id.replace('col-', ''), leadId = data.replace('kcard-', ''), index = savedLeads.findIndex(l => l.place_id === leadId);
+          if (index !== -1) {
+             savedLeads[index].crm_status = newStatus;
+             renderKanban(); 
+             // Salva no banco!
+             await supa.from('leads_salvos').update({crm_status: newStatus}).eq('place_id', leadId);
           }
-          renderKanban();
         }
       }
 
