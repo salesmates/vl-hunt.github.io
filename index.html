@@ -645,7 +645,6 @@
               <div class="profile-form-wrap">
                 <div class="grid-2" style="margin-bottom: 16px;">
                   <div class="field"><label>Nome de Exibição</label><input type="text" id="profileName" placeholder="Como quer ser chamado"></div>
-                  <!-- CAMPO DE CARGO DESBLOQUEADO PARA VENDEDOR EDITAR -->
                   <div class="field"><label>Cargo / Função</label><input type="text" id="profileRole" placeholder="Ex: SDR, Closer, Executivo"></div>
                 </div>
                 
@@ -669,11 +668,9 @@
               <div><h3>Ranking da Equipe</h3><p>Acompanhe os melhores desempenhos de prospecção e conversão.</p></div>
             </div>
             <div class="leaderboard-header">
-              <div style="display: flex; gap: 12px; align-items: center;"><button id="addTeamMemberBtn" class="btn btn-main hidden" onclick="openTeamMemberModal()" style="height: 36px; font-size: 12px;">+ Adicionar Membro</button></div>
               <select id="rankingPeriod"><option value="hoje">Hoje</option><option value="semana" selected>Esta Semana</option></select>
             </div>
             
-            <!-- AQUI É ONDE O JS VAI INJETAR O RANKING REAL DA SUPABASE -->
             <div class="leaderboard-list" id="leaderboardList"></div>
             
           </div>
@@ -683,7 +680,7 @@
     </div>
 
     <!-- MODALS -->
-    <!-- MODAL ICEBREAKER IA COM TESTE A/B/C -->
+    <!-- MODAL ICEBREAKER IA -->
     <div id="icebreakerModal" class="modal-overlay">
       <div class="modal" style="width: 600px; max-width: 95%;">
         <h3>🤖 Opções de Abordagem IA</h3>
@@ -722,17 +719,11 @@
 
     <script>
       // ============================================
-      // CONFIGURAÇÃO DA EQUIPE (AQUI QUE RESOLVE O RANKING VAZIO)
+      // CONFIGURAÇÃO DO ADMIN (SÓ ISSO PRECISA AQUI)
+      // Todo o resto da equipe entra 100% dinamicamente!
       // ============================================
-      // Coloque aqui os emails EXATOS que você e sua equipe usam para logar.
       const ADMIN_EMAILS = ['leonvquadros@gmail.com', 'seuemailaqui@gmail.com'];
       
-      const EQUIPE = [
-        { email: 'leonvquadros@gmail.com', nome: 'Leon (Admin)' },
-        { email: 'gustavo@seudominio.com', nome: 'Gustavo Preserve' }, // <--- Mude pro email real do Gustavo
-        { email: 'vendedor3@seudominio.com', nome: 'Vendedor 3' }
-      ];
-
       // ============================================
       // CONEXÃO SUPABASE
       // ============================================
@@ -826,34 +817,34 @@
         loadWhiteLabel(); 
         await carregarConfiguracoesDoSupabase();
 
-        // 1. CARREGA LEADS, LOGS E RANKING 100% DO BANCO DE DADOS
+        // SEMPRE QUE A PESSOA LOGAR, MANDA PRO BANCO PRA ELA "EXISTIR" NO RANKING.
+        await addLog('login', 'Acessou o sistema.');
+
+        // CARREGA LEADS, LOGS E RANKING 100% DO BANCO DE DADOS
         await carregarLeadsDoBanco();
         await loadLogs();
         await carregarRankingReal();
       }
 
       // ==========================================
-      // 1. PUXANDO OS LEADS REAIS (MATA O LOCALSTORAGE AQUI)
+      // 1. PUXANDO OS LEADS REAIS DO SUPABASE
       // ==========================================
       async function carregarLeadsDoBanco() {
         try {
           let query = supa.from('leads_salvos').select('*');
-          // Se não for Admin, puxa SÓ OS DELE. Admin puxa de todos.
-          if (!isUserAdmin) {
-            query = query.eq('usuario_email', currentUserEmail);
-          }
+          if (!isUserAdmin) { query = query.eq('usuario_email', currentUserEmail); }
           const { data, error } = await query;
           if (error) throw error;
           
           if (data) {
-            savedLeads = data; // Substitui o que estaria no localStorage pelos do banco
+            savedLeads = data; 
             updateDashboardStats();
           }
         } catch(e) { console.error('Erro banco leads:', e); }
       }
 
       // ==========================================
-      // 2. FUNÇÃO DE LOGS (Corrigida sem colunas falsas)
+      // 2. FUNÇÃO DE LOGS (Que ajuda a identificar os usuários)
       // ==========================================
       async function loadLogs() {
         try {
@@ -879,7 +870,7 @@
             acao: action,
             detalhe: detail
           }]);
-          loadLogs(); // Atualiza painel
+          loadLogs(); 
         } catch(e) { console.error(e); }
       }
 
@@ -896,24 +887,35 @@
       }
 
       // ==========================================
-      // 3. RANKING REAL (Garante q todo mundo apareça)
+      // 3. RANKING REAL (100% DINÂMICO E AUTOMÁTICO)
       // ==========================================
       async function carregarRankingReal() {
         try {
-          const { data, error } = await supa.from('leads_salvos').select('usuario_email');
+          // A. Pega todos os emails que já salvaram lead pra dar os pontos
+          const { data: leadsData } = await supa.from('leads_salvos').select('usuario_email');
           const contagem = {};
-          
-          if (data) {
-            data.forEach(lead => {
+          if (leadsData) {
+            leadsData.forEach(lead => {
               const email = lead.usuario_email || '';
-              contagem[email] = (contagem[email] || 0) + 1;
+              if(email) contagem[email] = (contagem[email] || 0) + 1;
             });
           }
 
-          // Junta a contagem com a lista fixa EQUIPE pra ninguém ficar de fora
-          const rankingArray = EQUIPE.map(membro => {
-            const salvos = contagem[membro.email] || 0;
-            return { email: membro.email, nome: membro.nome, salvos: salvos, xp: salvos * 10 };
+          // B. Pega todos os usuários únicos olhando os Logs (assim quem só logou também aparece)
+          const { data: logsData } = await supa.from('logs_atividades').select('usuario_email, usuario');
+          const todosUsuarios = {};
+          if (logsData) {
+            logsData.forEach(log => {
+              if (log.usuario_email) {
+                todosUsuarios[log.usuario_email] = log.usuario || log.usuario_email;
+              }
+            });
+          }
+
+          // Monta o array puxando as informações de TODO MUNDO que já pisou no sistema
+          const rankingArray = Object.keys(todosUsuarios).map(email => {
+            const salvos = contagem[email] || 0;
+            return { email: email, nome: todosUsuarios[email], salvos: salvos, xp: salvos * 10 };
           }).sort((a, b) => b.salvos - a.salvos);
 
           const listEl = document.getElementById('leaderboardList');
@@ -938,7 +940,7 @@
       }
 
       // ============================================
-      // WHITE LABEL, PERFIL, ETC
+      // WHITE LABEL, PERFIL E INTERFACE
       // ============================================
       function loadWhiteLabel() {
         try {
@@ -1064,7 +1066,7 @@
       }
 
       // ============================================
-      // IA ICEBREAKER
+      // IA ICEBREAKER E PREFERÊNCIAS
       // ============================================
       async function openIcebreaker(id) {
         const lead = leads.find(l => l.place_id === id) || savedLeads.find(l => l.place_id === id);
@@ -1098,9 +1100,6 @@
       function closeIcebreakerModal() { document.getElementById('icebreakerModal').style.display = 'none'; }
       function copyIcebreaker() { navigator.clipboard.writeText(document.getElementById('icebreakerText').value); toast('Copiado!'); closeIcebreakerModal(); }
 
-      // ============================================
-      // CONFIGURAÇÕES GERAIS E INTEGRAÇÕES
-      // ============================================
       function switchSettingsTab(tabId, btnElement) {
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -1291,21 +1290,18 @@
               crm_status: 'novo'
             };
 
-            // INSERE DIRETAMENTE NO SUPABASE
             const { data, error } = await supa.from('leads_salvos').insert([novoLead]).select();
             
             if(!error) {
               savedLeads.push(novoLead); 
               leads = leads.filter(x => x.place_id !== l.place_id); 
               count++;
-            } else {
-              console.error("Erro ao salvar:", error);
             }
           }
 
           if (count > 0) {
              addLog('salvar', `Salvou ${count} lead(s) na pasta "${folder}".`);
-             carregarRankingReal(); // Atualiza na hora o XP
+             carregarRankingReal(); 
           }
 
           renderLeads(); 
@@ -1326,9 +1322,6 @@
         listToShow.forEach(lead => grid.appendChild(createLeadCard(lead, 'saved')));
       }
 
-      // ==========================================
-      // APAGANDO OS LEADS REAIS NO BANCO
-      // ==========================================
       async function clearSavedLeads() { 
         if(!confirm("Certeza que deseja apagar permanentemente os leads?")) return;
         try {
@@ -1357,7 +1350,7 @@
       function scrollToTop() { window.scrollTo({top:0, behavior:'smooth'}); }
 
       // ============================================
-      // ROBÔ DE ENRIQUECIMENTO E CRM (TAMBÉM NO BANCO)
+      // ROBÔ DE ENRIQUECIMENTO E CRM (NO BANCO)
       // ============================================
       function enriquecerCNPJ(id) {
         const box = document.getElementById(`box-cnpj-${id}`); if(!box) return;
@@ -1403,12 +1396,11 @@
           if (index !== -1) {
              savedLeads[index].crm_status = newStatus;
              renderKanban(); 
-             // Salva no banco!
+             // Salva o arrastar de card direto no Supabase
              await supa.from('leads_salvos').update({crm_status: newStatus}).eq('place_id', leadId);
           }
         }
       }
-
     </script>
   </div>
 </body>
