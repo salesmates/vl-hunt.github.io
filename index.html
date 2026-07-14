@@ -753,7 +753,6 @@
       // SEGURANÇA E ARQUITETURA MULTI-TENANT (SAAS)
       // ============================================
       // Apenas os e-mails abaixo têm permissão REAL de administrador no Front-End.
-      // Em produção real, você usaria o RLS (Row Level Security) do Supabase baseado na Empresa.
       const ADMIN_EMAILS = ['leonvquadros@gmail.com', 'seuemailaqui@gmail.com'];
       
       // ID da Empresa Mockado para SaaS (Simula a estrutura Multi-Tenant)
@@ -786,7 +785,6 @@
       let systemLogs = []; 
       
       const STORAGE_KEYS_TEAM = 'vlhunt_team_members';
-      const STORAGE_KEYS_LOGS = 'vlhunt_system_logs'; 
       let currentEditingAvatarBase64 = '';
       
       const STORAGE_KEYS = { saved: 'vlhunt_saved_leads_v2', exported: 'vlhunt_exported_leads_v2', filters: 'vlhunt_quality_filters', prefs: 'vlhunt_extra_prefs', profile: 'vlhunt_user_profile', wl: 'vlhunt_whitelabel' };
@@ -864,19 +862,90 @@
       });
 
       // ============================================
-      // LOGS / PDCA
+      // LOGS / PDCA - CONECTADO AO SUPABASE
       // ============================================
-      function loadLogs() {
-        try { systemLogs = JSON.parse(localStorage.getItem(STORAGE_KEYS_LOGS)) || []; } catch(e) { systemLogs = []; }
+      let isLogsSubscribed = false;
+
+      async function loadLogs() {
+        try {
+          const { data, error } = await supa
+            .from('logs_atividades')
+            .select('*')
+            .order('criado_em', { ascending: false })
+            .limit(50);
+
+          if (error) throw error;
+
+          if (data) {
+            systemLogs = data.map(dbLog => {
+              const dateObj = dbLog.criado_em ? new Date(dbLog.criado_em) : new Date();
+              return {
+                id: dbLog.id,
+                user: dbLog.usuario,
+                action: dbLog.acao,
+                detail: dbLog.detalhe,
+                time: dateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})
+              };
+            });
+          }
+        } catch(e) {
+          console.error("Erro ao buscar logs do Supabase:", e);
+          systemLogs = [];
+        }
+        
         renderLogs();
+        inscreverRealtimeLogs();
       }
 
-      function addLog(action, detail) {
-        const log = { id: Date.now(), user: userProfile.name, action, detail, time: new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) };
-        systemLogs.unshift(log); 
-        if (systemLogs.length > 50) systemLogs.pop(); 
-        localStorage.setItem(STORAGE_KEYS_LOGS, JSON.stringify(systemLogs));
-        renderLogs();
+      function inscreverRealtimeLogs() {
+        if (isLogsSubscribed) return;
+        supa.channel('realtime_logs')
+          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'logs_atividades' }, payload => {
+            const newLog = payload.new;
+            if(!systemLogs.find(l => l.id === newLog.id)) {
+               const dateObj = newLog.criado_em ? new Date(newLog.criado_em) : new Date();
+               systemLogs.unshift({
+                 id: newLog.id,
+                 user: newLog.usuario,
+                 action: newLog.acao,
+                 detail: newLog.detalhe,
+                 time: dateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})
+               });
+               if(systemLogs.length > 50) systemLogs.pop();
+               renderLogs();
+            }
+          })
+          .subscribe();
+        isLogsSubscribed = true;
+      }
+
+      async function addLog(action, detail) {
+        try {
+          const { data, error } = await supa.from('logs_atividades').insert([{
+            usuario: userProfile.name || currentUserEmail,
+            acao: action,
+            detalhe: detail,
+            empresa_id: CURRENT_EMPRESA_ID
+          }]).select();
+
+          if (data && data[0]) {
+             const newLog = data[0];
+             if(!systemLogs.find(l => l.id === newLog.id)) {
+                const dateObj = newLog.criado_em ? new Date(newLog.criado_em) : new Date();
+                systemLogs.unshift({
+                  id: newLog.id,
+                  user: newLog.usuario,
+                  action: newLog.acao,
+                  detail: newLog.detalhe,
+                  time: dateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})
+                });
+                if(systemLogs.length > 50) systemLogs.pop();
+                renderLogs();
+             }
+          }
+        } catch(e) {
+          console.error("Erro ao salvar log no Supabase", e);
+        }
       }
 
       function renderLogs() {
@@ -892,7 +961,7 @@
             <span style="color: var(--muted); margin: 0 6px;">às ${l.time}</span>
             <span style="color: var(--dark);">- ${l.detail}</span>
           </div>
-        `).join('') : '<div class="empty" style="border:none;">Nenhuma atividade registrada ainda hoje.</div>';
+        `).join('') : '<div class="empty" style="border:none;">Nenhuma atividade registrada ainda.</div>';
       }
 
       // ============================================
@@ -1102,7 +1171,6 @@
         const mPages = parseInt(document.getElementById('maxPagesInput').value.trim()) || 3;
 
         try {
-          // REMOVIDO O INSERT/UPDATE NO BANCO DA TABELA INEXISTENTE QUE CAUSAVA O ERRO "empresa_id não existe"
           configSupabase = { googleApiKey: gKey, pipedriveToken: pToken, maxPages: mPages };
           
           if (gKey) loadGoogleMapsScript(gKey);
@@ -1112,8 +1180,6 @@
 
       async function carregarConfiguracoesDoSupabase() {
         try {
-          // REMOVIDA A BUSCA NO BANCO PARA EVITAR ERRO DE COLUNA INEXISTENTE
-          // Chave definida diretamente via código conforme solicitado
           configSupabase.googleApiKey = 'AIzaSyBRd4KUJR3Rk4k98OOJVDtSfExn4ENVq0U';
           configSupabase.pipedriveToken = ''; 
           configSupabase.maxPages = 3; 
