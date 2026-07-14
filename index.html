@@ -309,10 +309,10 @@
           Extrair Leads
         </button>
 
-        <!-- ABA DASHBOARD (PODE SER ESCONDIDA POR CARGO) -->
+        <!-- ABA DASHBOARD (AGORA VISÍVEL PARA TODOS) -->
         <button class="menu-item" id="navDashboardBtn" data-section="dashboard" onclick="showSection('dashboard')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
-          Dashboard Geral
+          <span id="navDashboardText">Dashboard Geral</span>
         </button>
 
         <button class="menu-item" data-section="ranking" onclick="showSection('ranking')">
@@ -396,7 +396,8 @@
               </div>
             </div>
 
-            <div class="section">
+            <!-- STATUS GERAL (ESCONDIDO PARA SDR) -->
+            <div class="section" id="dashAdminStatus">
               <div class="section-title" style="margin-bottom: 22px;">
                 <div class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
                 <div><h3>Status Geral</h3><p>Resumo das atividades da conta.</p></div>
@@ -409,11 +410,11 @@
             </div>
           </div>
 
-          <!-- NOVO BLOCO: LOG DE ATIVIDADES (PDCA) -->
+          <!-- BLOCO: LOG DE ATIVIDADES (PDCA) -->
           <div class="section">
             <div class="section-title" style="margin-bottom: 22px;">
               <div class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
-              <div><h3>Log de Atividades (PDCA)</h3><p>Acompanhe em tempo real as ações da sua equipe no sistema.</p></div>
+              <div><h3 id="pdcaTitle">Log de Atividades (PDCA)</h3><p id="pdcaSubtitle">Acompanhe as ações registradas no sistema.</p></div>
             </div>
             <div id="pdcaLogsList" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 10px;">
               <!-- Logs preenchidos via JS -->
@@ -797,7 +798,7 @@
       });
 
       // ============================================
-      // LOGS / PDCA (ITEM 7)
+      // LOGS / PDCA (AGORA COM FILTRO DE VISÃO)
       // ============================================
       function loadLogs() {
         try { systemLogs = JSON.parse(localStorage.getItem(STORAGE_KEYS_LOGS)) || []; } 
@@ -816,7 +817,14 @@
       function renderLogs() {
         const list = document.getElementById('pdcaLogsList');
         if (!list) return;
-        list.innerHTML = systemLogs.length ? systemLogs.map(l => `
+
+        // SE FOR VENDEDOR, VÊ SÓ OS DELE. SE FOR ADMIN, VÊ TODOS.
+        let logsToShow = systemLogs;
+        if (!isUserAdmin) {
+            logsToShow = systemLogs.filter(l => l.user === userProfile.name);
+        }
+
+        list.innerHTML = logsToShow.length ? logsToShow.map(l => `
           <div style="border-bottom: 1px solid var(--border); padding-bottom: 8px; font-size: 13px;">
             <strong style="color: var(--primary);">${l.user}</strong> 
             <span style="color: var(--muted); margin: 0 6px;">às ${l.time}</span>
@@ -865,7 +873,7 @@
       }
 
       // ============================================
-      // SEGURANÇA E VISÃO (ADMIN VS SDR)
+      // SEGURANÇA E VISÃO (ADMIN VS SDR) - ATUALIZADO
       // ============================================
       function loadUserProfile(userInfo) {
         try { 
@@ -879,9 +887,16 @@
         isUserAdmin = ADMIN_EMAILS.includes(currentUserEmail.toLowerCase());
         userProfile.role = isUserAdmin ? 'Admin / Gerente' : 'SDR';
 
-        document.getElementById('navDashboardBtn').style.display = isUserAdmin ? 'flex' : 'none';
+        // DASHBOARD AGORA FICA VISÍVEL PRA TODO MUNDO, MAS MUDA DE NOME
+        document.getElementById('navDashboardBtn').style.display = 'flex';
+        document.getElementById('navDashboardText').textContent = isUserAdmin ? "Dashboard Geral" : "Meu Dashboard";
+
+        // CONFIGURAÇÕES (PAINEL MASTER) CONTINUA SÓ PRA ADMIN
         document.getElementById('navSettingsBtn').style.display = isUserAdmin ? 'flex' : 'none';
         
+        // CAIXA DE STATUS DA API (ESCONDER DE SDR)
+        document.getElementById('dashAdminStatus').style.display = isUserAdmin ? 'block' : 'none';
+
         const addTeamMemberBtn = document.getElementById('addTeamMemberBtn');
         const leaderboardList = document.getElementById('leaderboardList');
         
@@ -894,7 +909,7 @@
         }
 
         const isDashVis = document.getElementById('dashboardSection').classList.contains('hidden') === false;
-        if (!isUserAdmin && isDashVis) { showSection('extract'); } 
+        if (!isUserAdmin && isDashVis) { showSection('dashboard'); } // Se carregar a tela e não for admin, pode ir pro dash dele
         else if(isUserAdmin && isDashVis) { showSection('dashboard'); }
         else { showSection('extract'); } 
 
@@ -1054,18 +1069,17 @@
       }
 
       // ============================================
-      // GERENCIAMENTO DA EQUIPE (RANKING) - ITEM 6
+      // GERENCIAMENTO DA EQUIPE (RANKING)
       // ============================================
       function loadTeamMembers() {
         try {
           const savedTeam = JSON.parse(localStorage.getItem(STORAGE_KEYS_TEAM));
           if (savedTeam && savedTeam.length > 0) teamMembers = savedTeam;
-          else teamMembers = []; // Zera para puxar automaticamente
+          else teamMembers = []; 
         } catch (e) {}
         renderLeaderboard();
       }
 
-      // NOVO: Adiciona pontos para o usuário que salvou (ITEM 6)
       function updateTeamMemberScore(name, extractedAdd, exportedAdd) {
          let member = teamMembers.find(m => m.name === name);
          if (!member) {
@@ -1134,7 +1148,7 @@
       }
 
       // ============================================
-      // EXTRAÇÃO, GOOGLE MAPS E FILTROS (ITEM 8)
+      // EXTRAÇÃO, GOOGLE MAPS E NAVEGAÇÃO
       // ============================================
       function updateAvatarUI(base64, name) {
         const topInitials = document.getElementById('topUserInitials');
@@ -1154,7 +1168,6 @@
 
       function showSection(section) {
         if (section === 'settings' && !isUserAdmin) { toast('Acesso negado.'); return; }
-        if (section === 'dashboard' && !isUserAdmin) { toast('Acesso negado.'); return; }
         
         ['dashboardSection', 'extractSection', 'savedSection', 'pipedriveSection', 'settingsSection', 'accountSection', 'rankingSection'].forEach(id => document.getElementById(id).classList.add('hidden'));
         document.getElementById(section + 'Section').classList.remove('hidden');
@@ -1164,7 +1177,22 @@
         if (activeButton) activeButton.classList.add('active');
 
         const t = document.getElementById('topTitle'), s = document.getElementById('topSubtitle');
-        if(section === 'dashboard') { t.textContent = "Dashboard"; s.textContent = "Visão geral."; updateDashboardStats(); }
+        
+        if(section === 'dashboard') { 
+            // TEXTO DINÂMICO BASEADO NO CARGO DO USUÁRIO!
+            t.textContent = isUserAdmin ? "Dashboard Geral" : "Meu Dashboard"; 
+            s.textContent = isUserAdmin ? "Visão geral da operação da equipe." : "Acompanhe suas métricas individuais."; 
+            
+            // Oculta informações da API e CRM do vendedor para ele não se assustar
+            document.getElementById('dashAdminStatus').style.display = isUserAdmin ? 'block' : 'none';
+            
+            // Texto do log dinâmico
+            document.getElementById('pdcaTitle').textContent = isUserAdmin ? "Log de Atividades (PDCA)" : "Meu Histórico de Ações";
+            document.getElementById('pdcaSubtitle').textContent = isUserAdmin ? "Acompanhe em tempo real as ações da sua equipe no sistema." : "Seu registro pessoal de buscas e leads salvos.";
+            
+            updateDashboardStats(); 
+            renderLogs(); // Filtra os logs na hora que abre a tela
+        }
         else if(section === 'extract') { t.textContent = "Prospecção Ativa"; s.textContent = "Encontre novos clientes."; }
         else if(section === 'ranking') { t.textContent = "Ranking"; s.textContent = "Gamificação da equipe."; }
         else if(section === 'saved') { t.textContent = "Pastas"; s.textContent = "Leads salvos."; updateFolderFilterDropdown(); renderSavedLeads(); }
@@ -1204,28 +1232,25 @@
         if (!placesService) { toast('Google Maps não conectado. Vá em Painel Master.'); return; }
         
         leads = []; 
-        ignoredLeadsCount = 0; // Zera a contagem do filtro
+        ignoredLeadsCount = 0; 
         currentApiPage = 1;
         isSearching = true; 
         document.getElementById('searchBtn').textContent = 'Buscando...';
         
-        addLog('busca', `Iniciou busca por: ${name} ${niche} ${city}`); // Log da busca
+        addLog('busca', `Iniciou busca por: ${name} ${niche} ${city}`); 
 
         placesService.textSearch({ query: `${name} ${niche} ${city}`, type: 'establishment' }, handlePlacesResults);
       }
 
-      // ITEM 8: FILTRO DE BLACKLIST 
       function handlePlacesResults(results, status, pagination) {
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
           
-          // Prepara Blacklist
           let blacklist = [];
           if(extraPrefs.blacklist) {
              blacklist = extraPrefs.blacklist.split(',').map(s => s.trim().toLowerCase()).filter(s => s);
           }
 
           results.forEach(place => {
-            // Verifica se tem palavra negativada
             const nomeMinusculo = (place.name || '').toLowerCase();
             const temPalavraRuim = blacklist.some(palavra => nomeMinusculo.includes(palavra));
 
@@ -1234,7 +1259,7 @@
               leads.push({ place_id: place.place_id, name: place.name, address: place.formatted_address, phone: '', website: '', rating: place.rating, photo: photoUrl });
               detailsQueue.push(place.place_id);
             } else if (temPalavraRuim) {
-              ignoredLeadsCount++; // Incrementa bloqueados
+              ignoredLeadsCount++; 
             }
           });
         }
@@ -1253,7 +1278,6 @@
         }
       }
 
-      // ITEM 8: FILTRO DE DDD
       function processQueue() {
         if (isProcessingQueue || detailsQueue.length === 0 || !placesService) return;
         isProcessingQueue = true; const placeId = detailsQueue.shift();
@@ -1266,7 +1290,6 @@
                  leads[i].website = place.website || ''; 
                  leads[i].url = place.url || ''; 
                  
-                 // APÓS PEGAR O TELEFONE, CHECA FILTRO DE DDD
                  let removerPorDDD = false;
                  if(extraPrefs.ddd && leads[i].phone) {
                     const dddLead = leads[i].phone.replace(/\D/g, '').substring(0, 2);
@@ -1275,7 +1298,7 @@
                  }
                  
                  if(removerPorDDD) {
-                     leads.splice(i, 1); // Corta da lista
+                     leads.splice(i, 1); 
                  }
 
                  renderLeads(); 
@@ -1339,7 +1362,6 @@
       function openFolderModal() { document.getElementById('folderModal').style.display = 'flex'; }
       function closeFolderModal() { document.getElementById('folderModal').style.display = 'none'; pendingLeadsToSave = []; }
       
-      // ITEM 6 e 7: A AÇÃO PRINCIPAL DE SALVAR!
       function confirmFolderSave() {
         const folder = document.getElementById('newFolderInput').value || 'Geral';
         let count = 0;
@@ -1353,9 +1375,7 @@
         localStorage.setItem(STORAGE_KEYS.saved, JSON.stringify(savedLeads)); 
         
         if (count > 0) {
-           // GERA LOG NO PDCA (ITEM 7)
            addLog('salvar', `Salvou ${count} lead(s) na pasta "${folder}".`);
-           // ATUALIZA RANKING / DASHBOARD (ITEM 6)
            updateTeamMemberScore(userProfile.name, count, 0); 
         }
 
@@ -1373,9 +1393,7 @@
         const lead = leads.find(l => l.place_id === id); if(lead) { pendingLeadsToSave = [lead]; openFolderModal(); }
       }
 
-      // ITEM 6: DASHBOARD COM NÚMEROS REAIS DA TELA
       function updateDashboardStats() {
-        // Atualiza Cards Principais
         document.getElementById('dashTotalSaved').textContent = savedLeads.length;
         
         const phonesCount = savedLeads.filter(l => l.phone).length;
@@ -1386,8 +1404,7 @@
         const convRate = savedLeads.length ? Math.round((exportedLeads.length / savedLeads.length) * 100) : 0;
         document.getElementById('dashConvRate').textContent = convRate + '%';
 
-        // Atualiza Funil
-        const maxTotal = savedLeads.length || 1; // previne div por zero
+        const maxTotal = savedLeads.length || 1; 
         document.getElementById('valTotal').textContent = savedLeads.length;
         document.getElementById('barTotal').style.width = '100%';
 
