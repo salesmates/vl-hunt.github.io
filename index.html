@@ -91,6 +91,7 @@
     
     .field input, .field select, .field textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; font-size: 14px; outline: none; background: var(--bg); color: var(--dark); transition: 0.2s; }
     .field input, .field select { height: 44px; }
+    .field input:disabled { background: var(--nav-hover); color: var(--muted); cursor: not-allowed; }
     .field textarea { padding: 12px 14px; resize: vertical; }
     .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
     
@@ -162,7 +163,10 @@
     
     .lead-title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
     .lead-title { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3; color: var(--dark); }
-    .badge { background: var(--border); color: var(--dark); border-radius: 6px; padding: 4px 8px; font-size: 10px; font-weight: 700; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    /* TAGS E BADGES */
+    .badge { background: rgba(255,255,255,0.1); color: var(--dark); border-radius: 6px; padding: 4px 8px; font-size: 10px; font-weight: 700; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge-owner { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); } /* Azul para o Admin saber de quem é */
     
     .lead-info { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 6px 0; display: flex; align-items: center; gap: 8px; word-break: break-word; }
     .lead-info svg { flex-shrink: 0; color: var(--muted); }
@@ -172,10 +176,6 @@
     .lead-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; margin-bottom: auto; }
     .small-btn { border: 1px solid var(--border); background: transparent; color: var(--dark); min-height: 32px; border-radius: 6px; padding: 0 12px; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; }
     .small-btn:hover { background: var(--border); }
-    
-    .lead-status-row { display: flex; align-items: center; gap: 8px; margin-top: 16px; flex-wrap: wrap; border-top: 1px solid var(--border); padding-top: 16px; }
-    .lead-status-row select { height: 32px; min-width: 130px; border: 1px solid var(--border); border-radius: 6px; padding: 0 8px; font-size: 12px; font-weight: 500; background: var(--bg); color: var(--dark); }
-    .status-pill { height: 32px; border-radius: 6px; padding: 0 10px; background: var(--border); display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; color: var(--muted); }
     
     /* UTILS & MODALS */
     .hidden { display: none !important; }
@@ -193,25 +193,6 @@
     th { font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); background: var(--card); font-size: 11px; }
     td { color: var(--dark); }
     
-    /* MODAL PREMIUM */
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 10000; animation: fadeIn 0.2s ease; }
-    .modal { background: var(--card); padding: 32px; border-radius: var(--radius); width: 420px; max-width: 90%; border: 1px solid var(--border); box-shadow: var(--shadow); transform: scale(0.95); animation: scaleUp 0.2s ease forwards; }
-    .modal h3 { margin-top: 0; font-size: 20px; font-weight: 800; margin-bottom: 8px; color: var(--dark); }
-    .modal p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
-    .modal label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; color: var(--muted); }
-    .modal select, .modal input { width: 100%; height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; margin-bottom: 16px; font-size: 14px; background: var(--bg); color: var(--dark); outline: none; transition: 0.2s; }
-    .modal select:focus, .modal input:focus { border-color: var(--primary); }
-    .modal-divider { text-align: center; margin: 10px 0 20px; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; display: flex; align-items: center; }
-    .modal-divider::before, .modal-divider::after { content: ""; flex: 1; border-bottom: 1px solid var(--border); margin: 0 10px; }
-    .modal-buttons { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
-    
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes scaleUp { from { transform: scale(0.95); } to { transform: scale(1); } }
-    
-    .folder-filter-wrap { display: flex; align-items: center; font-size: 14px; }
-    .folder-filter-wrap select { height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; font-size: 13px; font-weight: 500; min-width: 200px; outline: none; background: transparent; color: var(--dark); cursor: pointer; transition: 0.2s; }
-    .folder-filter-wrap select:hover { background: var(--nav-hover); }
-
     /* ====== PERFIL & MINHA CONTA ====== */
     .profile-wrap { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
     .avatar-box { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px 24px; display: flex; flex-direction: column; align-items: center; min-width: 240px; }
@@ -233,7 +214,13 @@
     .rank-3 { border-left: 4px solid #b45309; background: linear-gradient(90deg, rgba(180, 83, 9, 0.05) 0%, transparent 100%); }
     
     .rank-pos { font-size: 20px; font-weight: 800; width: 50px; color: var(--dark); display: flex; align-items: center; gap: 4px;}
-    .rank-avatar { width: 46px; height: 46px; border-radius: 12px; background: var(--border); margin-right: 16px; object-fit: cover; }
+    .rank-avatar { position: relative; width: 46px; height: 46px; border-radius: 12px; background: var(--border); margin-right: 16px; display:flex; align-items:center; justify-content:center; }
+    .rank-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+    
+    /* STATUS ONLINE DOT */
+    .status-dot { position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px; background: #4ade80; border: 3px solid var(--bg); border-radius: 50%; z-index: 5; }
+    .status-dot.offline { background: #9ca3af; }
+
     .rank-info { flex: 1; }
     .rank-info strong { display: block; font-size: 15px; color: var(--dark); margin-bottom: 2px; }
     .rank-info span { font-size: 12px; color: var(--muted); background: var(--border); padding: 2px 8px; border-radius: 4px; }
@@ -250,8 +237,20 @@
     .show-admin-actions .rank-admin-actions { display: flex; gap: 8px; }
     .show-admin-actions .rank-score { margin-right: 90px; }
 
-    .team-avatar-preview { width: 60px; height: 60px; border-radius: 12px; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; overflow: hidden; margin-bottom: 12px; color: var(--muted); }
-    .team-avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+    /* MODAL PREMIUM */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 10000; animation: fadeIn 0.2s ease; }
+    .modal { background: var(--card); padding: 32px; border-radius: var(--radius); width: 420px; max-width: 90%; border: 1px solid var(--border); box-shadow: var(--shadow); transform: scale(0.95); animation: scaleUp 0.2s ease forwards; }
+    .modal h3 { margin-top: 0; font-size: 20px; font-weight: 800; margin-bottom: 8px; color: var(--dark); }
+    .modal p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+    .modal label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; color: var(--muted); }
+    .modal select, .modal input { width: 100%; height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 0 14px; margin-bottom: 16px; font-size: 14px; background: var(--bg); color: var(--dark); outline: none; transition: 0.2s; }
+    .modal select:focus, .modal input:focus { border-color: var(--primary); }
+    .modal-divider { text-align: center; margin: 10px 0 20px; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; display: flex; align-items: center; }
+    .modal-divider::before, .modal-divider::after { content: ""; flex: 1; border-bottom: 1px solid var(--border); margin: 0 10px; }
+    .modal-buttons { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+    
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scaleUp { from { transform: scale(0.95); } to { transform: scale(1); } }
 
     /* ====== LOGIN ====== */
     #loginOverlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; }
@@ -264,14 +263,6 @@
     .login-box button { width: 100%; height: 48px; border: none; border-radius: 8px; background: var(--primary); color: var(--primary-inv); font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; }
     .login-box button:hover { background: var(--dark); filter: brightness(0.9); }
     .login-box button:disabled { opacity: 0.7; cursor: not-allowed; }
-
-    .back-to-top { position: fixed; bottom: 30px; right: 30px; width: 44px; height: 44px; background: var(--primary); color: var(--primary-inv); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s ease; transform: translateY(10px); }
-    .back-to-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
-    .back-to-top:hover { filter: brightness(0.9); }
-    
-    @media (max-width: 1400px) { .grid-search { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 1200px) { .leads-grid { grid-template-columns: repeat(2, 1fr); } .stats, .grid-2 { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 800px) { .sidebar { position: relative; width: 100%; bottom: auto; border-right: none; border-bottom: 1px solid var(--border); } .app { display: block; } .main { margin-left: 0; width: 100%; padding: 22px 16px; } .topbar, .section-head { align-items: flex-start; flex-direction: column; } .stats, .grid-2, .grid-search, .leads-grid { grid-template-columns: 1fr; } .toolbar-filters { flex-direction: column; align-items: stretch; } .rank-item { flex-wrap: wrap; gap: 12px; } .rank-stats { margin-right: 0; width: 100%; justify-content: flex-start; margin-top: 10px; } .rank-score { margin-left: auto; } }
   </style>
 </head>
 
@@ -309,7 +300,6 @@
           Extrair Leads
         </button>
 
-        <!-- ABA DASHBOARD (AGORA VISÍVEL PARA TODOS) -->
         <button class="menu-item" id="navDashboardBtn" data-section="dashboard" onclick="showSection('dashboard')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
           <span id="navDashboardText">Dashboard Geral</span>
@@ -330,7 +320,7 @@
           CRM
         </button>
 
-        <!-- ABA CONFIGURAÇÕES (ESCONDIDA DE VENDEDORES) -->
+        <!-- ABA CONFIGURAÇÕES (AGORA VISÍVEL PRA TODOS, MAS BLOQUEADA PRA SDR) -->
         <button class="menu-item" id="navSettingsBtn" data-section="settings" onclick="showSection('settings')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-2.82.33 1.65 1.65 0 0 0-.1 1.51v.1a2 2 0 0 1-3.91 0v-.1a1.65 1.65 0 0 0-1.82-1.33 1.65 1.65 0 0 0-1.51.1l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-2.82 1.65 1.65 0 0 0-1.51-.1h-.1a2 2 0 0 1 0-3.91h.1a1.65 1.65 0 0 0 1.33-1.82 1.65 1.65 0 0 0-.1-1.51l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 2.82-.33 1.65 1.65 0 0 0 .1-1.51v-.1a2 2 0 0 1 3.91 0v.1a1.65 1.65 0 0 0 1.82 1.33 1.65 1.65 0 0 0 1.51-.1l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 2.82 1.65 1.65 0 0 0 1.51.1h.1a2 2 0 0 1 0 3.91h-.1a1.65 1.65 0 0 0-1.33 1.82z"></path></svg>
           Painel Master
@@ -396,7 +386,6 @@
               </div>
             </div>
 
-            <!-- STATUS GERAL (ESCONDIDO PARA SDR) -->
             <div class="section" id="dashAdminStatus">
               <div class="section-title" style="margin-bottom: 22px;">
                 <div class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
@@ -410,7 +399,6 @@
             </div>
           </div>
 
-          <!-- BLOCO: LOG DE ATIVIDADES (PDCA) -->
           <div class="section">
             <div class="section-title" style="margin-bottom: 22px;">
               <div class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
@@ -420,7 +408,6 @@
               <!-- Logs preenchidos via JS -->
             </div>
           </div>
-
         </section>
 
         <!-- ABA EXTRAIR -->
@@ -516,7 +503,7 @@
           <div class="section">
             <div class="section-title" style="margin-bottom: 16px;">
               <div class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-2.82.33 1.65 1.65 0 0 0-.1 1.51v.1a2 2 0 0 1-3.91 0v-.1a1.65 1.65 0 0 0-1.82-1.33 1.65 1.65 0 0 0-1.51.1l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-2.82 1.65 1.65 0 0 0-1.51-.1h-.1a2 2 0 0 1 0-3.91h.1a1.65 1.65 0 0 0 1.33-1.82 1.65 1.65 0 0 0-.1-1.51l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 2.82-.33 1.65 1.65 0 0 0 .1-1.51v-.1a2 2 0 0 1 3.91 0v.1a1.65 1.65 0 0 0 1.82 1.33 1.65 1.65 0 0 0 1.51-.1l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 2.82 1.65 1.65 0 0 0 1.51.1h.1a2 2 0 0 1 0 3.91h-.1a1.65 1.65 0 0 0-1.33 1.82z"></path></svg></div>
-              <div><h3>Painel Master</h3><p>Gerencie as integrações, visual e filtros globais do sistema.</p></div>
+              <div><h3 id="settingsTitle">Painel Master</h3><p id="settingsSub">Gerencie integrações e filtros do sistema.</p></div>
             </div>
 
             <!-- NAVEGAÇÃO DAS ABAS DE CONFIGURAÇÃO -->
@@ -528,22 +515,25 @@
 
             <!-- CONTEÚDO TAB 1: INTEGRAÇÕES -->
             <div id="tab-integra" class="tab-content active">
-              <p style="color:var(--muted); font-size:13px; margin-bottom: 20px;">Configurações sensíveis de banco de dados e inteligência artificial.</p>
+              <p style="color:var(--muted); font-size:13px; margin-bottom: 20px;">Configurações de banco de dados e IA. (Acesso Restrito ao Admin)</p>
               
               <div class="grid-search" style="margin-bottom: 24px;">
-                <div class="field"><label>Google Maps API Key</label><input id="googleApiKeyInput" type="password" autocomplete="new-password" placeholder="Chave de acesso à API..." /></div>
-                <div class="field"><label>Token API CRM</label><input id="pipedriveTokenInput" type="password" autocomplete="new-password" placeholder="Token do seu CRM (opcional)" /></div>
-                <div class="field"><label>Limite de Páginas (Profundidade)</label><input id="maxPagesInput" type="number" min="1" max="10" placeholder="Ex: 3" /></div>
-                <div class="field"><label>URL Webhook (Exportação)</label><input id="webhookUrlInput" type="url" placeholder="https://hook.make.com/..." /></div>
+                <div class="field"><label>Google Maps API Key <span style="color:#f87171">*Admin</span></label><input id="googleApiKeyInput" type="password" autocomplete="new-password" placeholder="Chave de acesso à API..." /></div>
+                <div class="field"><label>Token API CRM <span style="color:#f87171">*Admin</span></label><input id="pipedriveTokenInput" type="password" autocomplete="new-password" placeholder="Token do seu CRM (opcional)" /></div>
+                <div class="field"><label>Limite de Páginas <span style="color:#f87171">*Admin</span></label><input id="maxPagesInput" type="number" min="1" max="10" placeholder="Ex: 3" /></div>
+                <div class="field"><label>URL Webhook (Exportação) <span style="color:#f87171">*Admin</span></label><input id="webhookUrlInput" type="url" placeholder="https://hook.make.com/..." /></div>
                 
                 <div class="field" style="grid-column: span 2; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 8px; border: 1px dashed var(--border);">
-                  <label style="color: var(--primary);">Chave API OpenAI (IA Icebreaker)</label>
+                  <label style="color: var(--primary);">Chave API OpenAI (Sua Chave ou Global)</label>
                   <input id="openaiApiKeyInput" type="password" autocomplete="new-password" placeholder="sk-..." style="margin-bottom: 12px;"/>
-                  <label>Contexto de Vendas (Para a IA criar as Copys A/B/C)</label>
+                  <label>Seu Contexto de Vendas (Para a IA criar as Copys A/B/C)</label>
                   <textarea id="aiContextInput" rows="2" placeholder="O que sua empresa vende? Ex: Vendo criação de sites e gestão de tráfego para atrair mais clientes."></textarea>
                 </div>
               </div>
-              <div class="actions"><button class="btn btn-main" onclick="saveSettings()">Salvar Integrações</button></div>
+              <div class="actions">
+                <button class="btn btn-main" id="btnSaveIntegrations" onclick="saveSettings()">Salvar Integrações Globais</button>
+                <button class="btn btn-main" id="btnSaveIA" onclick="saveAISettings()">Salvar IA (Contexto e Chave)</button>
+              </div>
             </div>
 
             <!-- CONTEÚDO TAB 2: FILTROS DE QUALIDADE -->
@@ -561,7 +551,7 @@
 
             <!-- CONTEÚDO TAB 3: APARÊNCIA (WHITE-LABEL) -->
             <div id="tab-aparencia" class="tab-content">
-              <p style="color:var(--muted); font-size:13px; margin-bottom: 20px;">Personalize as cores e logotipo do seu SaaS (White-Label).</p>
+              <p style="color:var(--muted); font-size:13px; margin-bottom: 20px;">Personalize as cores e logotipo do seu sistema.</p>
               <div class="grid-search" style="margin-bottom: 24px;">
                 <div class="field"><label>Nome do Sistema / Empresa</label><input id="wlName" type="text" placeholder="Ex: VL Hunt" /></div>
                 <div class="field"><label>URL da Logo (PNG/JPG)</label><input id="wlLogo" type="url" placeholder="https://site.com/logo.png" /></div>
@@ -578,7 +568,7 @@
           <div class="section">
             <div class="section-title" style="margin-bottom: 24px;">
               <div class="section-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
-              <div><h3>Minha Conta</h3><p>Gerencie suas informações. (Cargos são atribuídos automaticamente pelo sistema).</p></div>
+              <div><h3>Minha Conta</h3><p>Gerencie suas informações e foto de perfil.</p></div>
             </div>
 
             <div class="profile-wrap">
@@ -591,14 +581,11 @@
               <div class="profile-form-wrap">
                 <div class="grid-2" style="margin-bottom: 16px;">
                   <div class="field"><label>Nome de Exibição</label><input type="text" id="profileName" placeholder="Como quer ser chamado"></div>
-                  <!-- CAMPO DE CARGO TRAVADO, DESTAQUE VISUAL (DISABLE) -->
-                  <div class="field">
-                    <label>Cargo / Função 🔒</label>
-                    <input type="text" id="profileRole" disabled style="background-color: var(--nav-hover); color: var(--muted); cursor: not-allowed;" title="Protegido. Apenas o sistema altera esse status.">
-                  </div>
+                  <!-- CAMPO DE CARGO DESBLOQUEADO PARA VENDEDOR EDITAR -->
+                  <div class="field"><label>Cargo / Função</label><input type="text" id="profileRole" placeholder="Ex: SDR, Closer, Executivo"></div>
                 </div>
                 
-                <div class="field" style="margin-bottom: 16px;"><label>E-mail de Login</label><input type="email" id="profileEmail" disabled style="opacity: 0.6;"></div>
+                <div class="field" style="margin-bottom: 16px;"><label>E-mail de Login <span style="font-weight: normal; text-transform: none;">(Não pode ser alterado)</span></label><input type="email" id="profileEmail" disabled style="opacity: 0.6;"></div>
                 <div class="field" style="margin-bottom: 24px;">
                   <label>Assinatura Padrão</label>
                   <textarea id="profileSignature" rows="4" placeholder="Exemplo:&#10;Victor Silva | Closer de Vendas&#10;WhatsApp: (11) 99999-9999&#10;www.minhaempresa.com.br"></textarea>
@@ -699,10 +686,14 @@
 
     <script>
       // ============================================
-      // LISTA DE EMAILS ADMINISTRADORES (SEGURANÇA TRAVADA)
+      // SEGURANÇA E ARQUITETURA MULTI-TENANT (SAAS)
       // ============================================
-      // Apenas os e-mails abaixo verão o Painel Master e o Dashboard.
+      // Apenas os e-mails abaixo têm permissão REAL de administrador no Front-End.
+      // Em produção real, você usaria o RLS (Row Level Security) do Supabase baseado na Empresa.
       const ADMIN_EMAILS = ['leonvquadros@gmail.com', 'seuemailaqui@gmail.com'];
+      
+      // ID da Empresa Mockado para SaaS (Simula a estrutura Multi-Tenant)
+      let CURRENT_EMPRESA_ID = 1; 
 
       // ============================================
       // VARIÁVEIS GLOBAIS
@@ -728,10 +719,10 @@
       let whiteLabel = { color: '#ffffff', name: 'VL Hunt', logo: '' };
 
       let teamMembers = [];
-      let systemLogs = []; // NOVA VARIÁVEL: LOGS/PDCA
+      let systemLogs = []; 
       
       const STORAGE_KEYS_TEAM = 'vlhunt_team_members';
-      const STORAGE_KEYS_LOGS = 'vlhunt_system_logs'; // CHAVE LOCAL DOS LOGS
+      const STORAGE_KEYS_LOGS = 'vlhunt_system_logs'; 
       let currentEditingAvatarBase64 = '';
       
       const STORAGE_KEYS = { saved: 'vlhunt_saved_leads_v2', exported: 'vlhunt_exported_leads_v2', filters: 'vlhunt_quality_filters', prefs: 'vlhunt_extra_prefs', profile: 'vlhunt_user_profile', wl: 'vlhunt_whitelabel' };
@@ -780,7 +771,7 @@
         loadLocalData(); 
         loadQualityFilters(); 
         loadTeamMembers(); 
-        loadLogs(); // CARREGA OS LOGS AO INICIAR
+        loadLogs(); 
         
         document.getElementById('wlColor').addEventListener('input', function() { document.getElementById('wlColorText').value = this.value; });
 
@@ -793,23 +784,33 @@
           }
         });
 
+        // ADICIONANDO O ENTER PARA BUSCAR (Print 6)
+        const inputsBusca = document.querySelectorAll('#nameInput, #nicheInput, #cityInput, #districtInput, #streetInput');
+        inputsBusca.forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') { 
+                    e.preventDefault(); 
+                    searchLeads(); 
+                }
+            });
+        });
+
         const { data: { session } } = await supa.auth.getSession();
         if (session) { iniciarSistemaApp(session.user.email); }
       });
 
       // ============================================
-      // LOGS / PDCA (AGORA COM FILTRO DE VISÃO)
+      // LOGS / PDCA
       // ============================================
       function loadLogs() {
-        try { systemLogs = JSON.parse(localStorage.getItem(STORAGE_KEYS_LOGS)) || []; } 
-        catch(e) { systemLogs = []; }
+        try { systemLogs = JSON.parse(localStorage.getItem(STORAGE_KEYS_LOGS)) || []; } catch(e) { systemLogs = []; }
         renderLogs();
       }
 
       function addLog(action, detail) {
         const log = { id: Date.now(), user: userProfile.name, action, detail, time: new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) };
-        systemLogs.unshift(log); // Adiciona no topo
-        if (systemLogs.length > 50) systemLogs.pop(); // Mantém apenas os 50 últimos para não pesar
+        systemLogs.unshift(log); 
+        if (systemLogs.length > 50) systemLogs.pop(); 
         localStorage.setItem(STORAGE_KEYS_LOGS, JSON.stringify(systemLogs));
         renderLogs();
       }
@@ -818,11 +819,8 @@
         const list = document.getElementById('pdcaLogsList');
         if (!list) return;
 
-        // SE FOR VENDEDOR, VÊ SÓ OS DELE. SE FOR ADMIN, VÊ TODOS.
         let logsToShow = systemLogs;
-        if (!isUserAdmin) {
-            logsToShow = systemLogs.filter(l => l.user === userProfile.name);
-        }
+        if (!isUserAdmin) logsToShow = systemLogs.filter(l => l.user === userProfile.name);
 
         list.innerHTML = logsToShow.length ? logsToShow.map(l => `
           <div style="border-bottom: 1px solid var(--border); padding-bottom: 8px; font-size: 13px;">
@@ -873,7 +871,7 @@
       }
 
       // ============================================
-      // SEGURANÇA E VISÃO (ADMIN VS SDR) - ATUALIZADO
+      // SEGURANÇA E VISÃO (ADMIN VS SDR)
       // ============================================
       function loadUserProfile(userInfo) {
         try { 
@@ -884,17 +882,13 @@
         if(!userProfile.name) userProfile.name = userInfo.fullName;
         currentUserFullName = userProfile.name;
 
+        // VALIDAÇÃO DE SEGURANÇA OCULTA
         isUserAdmin = ADMIN_EMAILS.includes(currentUserEmail.toLowerCase());
-        userProfile.role = isUserAdmin ? 'Admin / Gerente' : 'SDR';
-
-        // DASHBOARD AGORA FICA VISÍVEL PRA TODO MUNDO, MAS MUDA DE NOME
-        document.getElementById('navDashboardBtn').style.display = 'flex';
-        document.getElementById('navDashboardText').textContent = isUserAdmin ? "Dashboard Geral" : "Meu Dashboard";
-
-        // CONFIGURAÇÕES (PAINEL MASTER) CONTINUA SÓ PRA ADMIN
-        document.getElementById('navSettingsBtn').style.display = isUserAdmin ? 'flex' : 'none';
         
-        // CAIXA DE STATUS DA API (ESCONDER DE SDR)
+        // CARGO VISUAL DESBLOQUEADO (Se o cara escreveu "Closer", mantém. Se for admin e nunca mexeu, bota Admin)
+        if(!userProfile.role) userProfile.role = isUserAdmin ? 'Admin / Gerente' : 'SDR';
+
+        document.getElementById('navDashboardText').textContent = isUserAdmin ? "Dashboard Geral" : "Meu Dashboard";
         document.getElementById('dashAdminStatus').style.display = isUserAdmin ? 'block' : 'none';
 
         const addTeamMemberBtn = document.getElementById('addTeamMemberBtn');
@@ -909,8 +903,7 @@
         }
 
         const isDashVis = document.getElementById('dashboardSection').classList.contains('hidden') === false;
-        if (!isUserAdmin && isDashVis) { showSection('dashboard'); } // Se carregar a tela e não for admin, pode ir pro dash dele
-        else if(isUserAdmin && isDashVis) { showSection('dashboard'); }
+        if(isDashVis) { showSection('dashboard'); }
         else { showSection('extract'); } 
 
         document.getElementById('topUserName').textContent = userProfile.name;
@@ -925,6 +918,7 @@
 
       function saveProfile() {
         userProfile.name = document.getElementById('profileName').value.trim() || currentUserFullName;
+        userProfile.role = document.getElementById('profileRole').value.trim() || 'SDR';
         userProfile.signature = document.getElementById('profileSignature').value.trim();
         localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(userProfile));
         
@@ -970,7 +964,7 @@
           const data = await response.json();
           if(data.choices && data.choices[0]) {
             textArea.value = data.choices[0].message.content.trim();
-            addLog('usou_ia', `Gerou copy de IA para a empresa: ${lead.name}`); // Log da IA!
+            addLog('usou_ia', `Gerou copy de IA para a empresa: ${lead.name}`); 
           } else {
             throw new Error('Erro na resposta');
           }
@@ -1024,33 +1018,43 @@
         if(leads.length > 0) renderLeads(); 
       }
 
-      async function saveSettings() {
-        extraPrefs.webhook = document.getElementById('webhookUrlInput').value.trim();
-        extraPrefs.blacklist = document.getElementById('blacklistInput').value.trim();
-        extraPrefs.ddd = document.getElementById('dddInput').value.trim();
+      function saveAISettings() {
         extraPrefs.openaiKey = document.getElementById('openaiApiKeyInput').value.trim(); 
         extraPrefs.aiContext = document.getElementById('aiContextInput').value.trim();
         localStorage.setItem(STORAGE_KEYS.prefs, JSON.stringify(extraPrefs));
+        toast('Configurações da IA salvas com sucesso!');
+      }
 
+      async function saveSettings() {
+        if (!isUserAdmin) { toast("Você não tem permissão para editar APIs."); return; }
+
+        extraPrefs.webhook = document.getElementById('webhookUrlInput').value.trim();
+        extraPrefs.blacklist = document.getElementById('blacklistInput').value.trim();
+        extraPrefs.ddd = document.getElementById('dddInput').value.trim();
+        saveAISettings(); // Salva IA junto
+        
         const gKey = document.getElementById('googleApiKeyInput').value.trim();
         const pToken = document.getElementById('pipedriveTokenInput').value.trim();
         const mPages = parseInt(document.getElementById('maxPagesInput').value.trim()) || 3;
 
         try {
-          const { data: existe } = await supa.from('configuracoes').select('id').limit(1);
-          const payload = { google_api_key: gKey, pipedrive_token: pToken, limite_paginas: mPages };
+          // Lógica Multi-tenant (Filtrando por ID de Empresa)
+          const { data: existe } = await supa.from('configuracoes').select('id').eq('empresa_id', CURRENT_EMPRESA_ID).limit(1);
+          const payload = { empresa_id: CURRENT_EMPRESA_ID, google_api_key: gKey, pipedrive_token: pToken, limite_paginas: mPages };
+          
           if (existe && existe.length > 0) { await supa.from('configuracoes').update(payload).eq('id', existe[0].id); } 
           else { await supa.from('configuracoes').insert([payload]); }
           
           configSupabase = { googleApiKey: gKey, pipedriveToken: pToken, maxPages: mPages };
           if (gKey) loadGoogleMapsScript(gKey);
-          toast('Configurações salvas!');
+          toast('Integrações globais salvas!');
         } catch (err) { toast('Erro ao salvar integrações.'); } 
       }
 
       async function carregarConfiguracoesDoSupabase() {
         try {
-          const { data, error } = await supa.from('configuracoes').select('*').limit(1);
+          // Multi-tenant Busca
+          const { data, error } = await supa.from('configuracoes').select('*').eq('empresa_id', CURRENT_EMPRESA_ID).limit(1);
           if (data && data.length > 0) {
              configSupabase.googleApiKey = data[0].google_api_key || '';
              configSupabase.pipedriveToken = data[0].pipedrive_token || '';
@@ -1069,7 +1073,7 @@
       }
 
       // ============================================
-      // GERENCIAMENTO DA EQUIPE (RANKING)
+      // GERENCIAMENTO DA EQUIPE (RANKING E PRESENÇA)
       // ============================================
       function loadTeamMembers() {
         try {
@@ -1106,7 +1110,13 @@
 
         sortedTeam.forEach((member, i) => {
           let rClass = i===0 ? 'rank-1' : i===1 ? 'rank-2' : i===2 ? 'rank-3' : '';
-          let avatarHtml = member.avatar ? `<img src="${member.avatar}" class="rank-avatar">` : `<div class="rank-avatar" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:bold;">${member.name.substring(0,2).toUpperCase()}</div>`;
+          
+          // LÓGICA DE PRESENÇA (Simulando o usuário atual online e outros offline)
+          let isOnline = (member.name === userProfile.name);
+          let dotClass = isOnline ? 'status-dot' : 'status-dot offline';
+
+          let avatarHtml = member.avatar ? `<div class="rank-avatar"><img src="${member.avatar}"><div class="${dotClass}" title="${isOnline ? 'Online' : 'Offline'}"></div></div>` : `<div class="rank-avatar" style="color:var(--muted);font-weight:bold;">${member.name.substring(0,2).toUpperCase()}<div class="${dotClass}" title="${isOnline ? 'Online' : 'Offline'}"></div></div>`;
+          
           listEl.innerHTML += `
             <div class="rank-item ${rClass}" style="${i>2 ? 'border-left:4px solid var(--border)':''}">
               <div class="rank-pos">${i+1}º</div>${avatarHtml}
@@ -1148,7 +1158,7 @@
       }
 
       // ============================================
-      // EXTRAÇÃO, GOOGLE MAPS E NAVEGAÇÃO
+      // NAVEGAÇÃO E UX
       // ============================================
       function updateAvatarUI(base64, name) {
         const topInitials = document.getElementById('topUserInitials');
@@ -1167,7 +1177,6 @@
       }
 
       function showSection(section) {
-        if (section === 'settings' && !isUserAdmin) { toast('Acesso negado.'); return; }
         
         ['dashboardSection', 'extractSection', 'savedSection', 'pipedriveSection', 'settingsSection', 'accountSection', 'rankingSection'].forEach(id => document.getElementById(id).classList.add('hidden'));
         document.getElementById(section + 'Section').classList.remove('hidden');
@@ -1179,24 +1188,28 @@
         const t = document.getElementById('topTitle'), s = document.getElementById('topSubtitle');
         
         if(section === 'dashboard') { 
-            // TEXTO DINÂMICO BASEADO NO CARGO DO USUÁRIO!
             t.textContent = isUserAdmin ? "Dashboard Geral" : "Meu Dashboard"; 
             s.textContent = isUserAdmin ? "Visão geral da operação da equipe." : "Acompanhe suas métricas individuais."; 
             
-            // Oculta informações da API e CRM do vendedor para ele não se assustar
-            document.getElementById('dashAdminStatus').style.display = isUserAdmin ? 'block' : 'none';
-            
-            // Texto do log dinâmico
             document.getElementById('pdcaTitle').textContent = isUserAdmin ? "Log de Atividades (PDCA)" : "Meu Histórico de Ações";
             document.getElementById('pdcaSubtitle').textContent = isUserAdmin ? "Acompanhe em tempo real as ações da sua equipe no sistema." : "Seu registro pessoal de buscas e leads salvos.";
             
             updateDashboardStats(); 
-            renderLogs(); // Filtra os logs na hora que abre a tela
+            renderLogs();
         }
         else if(section === 'extract') { t.textContent = "Prospecção Ativa"; s.textContent = "Encontre novos clientes."; }
         else if(section === 'ranking') { t.textContent = "Ranking"; s.textContent = "Gamificação da equipe."; }
         else if(section === 'saved') { t.textContent = "Pastas"; s.textContent = "Leads salvos."; updateFolderFilterDropdown(); renderSavedLeads(); }
-        else if(section === 'settings') { t.textContent = "Painel Master"; s.textContent = "Configurações do SaaS."; }
+        else if(section === 'settings') { 
+            t.textContent = "Painel Master"; s.textContent = isUserAdmin ? "Configurações Globais do SaaS." : "Suas configurações pessoais.";
+            
+            // Lógica para bloquear Inputs Sensíveis se não for Admin
+            const apiInputs = ['googleApiKeyInput', 'pipedriveTokenInput', 'maxPagesInput', 'webhookUrlInput'];
+            apiInputs.forEach(id => {
+                document.getElementById(id).disabled = !isUserAdmin;
+            });
+            document.getElementById('btnSaveIntegrations').style.display = isUserAdmin ? 'inline-flex' : 'none';
+        }
         else if(section === 'account') { t.textContent = "Minha Conta"; s.textContent = "Seu perfil."; }
       }
 
@@ -1211,6 +1224,9 @@
         try { exportedLeads = JSON.parse(localStorage.getItem(STORAGE_KEYS.exported) || '[]'); } catch { exportedLeads = []; }
       }
 
+      // ============================================
+      // EXTRAÇÃO E GOOGLE MAPS
+      // ============================================
       function loadGoogleMapsScript(apiKey, forceReload = false) {
         if (window.google && window.google.maps && window.google.maps.places && !forceReload) { initGoogleMaps(); return; }
         const oldScript = document.getElementById('googleMapsScript'); if (oldScript) oldScript.remove();
@@ -1229,7 +1245,7 @@
         if (isSearching) return;
         const name = document.getElementById('nameInput').value, niche = document.getElementById('nicheInput').value, city = document.getElementById('cityInput').value;
         if (!name && (!niche || !city)) { toast('Digite Nome ou Nicho+Cidade.'); return; }
-        if (!placesService) { toast('Google Maps não conectado. Vá em Painel Master.'); return; }
+        if (!placesService) { toast('Google Maps não conectado. Fale com seu gerente.'); return; }
         
         leads = []; 
         ignoredLeadsCount = 0; 
@@ -1297,10 +1313,7 @@
                     if(!dddsPermitidos.includes(dddLead)) removerPorDDD = true;
                  }
                  
-                 if(removerPorDDD) {
-                     leads.splice(i, 1); 
-                 }
-
+                 if(removerPorDDD) { leads.splice(i, 1); }
                  renderLeads(); 
               }
             }
@@ -1327,18 +1340,27 @@
       function createLeadCard(lead, source) {
         const card = document.createElement('div'); card.className = 'lead-card';
         const whatsUrl = lead.phone ? `https://wa.me/55${lead.phone.replace(/\D/g,'')}` : '';
-        
         const safeName = lead.name || '';
         const instaQuery = encodeURIComponent(`site:instagram.com ${safeName}`);
         const instaUrl = `https://www.google.com/search?q=${instaQuery}`;
-        
         const emailQuery = encodeURIComponent(`"${safeName}" email OR contato`);
         const emailUrl = `https://www.google.com/search?q=${emailQuery}`;
+
+        // TAG DO DONO (Admin enxerga de quem é o lead)
+        let ownerTag = '';
+        if (source === 'saved' && isUserAdmin && lead.owner) {
+           ownerTag = `<span class="badge badge-owner">👤 ${lead.owner}</span>`;
+        }
 
         card.innerHTML = `
           ${source === 'current' ? `<input type="checkbox" class="lead-check" onchange="toggleLeadSelection('${lead.place_id}', this.checked)">` : ''}
           ${lead.photo ? `<img class="lead-photo" src="${lead.photo}">` : `<div class="lead-photo-placeholder">Sem imagem</div>`}
-          <h4 class="lead-title">${lead.name}</h4>
+          
+          <div class="lead-title-row">
+             <h4 class="lead-title">${lead.name}</h4>
+             ${ownerTag}
+          </div>
+
           <div class="lead-info"><span>${lead.address || 'Sem endereço'}</span></div>
           <div class="lead-info"><span>${lead.phone || 'Sem telefone'}</span></div>
           
@@ -1367,7 +1389,8 @@
         let count = 0;
         
         pendingLeadsToSave.forEach(l => { 
-            savedLeads.push({...l, folder}); 
+            // ADICIONADO: Marcando o dono do lead salvo
+            savedLeads.push({...l, folder, owner: userProfile.name }); 
             leads = leads.filter(x => x.place_id !== l.place_id); 
             count++;
         });
@@ -1395,12 +1418,9 @@
 
       function updateDashboardStats() {
         document.getElementById('dashTotalSaved').textContent = savedLeads.length;
-        
         const phonesCount = savedLeads.filter(l => l.phone).length;
         document.getElementById('dashPhoneCount').textContent = phonesCount;
-        
         document.getElementById('dashExportedCount').textContent = exportedLeads.length;
-        
         const convRate = savedLeads.length ? Math.round((exportedLeads.length / savedLeads.length) * 100) : 0;
         document.getElementById('dashConvRate').textContent = convRate + '%';
 
@@ -1417,10 +1437,19 @@
       }
 
       function updateFolderFilterDropdown() {}
+      
       function renderSavedLeads() {
         const grid = document.getElementById('savedGrid'); grid.innerHTML = '';
-        savedLeads.forEach(lead => grid.appendChild(createLeadCard(lead, 'saved')));
+        
+        let listToShow = savedLeads;
+        // Se NÃO for admin, só mostra os leads que ele salvou
+        if(!isUserAdmin) {
+            listToShow = savedLeads.filter(l => l.owner === userProfile.name);
+        }
+        
+        listToShow.forEach(lead => grid.appendChild(createLeadCard(lead, 'saved')));
       }
+
       function clearSavedLeads() { savedLeads = []; localStorage.setItem(STORAGE_KEYS.saved, '[]'); renderSavedLeads(); updateDashboardStats(); toast('Limpo!'); }
       function clearResults() { leads = []; renderLeads(); }
       function exportCurrentToCSV() { toast('Baixando CSV...'); }
