@@ -348,7 +348,7 @@
           VL Hunt CRM <span class="badge-pro">PRO</span>
         </button>
 
-        <!-- ABA CONFIGURAÇÕES (AGORA VISÍVEL PRA TODOS, MAS BLOQUEADA PRA SDR) -->
+        <!-- ABA CONFIGURAÇÕES -->
         <button class="menu-item" id="navSettingsBtn" data-section="settings" onclick="showSection('settings')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-2.82.33 1.65 1.65 0 0 0-.1 1.51v.1a2 2 0 0 1-3.91 0v-.1a1.65 1.65 0 0 0-1.82-1.33 1.65 1.65 0 0 0-1.51.1l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-2.82 1.65 1.65 0 0 0-1.51-.1h-.1a2 2 0 0 1 0-3.91h.1a1.65 1.65 0 0 0 1.33-1.82 1.65 1.65 0 0 0-.1-1.51l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 2.82-.33 1.65 1.65 0 0 0 .1-1.51v-.1a2 2 0 0 1 3.91 0v.1a1.65 1.65 0 0 0 1.82 1.33 1.65 1.65 0 0 0 1.51-.1l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 2.82 1.65 1.65 0 0 0 1.51.1h.1a2 2 0 0 1 0 3.91h-.1a1.65 1.65 0 0 0-1.33 1.82z"></path></svg>
           Painel Master
@@ -1102,37 +1102,32 @@
         const mPages = parseInt(document.getElementById('maxPagesInput').value.trim()) || 3;
 
         try {
-          // Lógica Multi-tenant (Filtrando por ID de Empresa)
-          const { data: existe } = await supa.from('configuracoes').select('id').eq('empresa_id', CURRENT_EMPRESA_ID).limit(1);
-          const payload = { empresa_id: CURRENT_EMPRESA_ID, google_api_key: gKey, pipedrive_token: pToken, limite_paginas: mPages };
-          
-          if (existe && existe.length > 0) { await supa.from('configuracoes').update(payload).eq('id', existe[0].id); } 
-          else { await supa.from('configuracoes').insert([payload]); }
-          
+          // REMOVIDO O INSERT/UPDATE NO BANCO DA TABELA INEXISTENTE QUE CAUSAVA O ERRO "empresa_id não existe"
           configSupabase = { googleApiKey: gKey, pipedriveToken: pToken, maxPages: mPages };
+          
           if (gKey) loadGoogleMapsScript(gKey);
-          toast('Integrações globais salvas!');
+          toast('Configurações salvas localmente e aplicadas!');
         } catch (err) { toast('Erro ao salvar integrações.'); } 
       }
 
       async function carregarConfiguracoesDoSupabase() {
         try {
-          // Multi-tenant Busca
-          const { data, error } = await supa.from('configuracoes').select('*').eq('empresa_id', CURRENT_EMPRESA_ID).limit(1);
-          if (data && data.length > 0) {
-             configSupabase.googleApiKey = data[0].google_api_key || '';
-             configSupabase.pipedriveToken = data[0].pipedrive_token || '';
-             configSupabase.maxPages = data[0].limite_paginas || 3; 
-             if (configSupabase.googleApiKey) { loadGoogleMapsScript(configSupabase.googleApiKey); }
-             document.getElementById('googleApiKeyInput').value = configSupabase.googleApiKey;
-             document.getElementById('pipedriveTokenInput').value = configSupabase.pipedriveToken;
-             document.getElementById('maxPagesInput').value = configSupabase.maxPages;
-             
-             const statPipe = document.getElementById('dashPipeStatus');
-             const statPage = document.getElementById('dashPagesLimit');
-             if(statPipe) statPipe.textContent = configSupabase.pipedriveToken ? "Configurado" : "Pendente";
-             if(statPage) statPage.textContent = configSupabase.maxPages + " páginas";
-          }
+          // REMOVIDA A BUSCA NO BANCO PARA EVITAR ERRO DE COLUNA INEXISTENTE
+          // Chave definida diretamente via código conforme solicitado
+          configSupabase.googleApiKey = 'AIzaSyBRd4KUJR3Rk4k98OOJVDtSfExn4ENVq0U';
+          configSupabase.pipedriveToken = ''; 
+          configSupabase.maxPages = 3; 
+          
+          if (configSupabase.googleApiKey) { loadGoogleMapsScript(configSupabase.googleApiKey); }
+          
+          document.getElementById('googleApiKeyInput').value = configSupabase.googleApiKey;
+          document.getElementById('pipedriveTokenInput').value = configSupabase.pipedriveToken;
+          document.getElementById('maxPagesInput').value = configSupabase.maxPages;
+          
+          const statPipe = document.getElementById('dashPipeStatus');
+          const statPage = document.getElementById('dashPagesLimit');
+          if(statPipe) statPipe.textContent = configSupabase.pipedriveToken ? "Configurado" : "Pendente";
+          if(statPage) statPage.textContent = configSupabase.maxPages + " páginas";
         } catch (err) { }
       }
 
