@@ -1226,7 +1226,14 @@
       function createLeadCard(lead, source) {
         const card = document.createElement('div'); card.className = 'lead-card';
         const whatsUrl = lead.phone ? `https://wa.me/55${lead.phone.replace(/\D/g,'')}?text=Ol%C3%A1,%20encontrei%20a%20empresa%20${encodeURIComponent(lead.name)}%20no%20Google.%20Podemos%20falar?` : '';
-        const instaUrl = `https://www.google.com/search?q=${encodeURIComponent(`site:instagram.com ${lead.name}`)}`;
+        
+        let localBusca = "";
+        if (lead.address) {
+            const partes = lead.address.split('-');
+            if (partes.length > 1) { localBusca = ` "${partes[1].trim()}"`; }
+            else if (partes.length === 1) { localBusca = ` "${lead.address.split(',')[0].trim()}"`; }
+        }
+        const instaUrl = `https://www.google.com/search?q=${encodeURIComponent(`site:instagram.com "${lead.name}"${localBusca}`)}`;
         const emailUrl = `https://www.google.com/search?q=${encodeURIComponent(`"${lead.name}" email OR contato`)}`;
 
         let ownerTag = source === 'saved' && lead.owner ? `<span class="badge badge-owner">👤 ${lead.owner}</span>` : '';
@@ -1256,7 +1263,13 @@
       function toggleLeadSelection(id, checked) { checked ? selectedLeadIds.add(id) : selectedLeadIds.delete(id); }
       function toggleSelectAll(checked) { checked ? leads.forEach(l => selectedLeadIds.add(l.place_id)) : selectedLeadIds.clear(); renderLeads(); }
 
-      function openFolderModal() { document.getElementById('folderModal').style.display = 'flex'; }
+      function openFolderModal() { 
+        const select = document.getElementById('folderSelect');
+        const pastas = [...new Set(savedLeads.map(l => l.folder).filter(f => f && f.trim() !== ''))];
+        select.innerHTML = '<option value="">-- Nenhuma selecionada --</option>' + pastas.map(p => `<option value="${p}">${p}</option>`).join('');
+        document.getElementById('newFolderInput').value = '';
+        document.getElementById('folderModal').style.display = 'flex'; 
+      }
       function closeFolderModal() { document.getElementById('folderModal').style.display = 'none'; pendingLeadsToSave = []; }
       
       function saveSelectedLeads() {
@@ -1269,9 +1282,11 @@
       // GRAVANDO LEADS REAIS NO BANCO
       // ==========================================
       async function confirmFolderSave() {
-        const folder = document.getElementById('newFolderInput').value || 'Geral';
-        let count = 0;
+        const selected = document.getElementById('folderSelect').value;
+        const typed = document.getElementById('newFolderInput').value.trim();
+        const folder = typed !== '' ? typed : (selected !== '' ? selected : 'Geral');
         
+        let count = 0;
         document.querySelector('#folderModal .btn-main').textContent = 'Salvando no Banco...';
 
         try {
@@ -1296,6 +1311,8 @@
               savedLeads.push(novoLead); 
               leads = leads.filter(x => x.place_id !== l.place_id); 
               count++;
+            } else {
+              console.error("Erro banco salvar:", error);
             }
           }
 
@@ -1308,7 +1325,7 @@
           renderSavedLeads();
           updateDashboardStats(); 
           closeFolderModal(); 
-          toast(`${count} Leads Salvos no Banco!`);
+          toast(`${count} Leads Salvos na pasta: ${folder}`);
         } catch(e) {
           toast("Erro na conexão com o banco");
         } finally {
@@ -1319,7 +1336,23 @@
       function renderSavedLeads() {
         const grid = document.getElementById('savedGrid'); grid.innerHTML = '';
         let listToShow = isUserAdmin ? savedLeads : savedLeads.filter(l => l.usuario_email === currentUserEmail);
-        listToShow.forEach(lead => grid.appendChild(createLeadCard(lead, 'saved')));
+        
+        const filterSelect = document.getElementById('savedFolderFilter');
+        const currentFolder = filterSelect.value;
+        const pastas = [...new Set(listToShow.map(l => l.folder).filter(f => f && f.trim() !== ''))];
+        filterSelect.innerHTML = '<option value="Todas">Todas as pastas</option>' + pastas.map(p => `<option value="${p}">${p}</option>`).join('');
+        if (pastas.includes(currentFolder)) filterSelect.value = currentFolder; else filterSelect.value = 'Todas';
+
+        if (filterSelect.value !== 'Todas') {
+            listToShow = listToShow.filter(l => l.folder === filterSelect.value);
+        }
+
+        if (listToShow.length === 0) {
+            document.getElementById('savedEmpty').style.display = 'block';
+        } else {
+            document.getElementById('savedEmpty').style.display = 'none';
+            listToShow.forEach(lead => grid.appendChild(createLeadCard(lead, 'saved')));
+        }
       }
 
       async function clearSavedLeads() { 
@@ -1345,8 +1378,45 @@
       }
 
       function clearResults() { leads = []; renderLeads(); }
-      function exportCurrentToCSV() { toast('Baixando CSV...'); }
-      function exportSavedToCSV() { toast('Baixando CSV...'); }
+
+      function downloadCSV(leadsList, filename) {
+        if (!leadsList || leadsList.length === 0) { toast("Nenhum lead para exportar."); return; }
+        const headers = ['Nome da Empresa', 'Telefone', 'Endereco', 'Site', 'Avaliacao', 'Pasta', 'Status CRM'];
+        const rows = leadsList.map(l => {
+          return [
+            `"${(l.name || '').replace(/"/g, '""')}"`,
+            `"${(l.phone || '').replace(/"/g, '""')}"`,
+            `"${(l.address || '').replace(/"/g, '""')}"`,
+            `"${(l.website || '').replace(/"/g, '""')}"`,
+            `"${l.rating || ''}"`,
+            `"${l.folder || ''}"`,
+            `"${l.crm_status || 'novo'}"`
+          ].join(',');
+        });
+        const csvContent = "\ufeff" + headers.join(',') + '\n' + rows.join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast("Download do CSV concluído!");
+      }
+
+      function exportCurrentToCSV() {
+        const list = selectedLeadIds.size > 0 ? leads.filter(l => selectedLeadIds.has(l.place_id)) : leads;
+        downloadCSV(list, `Leads_Pesquisa_${new Date().toLocaleDateString().replace(/\//g,'-')}.csv`);
+      }
+      
+      function exportSavedToCSV() {
+        const filter = document.getElementById('savedFolderFilter').value;
+        let list = isUserAdmin ? savedLeads : savedLeads.filter(l => l.usuario_email === currentUserEmail);
+        if (filter !== 'Todas') list = list.filter(l => l.folder === filter);
+        downloadCSV(list, `Leads_Salvos_${new Date().toLocaleDateString().replace(/\//g,'-')}.csv`);
+      }
+
       function scrollToTop() { window.scrollTo({top:0, behavior:'smooth'}); }
 
       // ============================================
