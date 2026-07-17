@@ -312,7 +312,6 @@
 
   <div id="mainApp" style="display:none;">
     <div class="app">
-      <!-- (TODO O SEU HTML DO CORPO CONTINUA INTACTO AQUI) -->
       <aside class="sidebar">
         <div class="brand">
           <div class="brand-icon">V</div>
@@ -349,7 +348,6 @@
           VL Hunt CRM <span class="badge-pro">PRO</span>
         </button>
 
-        <!-- ABA CONFIGURAÇÕES -->
         <button class="menu-item" id="navSettingsBtn" data-section="settings" onclick="showSection('settings')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-2.82.33 1.65 1.65 0 0 0-.1 1.51v.1a2 2 0 0 1-3.91 0v-.1a1.65 1.65 0 0 0-1.82-1.33 1.65 1.65 0 0 0-1.51.1l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-2.82 1.65 1.65 0 0 0-1.51-.1h-.1a2 2 0 0 1 0-3.91h.1a1.65 1.65 0 0 0 1.33-1.82 1.65 1.65 0 0 0-.1-1.51l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 2.82-.33 1.65 1.65 0 0 0 .1-1.51v-.1a2 2 0 0 1 3.91 0v.1a1.65 1.65 0 0 0 1.82 1.33 1.65 1.65 0 0 0 1.51-.1l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 2.82 1.65 1.65 0 0 0 1.51.1h.1a2 2 0 0 1 0 3.91h-.1a1.65 1.65 0 0 0-1.33 1.82z"></path></svg>
           Painel Master
@@ -381,7 +379,6 @@
           </div>
         </div>
 
-        <!-- ABA DASHBOARD -->
         <section id="dashboardSection" class="hidden">
           <div class="stats">
             <div class="stat-card"><span>Leads Salvos</span><strong id="dashTotalSaved">0</strong></div>
@@ -434,12 +431,10 @@
               <div><h3 id="pdcaTitle">Log de Atividades (PDCA)</h3><p id="pdcaSubtitle">Acompanhe as ações registradas no sistema.</p></div>
             </div>
             <div id="pdcaLogsList" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 10px;">
-              <!-- Logs preenchidos via JS -->
             </div>
           </div>
         </section>
 
-        <!-- ABA EXTRAIR -->
         <section id="extractSection">
           <div class="section">
             <div class="section-title" style="margin-bottom: 22px;">
@@ -535,25 +530,21 @@
             <!-- O BOARD KANBAN -->
             <div class="kanban-board">
               
-              <!-- Coluna: Novos -->
               <div class="kanban-col" id="col-novo" ondrop="dropCard(event)" ondragover="allowDrop(event)">
                 <div class="kanban-col-header" style="border-top: 3px solid #3b82f6; border-radius: 8px 8px 0 0;">📌 Novos Leads <span id="count-novo" style="color:var(--muted); font-weight:normal;">0</span></div>
                 <div class="kanban-cards" id="cards-novo"></div>
               </div>
 
-              <!-- Coluna: Em Contato -->
               <div class="kanban-col" id="col-contato" ondrop="dropCard(event)" ondragover="allowDrop(event)">
                 <div class="kanban-col-header" style="border-top: 3px solid #fbbf24; border-radius: 8px 8px 0 0;">💬 Em Contato <span id="count-contato" style="color:var(--muted); font-weight:normal;">0</span></div>
                 <div class="kanban-cards" id="cards-contato"></div>
               </div>
 
-              <!-- Coluna: Negociação -->
               <div class="kanban-col" id="col-negociacao" ondrop="dropCard(event)" ondragover="allowDrop(event)">
                 <div class="kanban-col-header" style="border-top: 3px solid #a855f7; border-radius: 8px 8px 0 0;">🤝 Negociação <span id="count-negociacao" style="color:var(--muted); font-weight:normal;">0</span></div>
                 <div class="kanban-cards" id="cards-negociacao"></div>
               </div>
 
-              <!-- Coluna: Fechado -->
               <div class="kanban-col" id="col-fechado" ondrop="dropCard(event)" ondragover="allowDrop(event)">
                 <div class="kanban-col-header" style="border-top: 3px solid #22c55e; border-radius: 8px 8px 0 0;">✅ Venda Fechada <span id="count-fechado" style="color:var(--muted); font-weight:normal;">0</span></div>
                 <div class="kanban-cards" id="cards-fechado"></div>
@@ -578,7 +569,6 @@
               <button class="tab-btn" onclick="switchSettingsTab('tab-aparencia', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 4.2c.42.31 1 .31 1.42 0L24.74 2.7c.36-.26.36-.8 0-1.06L19.08-2.5c-.42-.31-1-.31-1.42 0L12 -6.7c-.36.26-.36.8 0 1.06z" transform="translate(0, 10)"/><circle cx="12" cy="12" r="5"></circle></svg> Aparência (White-Label)</button>
             </div>
 
-            <!-- CONTEÚDO TAB 1: INTEGRAÇÕES -->
             <div id="tab-integra" class="tab-content active">
               <p style="color:var(--muted); font-size:13px; margin-bottom: 20px;">Configurações de banco de dados e IA. (Acesso Restrito ao Admin)</p>
               
@@ -601,7 +591,6 @@
               </div>
             </div>
 
-            <!-- CONTEÚDO TAB 2: FILTROS DE QUALIDADE -->
             <div id="tab-filtros" class="tab-content">
               <div class="grid-search" style="margin-bottom: 24px;">
                 <div class="field" style="grid-column: span 2;"><label>Palavras Negativadas (Separe por vírgula)</label><textarea id="blacklistInput" rows="2" placeholder="Ex: prefeitura, ong, hospital, teste..."></textarea></div>
@@ -614,7 +603,6 @@
               <div class="actions"><button class="btn btn-main" onclick="saveSettings()">Salvar Filtros</button></div>
             </div>
 
-            <!-- CONTEÚDO TAB 3: APARÊNCIA (WHITE-LABEL) -->
             <div id="tab-aparencia" class="tab-content">
               <p style="color:var(--muted); font-size:13px; margin-bottom: 20px;">Personalize as cores e logotipo do seu sistema.</p>
               <div class="grid-search" style="margin-bottom: 24px;">
@@ -709,7 +697,6 @@
       </div>
     </div>
 
-    <!-- BOTÃO VOLTAR AO TOPO -->
     <button id="backToTopBtn" class="back-to-top" onclick="scrollToTop()" title="Voltar ao topo"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button>
 
     <div id="map" class="map-hidden"></div>
@@ -719,15 +706,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-      // ============================================
-      // CONFIGURAÇÃO DO ADMIN (SÓ ISSO PRECISA AQUI)
-      // Todo o resto da equipe entra 100% dinamicamente!
-      // ============================================
       const ADMIN_EMAILS = ['leonvquadros@gmail.com', 'seuemailaqui@gmail.com'];
       
-      // ============================================
-      // CONEXÃO SUPABASE
-      // ============================================
       const supabaseUrl = 'https://sowbnurzaukkxybqbtxa.supabase.co';
       const supabaseKey = 'sb_publishable_36PhUy-41qXKbCXG7OQkrA_fOiKgUOK';
       const supa = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -752,9 +732,6 @@
       
       const STORAGE_KEYS = { filters: 'vlhunt_quality_filters', prefs: 'vlhunt_extra_prefs', profile: 'vlhunt_user_profile', wl: 'vlhunt_whitelabel' };
 
-      // ============================================
-      // INICIALIZAÇÃO
-      // ============================================
       function formatUserNameFromEmail(email) {
         let namePart = email.split('@')[0].replace(/[._-]/g, ' '); 
         let words = namePart.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
@@ -818,17 +795,15 @@
         loadWhiteLabel(); 
         await carregarConfiguracoesDoSupabase();
 
-        // SEMPRE QUE A PESSOA LOGAR, MANDA PRO BANCO PRA ELA "EXISTIR" NO RANKING.
         await addLog('login', 'Acessou o sistema.');
 
-        // CARREGA LEADS, LOGS E RANKING 100% DO BANCO DE DADOS
         await carregarLeadsDoBanco();
         await loadLogs();
         await carregarRankingReal();
       }
 
       // ==========================================
-      // 1. PUXANDO OS LEADS REAIS DO SUPABASE
+      // TRADUTOR DO BANCO PARA A TELA (CORRIGE AS PASTAS)
       // ==========================================
       async function carregarLeadsDoBanco() {
         try {
@@ -838,15 +813,27 @@
           if (error) throw error;
           
           if (data) {
-            savedLeads = data; 
+            // Pega o dado que veio com nome em Português do banco e converte pro Inglês da tela
+            savedLeads = data.map(d => ({
+              place_id: d.place_id,
+              name: d.nome || d.name || '',
+              phone: d.telefone || d.phone || '',
+              website: d.website || '',
+              address: d.endereco || d.address || '',
+              photo: d.foto || d.photo || '',
+              rating: d.avalicao || d.rating || 0,
+              folder: d.pasta_id || d.folder || 'Geral', // <- ISSO FIXA O BUG DAS PASTAS
+              owner: d.salvo_por || d.owner || '',
+              usuario_email: d.usuario_email,
+              crm_status: d.crm_status || 'novo',
+              cnpj: d.cnpj,
+              cnae: d.cnae
+            })); 
             updateDashboardStats();
           }
         } catch(e) { console.error('Erro banco leads:', e); }
       }
 
-      // ==========================================
-      // 2. FUNÇÃO DE LOGS (Que ajuda a identificar os usuários)
-      // ==========================================
       async function loadLogs() {
         try {
           let query = supa.from('logs_atividades').select('*').order('criado_em', {ascending: false}).limit(50);
@@ -887,12 +874,8 @@
         `).join('') : '<div class="empty" style="border:none;">Nenhuma atividade registrada ainda.</div>';
       }
 
-      // ==========================================
-      // 3. RANKING REAL (100% DINÂMICO E AUTOMÁTICO)
-      // ==========================================
       async function carregarRankingReal() {
         try {
-          // A. Pega todos os emails que já salvaram lead pra dar os pontos
           const { data: leadsData } = await supa.from('leads_salvos').select('usuario_email');
           const contagem = {};
           if (leadsData) {
@@ -902,7 +885,6 @@
             });
           }
 
-          // B. Pega todos os usuários únicos olhando os Logs (assim quem só logou também aparece)
           const { data: logsData } = await supa.from('logs_atividades').select('usuario_email, usuario');
           const todosUsuarios = {};
           if (logsData) {
@@ -913,7 +895,6 @@
             });
           }
 
-          // Monta o array puxando as informações de TODO MUNDO que já pisou no sistema
           const rankingArray = Object.keys(todosUsuarios).map(email => {
             const salvos = contagem[email] || 0;
             return { email: email, nome: todosUsuarios[email], salvos: salvos, xp: salvos * 10 };
@@ -940,9 +921,6 @@
         } catch(e) { console.error(e); }
       }
 
-      // ============================================
-      // WHITE LABEL, PERFIL E INTERFACE
-      // ============================================
       function loadWhiteLabel() {
         try {
           const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.wl));
@@ -1066,9 +1044,6 @@
         clearTimeout(window.__tTimer); window.__tTimer = setTimeout(() => { box.style.display = 'none'; }, 3800); 
       }
 
-      // ============================================
-      // IA ICEBREAKER E PREFERÊNCIAS
-      // ============================================
       async function openIcebreaker(id) {
         const lead = leads.find(l => l.place_id === id) || savedLeads.find(l => l.place_id === id);
         if(!lead) return;
@@ -1146,9 +1121,6 @@
         } catch (err) { }
       }
 
-      // ============================================
-      // EXTRAÇÃO E GOOGLE MAPS
-      // ============================================
       function loadGoogleMapsScript(apiKey, forceReload = false) {
         if (window.google && window.google.maps && window.google.maps.places && !forceReload) { initGoogleMaps(); return; }
         const oldScript = document.getElementById('googleMapsScript'); if (oldScript) oldScript.remove();
@@ -1228,7 +1200,6 @@
         const card = document.createElement('div'); card.className = 'lead-card';
         const whatsUrl = lead.phone ? `https://wa.me/55${lead.phone.replace(/\D/g,'')}?text=Ol%C3%A1,%20encontrei%20a%20empresa%20${encodeURIComponent(lead.name)}%20no%20Google.%20Podemos%20falar?` : '';
         
-        // ====== ALTERAÇÃO DO INSTAGRAM AQUI ======
         const nomeLimpoIG = lead.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '');
         const instaUrl = `https://www.instagram.com/${nomeLimpoIG}`;
         
@@ -1277,7 +1248,7 @@
       function saveLeadById(id) { const lead = leads.find(l => l.place_id === id); if(lead) { pendingLeadsToSave = [lead]; openFolderModal(); } }
 
       // ==========================================
-      // GRAVANDO LEADS REAIS NO BANCO
+      // TRADUTOR DA TELA PARA O BANCO (SALVA E AVISA ERRO)
       // ==========================================
       async function confirmFolderSave() {
         const selected = document.getElementById('folderSelect').value;
@@ -1285,13 +1256,30 @@
         const folder = typed !== '' ? typed : (selected !== '' ? selected : 'Geral');
         
         let count = 0;
-        document.querySelector('#folderModal .btn-main').textContent = 'Salvando no Banco...';
+        const btnConfirm = document.querySelector('#folderModal .btn-main');
+        btnConfirm.textContent = 'Salvando no Banco...';
+        btnConfirm.disabled = true;
 
         try {
           for (const l of pendingLeadsToSave) {
             
-            // Monta o objeto original para o front-end (não altera o funcionamento da tela atual)
-            const novoLead = {
+            // O objeto que o BANCO DE DADOS espera (Preenchendo todas as colunas NOT NULL)
+            const leadParaBD = {
+              place_id: l.place_id,
+              nome: l.name,
+              telefone: l.phone || '',
+              website: l.website || '',
+              endereco: l.address || '',
+              foto: l.photo || '',
+              avalicao: l.rating || 0,
+              pasta_id: folder, // Nome da coluna lá
+              salvo_por: userProfile.name,
+              usuario_email: currentUserEmail,
+              crm_status: 'novo'
+            };
+
+            // O objeto que o FRONTEND espera (Em inglês para renderizar direito sem dar F5)
+            const leadParaTela = {
               place_id: l.place_id,
               name: l.name,
               phone: l.phone || '',
@@ -1299,31 +1287,22 @@
               address: l.address || '',
               photo: l.photo || '',
               rating: l.rating || 0,
-              folder: folder,
+              folder: folder, // Nome da chave que o select das pastas procura
               owner: userProfile.name,
               usuario_email: currentUserEmail,
               crm_status: 'novo'
             };
 
-            // Cria o objeto que será enviado ao banco, apenas com os campos que já existem na sua tabela
-            const leadParaSalvar = {
-              place_id: l.place_id,
-              nome: l.name,
-              telefone: l.phone || '',
-              pasta_id: folder,
-              salvo_por: userProfile.name,
-              usuario_email: currentUserEmail
-            };
-
-            // Envia ao banco somente o objeto com as colunas ajustadas
-            const { data, error } = await supa.from('leads_salvos').insert([leadParaSalvar]).select();
+            const { data, error } = await supa.from('leads_salvos').insert([leadParaBD]).select();
             
             if(!error) {
-              savedLeads.push(novoLead); 
+              savedLeads.push(leadParaTela); 
               leads = leads.filter(x => x.place_id !== l.place_id); 
               count++;
             } else {
-              console.error("Erro banco salvar:", error);
+              console.error("Erro no Supabase:", error);
+              // Mostra exatamente o erro do banco de dados pra gente saber
+              toast("Erro ao salvar: " + (error.message || "Verifique o banco"));
             }
           }
 
@@ -1336,11 +1315,13 @@
           renderSavedLeads();
           updateDashboardStats(); 
           closeFolderModal(); 
-          toast(`${count} Leads Salvos na pasta: ${folder}`);
+          
+          if(count > 0) toast(`${count} Leads Salvos na pasta: ${folder}`);
         } catch(e) {
-          toast("Erro na conexão com o banco");
+          toast("Erro inesperado na conexão com o banco");
         } finally {
-          document.querySelector('#folderModal .btn-main').textContent = 'Confirmar e Salvar';
+          btnConfirm.textContent = 'Confirmar e Salvar';
+          btnConfirm.disabled = false;
         }
       }
 
@@ -1430,9 +1411,6 @@
 
       function scrollToTop() { window.scrollTo({top:0, behavior:'smooth'}); }
 
-      // ============================================
-      // ROBÔ DE ENRIQUECIMENTO E CRM (NO BANCO)
-      // ============================================
       function enriquecerCNPJ(id) {
         const box = document.getElementById(`box-cnpj-${id}`); if(!box) return;
         box.innerHTML = `<div class="cnpj-result" style="color:var(--muted);">⏳ Buscando...</div>`;
@@ -1477,7 +1455,6 @@
           if (index !== -1) {
              savedLeads[index].crm_status = newStatus;
              renderKanban(); 
-             // Salva o arrastar de card direto no Supabase
              await supa.from('leads_salvos').update({crm_status: newStatus}).eq('place_id', leadId);
           }
         }
