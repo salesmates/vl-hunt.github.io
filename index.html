@@ -1289,6 +1289,8 @@
 
         try {
           for (const l of pendingLeadsToSave) {
+            
+            // Monta o objeto original para o front-end (não altera o funcionamento da tela atual)
             const novoLead = {
               place_id: l.place_id,
               name: l.name,
@@ -1303,7 +1305,18 @@
               crm_status: 'novo'
             };
 
-            const { data, error } = await supa.from('leads_salvos').insert([novoLead]).select();
+            // Cria o objeto que será enviado ao banco, apenas com os campos que já existem na sua tabela
+            const leadParaSalvar = {
+              place_id: l.place_id,
+              nome: l.name,
+              telefone: l.phone || '',
+              pasta_id: folder,
+              salvo_por: userProfile.name,
+              usuario_email: currentUserEmail
+            };
+
+            // Envia ao banco somente o objeto com as colunas ajustadas
+            const { data, error } = await supa.from('leads_salvos').insert([leadParaSalvar]).select();
             
             if(!error) {
               savedLeads.push(novoLead); 
