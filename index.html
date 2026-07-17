@@ -185,7 +185,7 @@
     .lead-info a:hover { text-decoration: underline; }
     
     .lead-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; margin-bottom: auto; }
-    .small-btn { border: 1px solid var(--border); background: transparent; color: var(--dark); min-height: 32px; border-radius: 6px; padding: 0 12px; font-size: 12px; font-weight: 600; cursor: text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; }
+    .small-btn { border: 1px solid var(--border); background: transparent; color: var(--dark); min-height: 32px; border-radius: 6px; padding: 0 12px; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; }
     .small-btn:hover { background: var(--border); }
     
     /* ====== VL HUNT CRM (KANBAN BOARD) ====== */
@@ -210,57 +210,7 @@
     
     .map-hidden { width: 1px; height: 1px; opacity: 0; position: fixed; left: -9999px; bottom: -9999px; }
     
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; background: var(--bg); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
-    th, td { text-align: left; padding: 14px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
-    th { font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); background: var(--card); font-size: 11px; }
-    td { color: var(--dark); }
-    
-    /* ====== PERFIL & MINHA CONTA ====== */
-    .profile-wrap { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
-    .avatar-box { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px 24px; display: flex; flex-direction: column; align-items: center; min-width: 240px; }
-    .avatar-img-wrap { width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 2px solid var(--border); margin-bottom: 16px; background: var(--nav-hover); display: flex; align-items: center; justify-content: center; font-size: 32px; color: var(--muted); font-weight: 800; }
-    .avatar-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
-    .avatar-upload-btn { background: var(--nav-hover); color: var(--dark); font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 6px; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
-    .avatar-upload-btn:hover { border-color: var(--primary); color: var(--primary); }
-    .profile-form-wrap { flex: 1; min-width: 300px; }
-
-    /* ====== RANKING GAMIFICAÇÃO ====== */
-    .leaderboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
-    .leaderboard-header select { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--dark); font-size: 13px; outline: none; }
-    .leaderboard-list { display: flex; flex-direction: column; gap: 12px; }
-    .rank-item { position: relative; display: flex; align-items: center; padding: 16px 20px; border-radius: var(--radius); background: var(--bg); border: 1px solid var(--border); transition: 0.2s; }
-    .rank-item:hover { border-color: var(--primary); transform: translateX(5px); }
-    
-    .rank-1 { border-left: 4px solid #fbbf24; background: linear-gradient(90deg, rgba(251, 191, 36, 0.05) 0%, transparent 100%); }
-    .rank-2 { border-left: 4px solid #9ca3af; background: linear-gradient(90deg, rgba(156, 163, 175, 0.05) 0%, transparent 100%); }
-    .rank-3 { border-left: 4px solid #b45309; background: linear-gradient(90deg, rgba(180, 83, 9, 0.05) 0%, transparent 100%); }
-    
-    .rank-pos { font-size: 20px; font-weight: 800; width: 50px; color: var(--dark); display: flex; align-items: center; gap: 4px;}
-    .rank-avatar { position: relative; width: 46px; height: 46px; border-radius: 12px; background: var(--border); margin-right: 16px; display:flex; align-items:center; justify-content:center; }
-    .rank-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
-    
-    /* STATUS ONLINE DOT */
-    .status-dot { position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px; background: #4ade80; border: 3px solid var(--bg); border-radius: 50%; z-index: 5; }
-    .status-dot.offline { background: #9ca3af; }
-
-    .rank-info { flex: 1; }
-    .rank-info strong { display: block; font-size: 15px; color: var(--dark); margin-bottom: 2px; }
-    .rank-info span { font-size: 12px; color: var(--muted); background: var(--border); padding: 2px 8px; border-radius: 4px; }
-    .rank-stats { display: flex; gap: 32px; margin-right: 32px; }
-    .rank-stat-col { text-align: center; }
-    .rank-stat-col span { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
-    .rank-stat-col strong { font-size: 16px; color: var(--dark); font-weight: 700; }
-    .rank-score { font-weight: 800; color: var(--primary-inv); font-size: 14px; background: var(--primary); padding: 8px 16px; border-radius: 20px; }
-
-    .admin-edit-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; padding: 6px 12px; font-size: 11px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
-    .admin-edit-btn:hover { border-color: var(--primary); color: var(--primary); }
-    .rank-admin-actions { position: absolute; right: 20px; top: 12px; display: none; }
-    
-    .show-admin-actions .rank-admin-actions { display: flex; gap: 8px; }
-    .show-admin-actions .rank-score { margin-right: 90px; }
-
-    /* MODAL PREMIUM */
+    /* ====== MODAIS GERAIS ====== */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 10000; animation: fadeIn 0.2s ease; }
     .modal { background: var(--card); padding: 32px; border-radius: var(--radius); width: 420px; max-width: 90%; border: 1px solid var(--border); box-shadow: var(--shadow); transform: scale(0.95); animation: scaleUp 0.2s ease forwards; }
     .modal h3 { margin-top: 0; font-size: 20px; font-weight: 800; margin-bottom: 8px; color: var(--dark); }
@@ -379,6 +329,7 @@
           </div>
         </div>
 
+        <!-- ABA DASHBOARD -->
         <section id="dashboardSection" class="hidden">
           <div class="stats">
             <div class="stat-card"><span>Leads Salvos</span><strong id="dashTotalSaved">0</strong></div>
@@ -431,10 +382,12 @@
               <div><h3 id="pdcaTitle">Log de Atividades (PDCA)</h3><p id="pdcaSubtitle">Acompanhe as ações registradas no sistema.</p></div>
             </div>
             <div id="pdcaLogsList" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 10px;">
+              <!-- Logs preenchidos via JS -->
             </div>
           </div>
         </section>
 
+        <!-- ABA EXTRAIR -->
         <section id="extractSection">
           <div class="section">
             <div class="section-title" style="margin-bottom: 22px;">
@@ -527,29 +480,23 @@
               </div>
             </div>
 
-            <!-- O BOARD KANBAN -->
             <div class="kanban-board">
-              
               <div class="kanban-col" id="col-novo" ondrop="dropCard(event)" ondragover="allowDrop(event)">
                 <div class="kanban-col-header" style="border-top: 3px solid #3b82f6; border-radius: 8px 8px 0 0;">📌 Novos Leads <span id="count-novo" style="color:var(--muted); font-weight:normal;">0</span></div>
                 <div class="kanban-cards" id="cards-novo"></div>
               </div>
-
               <div class="kanban-col" id="col-contato" ondrop="dropCard(event)" ondragover="allowDrop(event)">
                 <div class="kanban-col-header" style="border-top: 3px solid #fbbf24; border-radius: 8px 8px 0 0;">💬 Em Contato <span id="count-contato" style="color:var(--muted); font-weight:normal;">0</span></div>
                 <div class="kanban-cards" id="cards-contato"></div>
               </div>
-
               <div class="kanban-col" id="col-negociacao" ondrop="dropCard(event)" ondragover="allowDrop(event)">
                 <div class="kanban-col-header" style="border-top: 3px solid #a855f7; border-radius: 8px 8px 0 0;">🤝 Negociação <span id="count-negociacao" style="color:var(--muted); font-weight:normal;">0</span></div>
                 <div class="kanban-cards" id="cards-negociacao"></div>
               </div>
-
               <div class="kanban-col" id="col-fechado" ondrop="dropCard(event)" ondragover="allowDrop(event)">
                 <div class="kanban-col-header" style="border-top: 3px solid #22c55e; border-radius: 8px 8px 0 0;">✅ Venda Fechada <span id="count-fechado" style="color:var(--muted); font-weight:normal;">0</span></div>
                 <div class="kanban-cards" id="cards-fechado"></div>
               </div>
-
             </div>
           </div>
         </section>
@@ -562,7 +509,6 @@
               <div><h3 id="settingsTitle">Painel Master</h3><p id="settingsSub">Gerencie integrações e filtros do sistema.</p></div>
             </div>
 
-            <!-- NAVEGAÇÃO DAS ABAS DE CONFIGURAÇÃO -->
             <div class="settings-nav">
               <button class="tab-btn active" onclick="switchSettingsTab('tab-integra', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> Integrações & API</button>
               <button class="tab-btn" onclick="switchSettingsTab('tab-filtros', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> Filtros Qualidade</button>
@@ -612,7 +558,6 @@
               </div>
               <div class="actions"><button class="btn btn-main" onclick="saveWhiteLabel()">Aplicar e Salvar Aparência</button></div>
             </div>
-
           </div>
         </section>
 
@@ -659,24 +604,18 @@
             <div class="leaderboard-header">
               <select id="rankingPeriod"><option value="hoje">Hoje</option><option value="semana" selected>Esta Semana</option></select>
             </div>
-            
             <div class="leaderboard-list" id="leaderboardList"></div>
-            
           </div>
         </section>
-
       </main>
     </div>
 
     <!-- MODALS -->
-    <!-- MODAL ICEBREAKER IA -->
     <div id="icebreakerModal" class="modal-overlay">
       <div class="modal" style="width: 600px; max-width: 95%;">
         <h3>🤖 Opções de Abordagem IA</h3>
         <p>Criadas para <strong id="icebreakerLeadName">...</strong> baseadas no seu produto.</p>
-        
         <textarea id="icebreakerText" rows="12" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:14px; font-size:13px; background:var(--bg); color:var(--dark); outline:none; resize:vertical; margin-bottom:16px;" placeholder="Gerando textos..."></textarea>
-        
         <div class="modal-buttons" style="justify-content: space-between;">
           <button class="btn" style="border-color:transparent;" onclick="closeIcebreakerModal()">Fechar</button>
           <button class="btn btn-main" onclick="copyIcebreaker()">Copiar Tudo</button>
@@ -684,7 +623,6 @@
       </div>
     </div>
 
-    <!-- MODAL PREMIUM DE ESCOLHA DE PASTA -->
     <div id="folderModal" class="modal-overlay">
       <div class="modal">
         <h3>Salvar Leads Selecionados</h3>
@@ -700,7 +638,6 @@
     <button id="backToTopBtn" class="back-to-top" onclick="scrollToTop()" title="Voltar ao topo"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button>
 
     <div id="map" class="map-hidden"></div>
-    
     <div id="toast" class="toast"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg><span id="toastMessage">Mensagem</span></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -727,7 +664,6 @@
       let extraPrefs = { webhook: '', blacklist: '', ddd: '', openaiKey: '', aiContext: '' };
       let userProfile = { name: '', role: 'SDR', signature: '', avatarBase64: '' };
       let whiteLabel = { color: '#ffffff', name: 'VL Hunt', logo: '' };
-
       let systemLogs = []; 
       
       const STORAGE_KEYS = { filters: 'vlhunt_quality_filters', prefs: 'vlhunt_extra_prefs', profile: 'vlhunt_user_profile', wl: 'vlhunt_whitelabel' };
@@ -796,41 +732,18 @@
         await carregarConfiguracoesDoSupabase();
 
         await addLog('login', 'Acessou o sistema.');
-
         await carregarLeadsDoBanco();
         await loadLogs();
         await carregarRankingReal();
       }
 
-      // ==========================================
-      // TRADUTOR DO BANCO PARA A TELA (CORRIGE AS PASTAS)
-      // ==========================================
       async function carregarLeadsDoBanco() {
         try {
           let query = supa.from('leads_salvos').select('*');
           if (!isUserAdmin) { query = query.eq('usuario_email', currentUserEmail); }
           const { data, error } = await query;
           if (error) throw error;
-          
-          if (data) {
-            // Pega o dado que veio com nome em Português do banco e converte pro Inglês da tela
-            savedLeads = data.map(d => ({
-              place_id: d.place_id,
-              name: d.nome || d.name || '',
-              phone: d.telefone || d.phone || '',
-              website: d.website || '',
-              address: d.endereco || d.address || '',
-              photo: d.foto || d.photo || '',
-              rating: d.avalicao || d.rating || 0,
-              folder: d.pasta_id || d.folder || 'Geral', // <- ISSO FIXA O BUG DAS PASTAS
-              owner: d.salvo_por || d.owner || '',
-              usuario_email: d.usuario_email,
-              crm_status: d.crm_status || 'novo',
-              cnpj: d.cnpj,
-              cnae: d.cnae
-            })); 
-            updateDashboardStats();
-          }
+          if (data) { savedLeads = data; updateDashboardStats(); }
         } catch(e) { console.error('Erro banco leads:', e); }
       }
 
@@ -838,7 +751,6 @@
         try {
           let query = supa.from('logs_atividades').select('*').order('criado_em', {ascending: false}).limit(50);
           if (!isUserAdmin) { query = query.eq('usuario_email', currentUserEmail); }
-
           const { data, error } = await query;
           if (data) {
             systemLogs = data.map(dbLog => {
@@ -846,20 +758,15 @@
               return { id: dbLog.id, user: dbLog.usuario, action: dbLog.acao, detail: dbLog.detalhe, time: dateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) };
             });
           }
-        } catch(e) { console.error(e); }
+        } catch(e) {}
         renderLogs();
       }
 
       async function addLog(action, detail) {
         try {
-          await supa.from('logs_atividades').insert([{
-            usuario: userProfile.name || currentUserEmail,
-            usuario_email: currentUserEmail,
-            acao: action,
-            detalhe: detail
-          }]);
+          await supa.from('logs_atividades').insert([{ usuario: userProfile.name || currentUserEmail, usuario_email: currentUserEmail, acao: action, detalhe: detail }]);
           loadLogs(); 
-        } catch(e) { console.error(e); }
+        } catch(e) {}
       }
 
       function renderLogs() {
@@ -867,9 +774,7 @@
         if (!list) return;
         list.innerHTML = systemLogs.length ? systemLogs.map(l => `
           <div style="border-bottom: 1px solid var(--border); padding-bottom: 8px; font-size: 13px;">
-            <strong style="color: var(--primary);">${l.user}</strong> 
-            <span style="color: var(--muted); margin: 0 6px;">às ${l.time}</span>
-            <span style="color: var(--dark);">- ${l.detail}</span>
+            <strong style="color: var(--primary);">${l.user}</strong> <span style="color: var(--muted); margin: 0 6px;">às ${l.time}</span> <span style="color: var(--dark);">- ${l.detail}</span>
           </div>
         `).join('') : '<div class="empty" style="border:none;">Nenhuma atividade registrada ainda.</div>';
       }
@@ -878,22 +783,11 @@
         try {
           const { data: leadsData } = await supa.from('leads_salvos').select('usuario_email');
           const contagem = {};
-          if (leadsData) {
-            leadsData.forEach(lead => {
-              const email = lead.usuario_email || '';
-              if(email) contagem[email] = (contagem[email] || 0) + 1;
-            });
-          }
+          if (leadsData) { leadsData.forEach(lead => { const email = lead.usuario_email || ''; if(email) contagem[email] = (contagem[email] || 0) + 1; }); }
 
           const { data: logsData } = await supa.from('logs_atividades').select('usuario_email, usuario');
           const todosUsuarios = {};
-          if (logsData) {
-            logsData.forEach(log => {
-              if (log.usuario_email) {
-                todosUsuarios[log.usuario_email] = log.usuario || log.usuario_email;
-              }
-            });
-          }
+          if (logsData) { logsData.forEach(log => { if (log.usuario_email) { todosUsuarios[log.usuario_email] = log.usuario || log.usuario_email; } }); }
 
           const rankingArray = Object.keys(todosUsuarios).map(email => {
             const salvos = contagem[email] || 0;
@@ -908,27 +802,22 @@
                return `
                 <div class="rank-item ${rClass}" style="${index > 2 ? 'border-left:4px solid var(--border)' : ''}">
                   <div class="rank-pos">${index + 1}º</div>
-                  <div class="rank-avatar" style="color:var(--muted);font-weight:bold;">
-                    ${user.nome.substring(0,2).toUpperCase()}
-                    <div class="status-dot ${isMe ? '' : 'offline'}"></div>
-                  </div>
+                  <div class="rank-avatar" style="color:var(--muted);font-weight:bold;">${user.nome.substring(0,2).toUpperCase()} <div class="status-dot ${isMe ? '' : 'offline'}"></div></div>
                   <div class="rank-info"><strong>${user.nome} ${isMe ? '(Você)' : ''}</strong><span>Membro da Equipe</span></div>
                   <div class="rank-stats"><div class="rank-stat-col"><span>Salvos</span><strong>${user.salvos}</strong></div></div>
                   <div class="rank-score">${user.xp} XP</div>
                 </div>`;
             }).join('');
           }
-        } catch(e) { console.error(e); }
+        } catch(e) {}
       }
 
       function loadWhiteLabel() {
         try {
           const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.wl));
           if(saved) whiteLabel = { ...whiteLabel, ...saved };
-          document.getElementById('wlColor').value = whiteLabel.color;
-          document.getElementById('wlColorText').value = whiteLabel.color;
-          document.getElementById('wlName').value = whiteLabel.name;
-          document.getElementById('wlLogo').value = whiteLabel.logo;
+          document.getElementById('wlColor').value = whiteLabel.color; document.getElementById('wlColorText').value = whiteLabel.color;
+          document.getElementById('wlName').value = whiteLabel.name; document.getElementById('wlLogo').value = whiteLabel.logo;
           applyWhiteLabel();
         } catch(e) {}
       }
@@ -940,19 +829,14 @@
         const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
         const inv = (yiq >= 128) ? '#000000' : '#ffffff';
         document.documentElement.style.setProperty('--primary-inv', inv);
-
         document.querySelectorAll('.brand h1, .login-box h2').forEach(el => el.textContent = whiteLabel.name);
         const logoHtml = whiteLabel.logo ? `<img src="${whiteLabel.logo}" style="width:100%;height:100%;object-fit:cover;">` : whiteLabel.name.charAt(0).toUpperCase();
         document.querySelectorAll('.brand-icon, .login-brand').forEach(el => el.innerHTML = logoHtml);
       }
 
       function saveWhiteLabel() {
-        whiteLabel.color = document.getElementById('wlColor').value;
-        whiteLabel.name = document.getElementById('wlName').value || 'VL Hunt';
-        whiteLabel.logo = document.getElementById('wlLogo').value;
-        localStorage.setItem(STORAGE_KEYS.wl, JSON.stringify(whiteLabel));
-        applyWhiteLabel();
-        toast('Aparência atualizada!');
+        whiteLabel.color = document.getElementById('wlColor').value; whiteLabel.name = document.getElementById('wlName').value || 'VL Hunt'; whiteLabel.logo = document.getElementById('wlLogo').value;
+        localStorage.setItem(STORAGE_KEYS.wl, JSON.stringify(whiteLabel)); applyWhiteLabel(); toast('Aparência atualizada!');
       }
 
       function loadUserProfile(userInfo) {
@@ -967,74 +851,38 @@
 
         document.getElementById('navDashboardText').textContent = isUserAdmin ? "Dashboard Geral" : "Meu Dashboard";
         document.getElementById('dashAdminStatus').style.display = isUserAdmin ? 'block' : 'none';
-
-        document.getElementById('topUserName').textContent = userProfile.name;
-        document.getElementById('topUserRole').textContent = userProfile.role;
+        document.getElementById('topUserName').textContent = userProfile.name; document.getElementById('topUserRole').textContent = userProfile.role;
         updateAvatarUI(userProfile.avatarBase64, userProfile.name);
-
-        document.getElementById('profileEmail').value = currentUserEmail;
-        document.getElementById('profileName').value = userProfile.name;
-        document.getElementById('profileRole').value = userProfile.role;
-        document.getElementById('profileSignature').value = userProfile.signature || '';
+        document.getElementById('profileEmail').value = currentUserEmail; document.getElementById('profileName').value = userProfile.name;
+        document.getElementById('profileRole').value = userProfile.role; document.getElementById('profileSignature').value = userProfile.signature || '';
       }
 
       function saveProfile() {
-        userProfile.name = document.getElementById('profileName').value.trim() || currentUserFullName;
-        userProfile.role = document.getElementById('profileRole').value.trim() || 'SDR';
-        userProfile.signature = document.getElementById('profileSignature').value.trim();
-        localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(userProfile));
-        
-        loadUserProfile({fullName: userProfile.name, initials: ''});
-        toast('Perfil salvo com sucesso!');
+        userProfile.name = document.getElementById('profileName').value.trim() || currentUserFullName; userProfile.role = document.getElementById('profileRole').value.trim() || 'SDR'; userProfile.signature = document.getElementById('profileSignature').value.trim();
+        localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(userProfile)); loadUserProfile({fullName: userProfile.name, initials: ''}); toast('Perfil salvo com sucesso!');
       }
 
       function updateAvatarUI(base64, name) {
-        const topInitials = document.getElementById('topUserInitials');
-        let initials = name.substring(0, 2).toUpperCase();
-        if (base64) {
-          topInitials.innerHTML = `<img src="${base64}">`;
-          document.getElementById('avatarPreviewImg').src = base64;
-          document.getElementById('avatarPreviewImg').style.display = 'block';
-          document.getElementById('avatarPreviewInitials').style.display = 'none';
-        } else {
-          topInitials.innerHTML = initials;
-          document.getElementById('avatarPreviewInitials').textContent = initials;
-          document.getElementById('avatarPreviewInitials').style.display = 'block';
-          document.getElementById('avatarPreviewImg').style.display = 'none';
-        }
+        const topInitials = document.getElementById('topUserInitials'); let initials = name.substring(0, 2).toUpperCase();
+        if (base64) { topInitials.innerHTML = `<img src="${base64}">`; document.getElementById('avatarPreviewImg').src = base64; document.getElementById('avatarPreviewImg').style.display = 'block'; document.getElementById('avatarPreviewInitials').style.display = 'none';
+        } else { topInitials.innerHTML = initials; document.getElementById('avatarPreviewInitials').textContent = initials; document.getElementById('avatarPreviewInitials').style.display = 'block'; document.getElementById('avatarPreviewImg').style.display = 'none'; }
       }
 
       function showSection(section) {
         ['dashboardSection', 'extractSection', 'savedSection', 'crmSection', 'settingsSection', 'accountSection', 'rankingSection'].forEach(id => {
-            const el = document.getElementById(id);
-            if(el) el.classList.add('hidden');
+            const el = document.getElementById(id); if(el) el.classList.add('hidden');
         });
         document.getElementById(section + 'Section').classList.remove('hidden');
-
         document.querySelectorAll('.menu-item').forEach(btn => btn.classList.remove('active'));
-        const activeButton = document.querySelector(`.menu-item[data-section="${section}"]`);
-        if (activeButton) activeButton.classList.add('active');
+        const activeButton = document.querySelector(`.menu-item[data-section="${section}"]`); if (activeButton) activeButton.classList.add('active');
 
         const t = document.getElementById('topTitle'), s = document.getElementById('topSubtitle');
-        
-        if(section === 'dashboard') { 
-            t.textContent = isUserAdmin ? "Dashboard Geral" : "Meu Dashboard"; 
-            s.textContent = isUserAdmin ? "Visão geral da operação da equipe." : "Acompanhe suas métricas individuais."; 
-            document.getElementById('pdcaTitle').textContent = isUserAdmin ? "Log de Atividades (PDCA)" : "Meu Histórico de Ações";
-            document.getElementById('pdcaSubtitle').textContent = isUserAdmin ? "Acompanhe em tempo real as ações da sua equipe no sistema." : "Seu registro pessoal de buscas e leads salvos.";
-            updateDashboardStats(); 
-            renderLogs();
-        }
+        if(section === 'dashboard') { t.textContent = isUserAdmin ? "Dashboard Geral" : "Meu Dashboard"; s.textContent = isUserAdmin ? "Visão geral da operação da equipe." : "Acompanhe suas métricas individuais."; document.getElementById('pdcaTitle').textContent = isUserAdmin ? "Log de Atividades (PDCA)" : "Meu Histórico de Ações"; document.getElementById('pdcaSubtitle').textContent = isUserAdmin ? "Acompanhe em tempo real as ações da sua equipe no sistema." : "Seu registro pessoal de buscas e leads salvos."; updateDashboardStats(); renderLogs(); }
         else if(section === 'extract') { t.textContent = "Prospecção Ativa"; s.textContent = "Encontre novos clientes."; }
         else if(section === 'ranking') { t.textContent = "Ranking"; s.textContent = "Gamificação da equipe."; }
         else if(section === 'saved') { t.textContent = "Pastas"; s.textContent = "Leads salvos."; renderSavedLeads(); }
         else if(section === 'crm') { t.textContent = "CRM Pipeline"; s.textContent = "Arraste e gerencie seus leads salvos no Kanban."; renderKanban(); }
-        else if(section === 'settings') { 
-            t.textContent = "Painel Master"; s.textContent = isUserAdmin ? "Configurações Globais do SaaS." : "Suas configurações pessoais.";
-            const apiInputs = ['googleApiKeyInput', 'pipedriveTokenInput', 'maxPagesInput', 'webhookUrlInput'];
-            apiInputs.forEach(id => { document.getElementById(id).disabled = !isUserAdmin; });
-            document.getElementById('btnSaveIntegrations').style.display = isUserAdmin ? 'inline-flex' : 'none';
-        }
+        else if(section === 'settings') { t.textContent = "Painel Master"; s.textContent = isUserAdmin ? "Configurações Globais do SaaS." : "Suas configurações pessoais."; const apiInputs = ['googleApiKeyInput', 'pipedriveTokenInput', 'maxPagesInput', 'webhookUrlInput']; apiInputs.forEach(id => { document.getElementById(id).disabled = !isUserAdmin; }); document.getElementById('btnSaveIntegrations').style.display = isUserAdmin ? 'inline-flex' : 'none'; }
         else if(section === 'account') { t.textContent = "Minha Conta"; s.textContent = "Seu perfil."; }
       }
 
@@ -1045,29 +893,15 @@
       }
 
       async function openIcebreaker(id) {
-        const lead = leads.find(l => l.place_id === id) || savedLeads.find(l => l.place_id === id);
-        if(!lead) return;
-        
-        const modal = document.getElementById('icebreakerModal');
-        const textArea = document.getElementById('icebreakerText');
-        const apiKey = extraPrefs.openaiKey;
-        const contexto = extraPrefs.aiContext || 'serviços de alto valor para ajudar empresas a crescerem';
-
-        modal.style.display = 'flex';
-        document.getElementById('icebreakerLeadName').textContent = lead.name;
-
-        if(!apiKey || apiKey.trim() === '') {
-          textArea.value = `⚠️ CHAVE OPENAI NÃO CONFIGURADA.\n\nOPÇÃO A (Direta e Reta):\nOlá, responsável pela ${lead.name}! Vendo ${contexto}. Faz sentido falarmos?\n\nOPÇÃO B (Gerando Curiosidade):\nOi! Tenho uma estratégia de ${contexto} que funcionaria muito bem aí em ${lead.address}. Posso mandar?`;
-          return;
-        }
-
+        const lead = leads.find(l => l.place_id === id) || savedLeads.find(l => l.place_id === id); if(!lead) return;
+        const modal = document.getElementById('icebreakerModal'); const textArea = document.getElementById('icebreakerText');
+        const apiKey = extraPrefs.openaiKey; const contexto = extraPrefs.aiContext || 'serviços de alto valor para ajudar empresas a crescerem';
+        modal.style.display = 'flex'; document.getElementById('icebreakerLeadName').textContent = lead.name;
+        if(!apiKey || apiKey.trim() === '') { textArea.value = `⚠️ CHAVE OPENAI NÃO CONFIGURADA.\n\nOPÇÃO A (Direta e Reta):\nOlá, responsável pela ${lead.name}! Vendo ${contexto}. Faz sentido falarmos?\n\nOPÇÃO B (Curiosidade):\nOi! Tenho uma estratégia de ${contexto} que funcionaria muito bem aí em ${lead.address}. Posso mandar?`; return; }
         textArea.value = "Gerando opções com IA...";
         try {
           const prompt = `Aja como SDR B2B. Meu produto: "${contexto}".\n\nEscreva 3 opções de primeira mensagem WhatsApp para a empresa "${lead.name}".\n\nFormate como:\nOPÇÃO A (Direta e Reta):\n[texto]\nOPÇÃO B (Curiosidade):\n[texto]\nOPÇÃO C (Dor):\n[texto]`;
-          const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-            body: JSON.stringify({ model: 'gpt-3.5-turbo', messages: [{role: 'user', content: prompt}], temperature: 0.7 })
-          });
+          const response = await fetch('https://api.openai.com/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` }, body: JSON.stringify({ model: 'gpt-3.5-turbo', messages: [{role: 'user', content: prompt}], temperature: 0.7 }) });
           const data = await response.json();
           if(data.choices && data.choices[0]) { textArea.value = data.choices[0].message.content.trim(); addLog('usou_ia', `Gerou copy IA para: ${lead.name}`); } 
         } catch(e) { textArea.value = "Erro na IA. Verifique sua chave."; }
@@ -1077,10 +911,8 @@
       function copyIcebreaker() { navigator.clipboard.writeText(document.getElementById('icebreakerText').value); toast('Copiado!'); closeIcebreakerModal(); }
 
       function switchSettingsTab(tabId, btnElement) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-        btnElement.classList.add('active');
-        document.getElementById(tabId).classList.add('active');
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        btnElement.classList.add('active'); document.getElementById(tabId).classList.add('active');
       }
 
       function loadQualityFilters() {
@@ -1097,9 +929,7 @@
         if(leads.length > 0) renderLeads(); 
       }
 
-      function saveAISettings() {
-        extraPrefs.openaiKey = document.getElementById('openaiApiKeyInput').value.trim(); extraPrefs.aiContext = document.getElementById('aiContextInput').value.trim(); localStorage.setItem(STORAGE_KEYS.prefs, JSON.stringify(extraPrefs)); toast('Configurações da IA salvas!');
-      }
+      function saveAISettings() { extraPrefs.openaiKey = document.getElementById('openaiApiKeyInput').value.trim(); extraPrefs.aiContext = document.getElementById('aiContextInput').value.trim(); localStorage.setItem(STORAGE_KEYS.prefs, JSON.stringify(extraPrefs)); toast('Configurações da IA salvas!'); }
 
       async function saveSettings() {
         if (!isUserAdmin) { toast("Sem permissão."); return; }
@@ -1121,6 +951,9 @@
         } catch (err) { }
       }
 
+      // ============================================
+      // EXTRAÇÃO E GOOGLE MAPS CORRIGIDO (AUTOCOMPLETE)
+      // ============================================
       function loadGoogleMapsScript(apiKey, forceReload = false) {
         if (window.google && window.google.maps && window.google.maps.places && !forceReload) { initGoogleMaps(); return; }
         const oldScript = document.getElementById('googleMapsScript'); if (oldScript) oldScript.remove();
@@ -1133,6 +966,13 @@
       function initGoogleMaps() {
         map = new google.maps.Map(document.getElementById('map'), { center: { lat: -23.5, lng: -46.6 }, zoom: 13 });
         placesService = new google.maps.places.PlacesService(map);
+        
+        // CORREÇÃO: Adicionando o Autocomplete do Maps de volta
+        if(window.google && window.google.maps && window.google.maps.places && window.google.maps.places.Autocomplete) {
+            new google.maps.places.Autocomplete(document.getElementById('cityInput'), { types: ['(cities)'], componentRestrictions: { country: "br" } });
+            new google.maps.places.Autocomplete(document.getElementById('districtInput'));
+            new google.maps.places.Autocomplete(document.getElementById('streetInput'));
+        }
       }
 
       function searchLeads() {
@@ -1202,7 +1042,6 @@
         
         const nomeLimpoIG = lead.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '');
         const instaUrl = `https://www.instagram.com/${nomeLimpoIG}`;
-        
         const emailUrl = `https://www.google.com/search?q=${encodeURIComponent(`"${lead.name}" email OR contato`)}`;
 
         let ownerTag = source === 'saved' && lead.owner ? `<span class="badge badge-owner">👤 ${lead.owner}</span>` : '';
@@ -1210,8 +1049,9 @@
         let botoesOuro = `${whatsUrl ? `<a class="small-btn btn-wpp" href="${whatsUrl}" target="_blank">WhatsApp</a>` : ''}<button class="small-btn btn-cnpj" onclick="enriquecerCNPJ('${lead.place_id}')">Buscar CNPJ</button>`;
         let divCnpj = lead.cnpj ? `<div class="cnpj-result"><strong>CNPJ:</strong> ${lead.cnpj}<br><strong>CNAE:</strong> ${lead.cnae}</div>` : `<div id="box-cnpj-${lead.place_id}"></div>`;
 
+        // CORREÇÃO: Usando selectedLeadIds.has para o checkbox não desmarcar sozinho
         card.innerHTML = `
-          ${source === 'current' ? `<input type="checkbox" class="lead-check" onchange="toggleLeadSelection('${lead.place_id}', this.checked)">` : ''}
+          ${source === 'current' ? `<input type="checkbox" class="lead-check" onchange="toggleLeadSelection('${lead.place_id}', this.checked)" ${selectedLeadIds.has(lead.place_id) ? 'checked' : ''}>` : ''}
           ${lead.photo ? `<img class="lead-photo" src="${lead.photo}">` : `<div class="lead-photo-placeholder">Sem imagem</div>`}
           <div class="lead-title-row"><h4 class="lead-title">${lead.name}</h4><div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;">${ratingBadge}${ownerTag}</div></div>
           <div class="lead-info"><span>${lead.address || 'Sem endereço'}</span></div>
@@ -1247,62 +1087,39 @@
       }
       function saveLeadById(id) { const lead = leads.find(l => l.place_id === id); if(lead) { pendingLeadsToSave = [lead]; openFolderModal(); } }
 
-      // ==========================================
-      // TRADUTOR DA TELA PARA O BANCO (SALVA E AVISA ERRO)
-      // ==========================================
+      // CORREÇÃO: Alterado "rating" para "avaliacao" no objeto novoLead
       async function confirmFolderSave() {
         const selected = document.getElementById('folderSelect').value;
         const typed = document.getElementById('newFolderInput').value.trim();
         const folder = typed !== '' ? typed : (selected !== '' ? selected : 'Geral');
         
         let count = 0;
-        const btnConfirm = document.querySelector('#folderModal .btn-main');
-        btnConfirm.textContent = 'Salvando no Banco...';
-        btnConfirm.disabled = true;
+        document.querySelector('#folderModal .btn-main').textContent = 'Salvando no Banco...';
 
         try {
           for (const l of pendingLeadsToSave) {
-            
-            // O objeto que o BANCO DE DADOS espera (Preenchendo todas as colunas NOT NULL)
-            const leadParaBD = {
-              place_id: l.place_id,
-              nome: l.name,
-              telefone: l.phone || '',
-              website: l.website || '',
-              endereco: l.address || '',
-              foto: l.photo || '',
-              avalicao: l.rating || 0,
-              pasta_id: folder, // Nome da coluna lá
-              salvo_por: userProfile.name,
-              usuario_email: currentUserEmail,
-              crm_status: 'novo'
-            };
-
-            // O objeto que o FRONTEND espera (Em inglês para renderizar direito sem dar F5)
-            const leadParaTela = {
+            const novoLead = {
               place_id: l.place_id,
               name: l.name,
               phone: l.phone || '',
               website: l.website || '',
               address: l.address || '',
               photo: l.photo || '',
-              rating: l.rating || 0,
-              folder: folder, // Nome da chave que o select das pastas procura
+              avaliacao: l.rating || 0,
+              folder: folder,
               owner: userProfile.name,
               usuario_email: currentUserEmail,
               crm_status: 'novo'
             };
 
-            const { data, error } = await supa.from('leads_salvos').insert([leadParaBD]).select();
+            const { data, error } = await supa.from('leads_salvos').insert([novoLead]).select();
             
             if(!error) {
-              savedLeads.push(leadParaTela); 
+              savedLeads.push(novoLead); 
               leads = leads.filter(x => x.place_id !== l.place_id); 
               count++;
             } else {
-              console.error("Erro no Supabase:", error);
-              // Mostra exatamente o erro do banco de dados pra gente saber
-              toast("Erro ao salvar: " + (error.message || "Verifique o banco"));
+              console.error("Erro banco salvar:", error);
             }
           }
 
@@ -1311,17 +1128,16 @@
              carregarRankingReal(); 
           }
 
+          selectedLeadIds.clear();
           renderLeads(); 
           renderSavedLeads();
           updateDashboardStats(); 
           closeFolderModal(); 
-          
-          if(count > 0) toast(`${count} Leads Salvos na pasta: ${folder}`);
+          toast(`${count} Leads Salvos na pasta: ${folder}`);
         } catch(e) {
-          toast("Erro inesperado na conexão com o banco");
+          toast("Erro na conexão com o banco");
         } finally {
-          btnConfirm.textContent = 'Confirmar e Salvar';
-          btnConfirm.disabled = false;
+          document.querySelector('#folderModal .btn-main').textContent = 'Confirmar e Salvar';
         }
       }
 
@@ -1335,13 +1151,9 @@
         filterSelect.innerHTML = '<option value="Todas">Todas as pastas</option>' + pastas.map(p => `<option value="${p}">${p}</option>`).join('');
         if (pastas.includes(currentFolder)) filterSelect.value = currentFolder; else filterSelect.value = 'Todas';
 
-        if (filterSelect.value !== 'Todas') {
-            listToShow = listToShow.filter(l => l.folder === filterSelect.value);
-        }
+        if (filterSelect.value !== 'Todas') { listToShow = listToShow.filter(l => l.folder === filterSelect.value); }
 
-        if (listToShow.length === 0) {
-            document.getElementById('savedEmpty').style.display = 'block';
-        } else {
+        if (listToShow.length === 0) { document.getElementById('savedEmpty').style.display = 'block'; } else {
             document.getElementById('savedEmpty').style.display = 'none';
             listToShow.forEach(lead => grid.appendChild(createLeadCard(lead, 'saved')));
         }
@@ -1369,62 +1181,59 @@
         document.getElementById('barContact').style.width = list.length ? `${(list.filter(l => l.phone || l.website).length/list.length)*100}%` : '0%';
       }
 
-      function clearResults() { leads = []; renderLeads(); }
+      function clearResults() { leads = []; selectedLeadIds.clear(); renderLeads(); }
 
       function downloadCSV(leadsList, filename) {
         if (!leadsList || leadsList.length === 0) { toast("Nenhum lead para exportar."); return; }
         const headers = ['Nome da Empresa', 'Telefone', 'Endereco', 'Site', 'Avaliacao', 'Pasta', 'Status CRM'];
         const rows = leadsList.map(l => {
-          return [
-            `"${(l.name || '').replace(/"/g, '""')}"`,
-            `"${(l.phone || '').replace(/"/g, '""')}"`,
-            `"${(l.address || '').replace(/"/g, '""')}"`,
-            `"${(l.website || '').replace(/"/g, '""')}"`,
-            `"${l.rating || ''}"`,
-            `"${l.folder || ''}"`,
-            `"${l.crm_status || 'novo'}"`
-          ].join(',');
+          return [ `"${(l.name || '').replace(/"/g, '""')}"`, `"${(l.phone || '').replace(/"/g, '""')}"`, `"${(l.address || '').replace(/"/g, '""')}"`, `"${(l.website || '').replace(/"/g, '""')}"`, `"${l.rating || ''}"`, `"${l.folder || ''}"`, `"${l.crm_status || 'novo'}"` ].join(',');
         });
         const csvContent = "\ufeff" + headers.join(',') + '\n' + rows.join('\n');
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.setAttribute("href", url);
-        link.setAttribute("download", filename);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        toast("Download do CSV concluído!");
+        const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.setAttribute("href", url); link.setAttribute("download", filename);
+        document.body.appendChild(link); link.click(); document.body.removeChild(link); toast("Download do CSV concluído!");
       }
 
-      function exportCurrentToCSV() {
-        const list = selectedLeadIds.size > 0 ? leads.filter(l => selectedLeadIds.has(l.place_id)) : leads;
-        downloadCSV(list, `Leads_Pesquisa_${new Date().toLocaleDateString().replace(/\//g,'-')}.csv`);
-      }
-      
-      function exportSavedToCSV() {
-        const filter = document.getElementById('savedFolderFilter').value;
-        let list = isUserAdmin ? savedLeads : savedLeads.filter(l => l.usuario_email === currentUserEmail);
-        if (filter !== 'Todas') list = list.filter(l => l.folder === filter);
-        downloadCSV(list, `Leads_Salvos_${new Date().toLocaleDateString().replace(/\//g,'-')}.csv`);
-      }
-
+      function exportCurrentToCSV() { const list = selectedLeadIds.size > 0 ? leads.filter(l => selectedLeadIds.has(l.place_id)) : leads; downloadCSV(list, `Leads_Pesquisa_${new Date().toLocaleDateString().replace(/\//g,'-')}.csv`); }
+      function exportSavedToCSV() { const filter = document.getElementById('savedFolderFilter').value; let list = isUserAdmin ? savedLeads : savedLeads.filter(l => l.usuario_email === currentUserEmail); if (filter !== 'Todas') list = list.filter(l => l.folder === filter); downloadCSV(list, `Leads_Salvos_${new Date().toLocaleDateString().replace(/\//g,'-')}.csv`); }
       function scrollToTop() { window.scrollTo({top:0, behavior:'smooth'}); }
 
-      function enriquecerCNPJ(id) {
-        const box = document.getElementById(`box-cnpj-${id}`); if(!box) return;
-        box.innerHTML = `<div class="cnpj-result" style="color:var(--muted);">⏳ Buscando...</div>`;
-        setTimeout(() => {
-          const list = leads.find(l => l.place_id === id) ? leads : savedLeads;
-          const index = list.findIndex(l => l.place_id === id);
-          if(index !== -1) {
-            list[index].cnpj = "45.123.890/0001-22"; list[index].cnae = "73.11-4-00 - Agências de publicidade";
-            if(document.getElementById('extractSection').classList.contains('hidden') === false) renderLeads();
-            else if(document.getElementById('savedSection').classList.contains('hidden') === false) renderSavedLeads();
-            else renderKanban();
-            toast("CNPJ Anexado!");
-          }
-        }, 1500);
+      // CORREÇÃO: Buscando dados REAIS via BrasilAPI
+      async function enriquecerCNPJ(id) {
+        const list = leads.find(l => l.place_id === id) ? leads : savedLeads;
+        const index = list.findIndex(l => l.place_id === id);
+        if(index === -1) return;
+
+        const leadName = list[index].name;
+        // Pede para o usuário o CNPJ, pois as APIs públicas exigem o número
+        const userCnpj = prompt(`Para buscar os dados reais, informe o CNPJ da empresa "${leadName}" (apenas números):`);
+
+        if (!userCnpj) return;
+
+        const cleanCnpj = userCnpj.replace(/\D/g, '');
+        if (cleanCnpj.length !== 14) { toast('CNPJ deve conter 14 dígitos.'); return; }
+
+        const box = document.getElementById(`box-cnpj-${id}`);
+        if(box) box.innerHTML = `<div class="cnpj-result" style="color:var(--muted);">⏳ Buscando Receita Federal...</div>`;
+
+        try {
+          const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleanCnpj}`);
+          if (!response.ok) throw new Error('Erro');
+          const data = await response.json();
+
+          list[index].cnpj = data.cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
+          list[index].cnae = `${data.cnae_fiscal} - ${data.cnae_fiscal_descricao}`;
+
+          if(document.getElementById('extractSection').classList.contains('hidden') === false) renderLeads();
+          else if(document.getElementById('savedSection').classList.contains('hidden') === false) renderSavedLeads();
+          else renderKanban();
+
+          toast("Dados da Receita anexados!");
+        } catch (error) {
+          toast("CNPJ não encontrado.");
+          if(box) box.innerHTML = '';
+        }
       }
 
       function renderKanban() {
