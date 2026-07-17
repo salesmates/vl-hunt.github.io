@@ -967,7 +967,7 @@
         map = new google.maps.Map(document.getElementById('map'), { center: { lat: -23.5, lng: -46.6 }, zoom: 13 });
         placesService = new google.maps.places.PlacesService(map);
         
-        // CORREÇÃO: Adicionando o Autocomplete do Maps de volta
+        // Autocomplete do Maps
         if(window.google && window.google.maps && window.google.maps.places && window.google.maps.places.Autocomplete) {
             new google.maps.places.Autocomplete(document.getElementById('cityInput'), { types: ['(cities)'], componentRestrictions: { country: "br" } });
             new google.maps.places.Autocomplete(document.getElementById('districtInput'));
@@ -1049,7 +1049,7 @@
         let botoesOuro = `${whatsUrl ? `<a class="small-btn btn-wpp" href="${whatsUrl}" target="_blank">WhatsApp</a>` : ''}<button class="small-btn btn-cnpj" onclick="enriquecerCNPJ('${lead.place_id}')">Buscar CNPJ</button>`;
         let divCnpj = lead.cnpj ? `<div class="cnpj-result"><strong>CNPJ:</strong> ${lead.cnpj}<br><strong>CNAE:</strong> ${lead.cnae}</div>` : `<div id="box-cnpj-${lead.place_id}"></div>`;
 
-        // CORREÇÃO: Usando selectedLeadIds.has para o checkbox não desmarcar sozinho
+        // Mantém a seleção com selectedLeadIds.has
         card.innerHTML = `
           ${source === 'current' ? `<input type="checkbox" class="lead-check" onchange="toggleLeadSelection('${lead.place_id}', this.checked)" ${selectedLeadIds.has(lead.place_id) ? 'checked' : ''}>` : ''}
           ${lead.photo ? `<img class="lead-photo" src="${lead.photo}">` : `<div class="lead-photo-placeholder">Sem imagem</div>`}
@@ -1087,7 +1087,7 @@
       }
       function saveLeadById(id) { const lead = leads.find(l => l.place_id === id); if(lead) { pendingLeadsToSave = [lead]; openFolderModal(); } }
 
-      // CORREÇÃO: Alterado "rating" para "avaliacao" no objeto novoLead
+      // CORREÇÃO APLICADA AQUI: Tratamento avançado de erro para o Supabase
       async function confirmFolderSave() {
         const selected = document.getElementById('folderSelect').value;
         const typed = document.getElementById('newFolderInput').value.trim();
@@ -1120,6 +1120,8 @@
               count++;
             } else {
               console.error("Erro banco salvar:", error);
+              // ALERTA DE ERRO ADICIONADO PARA DEBUG!
+              alert("Erro ao salvar no banco Supabase!\nDetalhe: " + error.message + "\n\nVerifique se você criou a coluna 'avaliacao' (tipo float ou int8) na sua tabela 'leads_salvos'.");
             }
           }
 
@@ -1133,7 +1135,7 @@
           renderSavedLeads();
           updateDashboardStats(); 
           closeFolderModal(); 
-          toast(`${count} Leads Salvos na pasta: ${folder}`);
+          if(count > 0) toast(`${count} Leads Salvos na pasta: ${folder}`);
         } catch(e) {
           toast("Erro na conexão com o banco");
         } finally {
@@ -1199,7 +1201,7 @@
       function exportSavedToCSV() { const filter = document.getElementById('savedFolderFilter').value; let list = isUserAdmin ? savedLeads : savedLeads.filter(l => l.usuario_email === currentUserEmail); if (filter !== 'Todas') list = list.filter(l => l.folder === filter); downloadCSV(list, `Leads_Salvos_${new Date().toLocaleDateString().replace(/\//g,'-')}.csv`); }
       function scrollToTop() { window.scrollTo({top:0, behavior:'smooth'}); }
 
-      // CORREÇÃO: Buscando dados REAIS via BrasilAPI
+      // CORREÇÃO APLICADA AQUI: Busca de CNPJ real via BrasilAPI
       async function enriquecerCNPJ(id) {
         const list = leads.find(l => l.place_id === id) ? leads : savedLeads;
         const index = list.findIndex(l => l.place_id === id);
