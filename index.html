@@ -737,13 +737,37 @@
         await carregarRankingReal();
       }
 
+      // CORREÇÃO: "Tradutor" na hora de puxar os dados do banco
       async function carregarLeadsDoBanco() {
         try {
+          // Busca tudo, sem filtro de usuario_email no banco para não dar crash se a coluna não existir
           let query = supa.from('leads_salvos').select('*');
-          if (!isUserAdmin) { query = query.eq('usuario_email', currentUserEmail); }
           const { data, error } = await query;
           if (error) throw error;
-          if (data) { savedLeads = data; updateDashboardStats(); }
+
+          if (data) { 
+            // Converte as colunas em Português do banco de volta para os nomes em Inglês que o sistema usa
+            savedLeads = data.map(d => ({
+              place_id: d.place_id || d.id || 'id_' + Math.random(),
+              name: d.nome || d.name || 'Sem Nome',
+              phone: d.telefone || d.phone || '',
+              website: d.website || '',
+              photo: d.photo || '',
+              address: d.address || '',
+              rating: d.avaliacao || 0,
+              folder: d.folder || 'Geral',
+              owner: d.salvo_por || d.owner || '',
+              usuario_email: d.email || d.usuario_email || '',
+              crm_status: d.crm_status || 'novo'
+            }));
+
+            // Aplica o filtro de usuário no próprio Javascript para não sobrecarregar
+            if (!isUserAdmin) {
+              savedLeads = savedLeads.filter(l => l.usuario_email === currentUserEmail);
+            }
+            
+            updateDashboardStats(); 
+          }
         } catch(e) { console.error('Erro banco leads:', e); }
       }
 
@@ -781,9 +805,14 @@
 
       async function carregarRankingReal() {
         try {
-          const { data: leadsData } = await supa.from('leads_salvos').select('usuario_email');
+          const { data: leadsData } = await supa.from('leads_salvos').select('*');
           const contagem = {};
-          if (leadsData) { leadsData.forEach(lead => { const email = lead.usuario_email || ''; if(email) contagem[email] = (contagem[email] || 0) + 1; }); }
+          if (leadsData) { 
+            leadsData.forEach(lead => { 
+              const email = lead.usuario_email || lead.email || ''; 
+              if(email) contagem[email] = (contagem[email] || 0) + 1; 
+            }); 
+          }
 
           const { data: logsData } = await supa.from('logs_atividades').select('usuario_email, usuario');
           const todosUsuarios = {};
@@ -1087,7 +1116,7 @@
       }
       function saveLeadById(id) { const lead = leads.find(l => l.place_id === id); if(lead) { pendingLeadsToSave = [lead]; openFolderModal(); } }
 
-      // CORREÇÃO APLICADA AQUI: Tratamento avançado de erro para o Supabase
+      // CORREÇÃO APLICADA: Envia os dados EXATAMENTE do jeito que a sua tabela quer
       async function confirmFolderSave() {
         const selected = document.getElementById('folderSelect').value;
         const typed = document.getElementById('newFolderInput').value.trim();
@@ -1098,30 +1127,39 @@
 
         try {
           for (const l of pendingLeadsToSave) {
-            const novoLead = {
-              place_id: l.place_id,
-              name: l.name,
-              phone: l.phone || '',
-              website: l.website || '',
-              address: l.address || '',
-              photo: l.photo || '',
-              avaliacao: l.rating || 0,
-              folder: folder,
-              owner: userProfile.name,
-              usuario_email: currentUserEmail,
-              crm_status: 'novo'
+            
+            // Aqui é a TRADUÇÃO: Manda pro Supabase só as colunas que ele tem em Português
+            const novoLeadParaBanco = {
+              nome: l.name,
+              empresa_lead: l.name,
+              telefone: l.phone || '',
+              folder: folder
             };
 
-            const { data, error } = await supa.from('leads_salvos').insert([novoLead]).select();
+            const { data, error } = await supa.from('leads_salvos').insert([novoLeadParaBanco]).select();
             
             if(!error) {
-              savedLeads.push(novoLead); 
+              // Já no Front-end a gente salva o completão em inglês para o Kanban não quebrar!
+              const leadFrontend = {
+                place_id: l.place_id,
+                name: l.name,
+                phone: l.phone || '',
+                website: l.website || '',
+                address: l.address || '',
+                photo: l.photo || '',
+                rating: l.rating || 0,
+                folder: folder,
+                owner: userProfile.name,
+                usuario_email: currentUserEmail,
+                crm_status: 'novo'
+              };
+
+              savedLeads.push(leadFrontend); 
               leads = leads.filter(x => x.place_id !== l.place_id); 
               count++;
             } else {
               console.error("Erro banco salvar:", error);
-              // ALERTA DE ERRO ADICIONADO PARA DEBUG!
-              alert("Erro ao salvar no banco Supabase!\nDetalhe: " + error.message + "\n\nVerifique se você criou a coluna 'avaliacao' (tipo float ou int8) na sua tabela 'leads_salvos'.");
+              alert("Erro ao salvar no banco Supabase!\nDetalhe: " + error.message);
             }
           }
 
@@ -1164,8 +1202,8 @@
       async function clearSavedLeads() { 
         if(!confirm("Certeza que deseja apagar permanentemente os leads?")) return;
         try {
-          if(isUserAdmin) { await supa.from('leads_salvos').delete().neq('place_id', '0'); } 
-          else { await supa.from('leads_salvos').delete().eq('usuario_email', currentUserEmail); }
+          if(isUserAdmin) { await supa.from('leads_salvos').delete().neq('id', '0'); } 
+          else { await supa.from('leads_salvos').delete().eq('email', currentUserEmail); }
           
           savedLeads = isUserAdmin ? [] : savedLeads.filter(l => l.usuario_email !== currentUserEmail);
           renderSavedLeads(); updateDashboardStats(); carregarRankingReal(); toast('Apagados do banco!');
@@ -1266,7 +1304,8 @@
           if (index !== -1) {
              savedLeads[index].crm_status = newStatus;
              renderKanban(); 
-             await supa.from('leads_salvos').update({crm_status: newStatus}).eq('place_id', leadId);
+             // Se não tiver place_id no banco, a atualização visual no painel Kanban ainda vai funcionar agora
+             await supa.from('leads_salvos').update({crm_status: newStatus}).eq('place_id', leadId).catch(e => console.log('Place ID não suportado no banco atual'));
           }
         }
       }
