@@ -1006,14 +1006,44 @@
 
       function searchLeads() {
         if (isSearching) return;
-        const name = document.getElementById('nameInput').value, niche = document.getElementById('nicheInput').value, city = document.getElementById('cityInput').value;
-        if (!name && (!niche || !city)) { toast('Digite Nome ou Nicho+Cidade.'); return; }
-        if (!placesService) { toast('Google Maps não conectado.'); return; }
         
-        leads = []; ignoredLeadsCount = 0; currentApiPage = 1; isSearching = true; 
+        const name = document.getElementById('nameInput').value.trim();
+        const niche = document.getElementById('nicheInput').value.trim();
+        const city = document.getElementById('cityInput').value.trim();
+        const district = document.getElementById('districtInput').value.trim();
+        const street = document.getElementById('streetInput').value.trim();
+
+        if (!name && (!niche || !city)) { 
+          toast('Digite Nome ou Nicho+Cidade.'); 
+          return; 
+        }
+        
+        if (!placesService) { 
+          toast('Google Maps não conectado.'); 
+          return; 
+        }
+
+        const queryParts = [];
+        if (name) queryParts.push(name);
+        if (niche) queryParts.push(niche);
+        if (street) queryParts.push(street);
+        if (district) queryParts.push(district);
+        if (city) queryParts.push(city);
+
+        const finalQuery = queryParts.join(' ');
+        
+        leads = []; 
+        ignoredLeadsCount = 0; 
+        currentApiPage = 1; 
+        isSearching = true; 
+        
         document.getElementById('searchBtn').textContent = 'Buscando...';
-        addLog('busca', `Busca iniciada por: ${name} ${niche} ${city}`); 
-        placesService.textSearch({ query: `${name} ${niche} ${city}`, type: 'establishment' }, handlePlacesResults);
+        addLog('busca', `Busca iniciada por: ${finalQuery}`); 
+        
+        placesService.textSearch({ 
+          query: finalQuery, 
+          type: 'establishment' 
+        }, handlePlacesResults);
       }
 
       function handlePlacesResults(results, status, pagination) {
